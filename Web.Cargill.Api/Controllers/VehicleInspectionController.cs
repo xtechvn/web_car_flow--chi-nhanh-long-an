@@ -1,0 +1,107 @@
+﻿using B2B.Utilities.Common;
+using Entities.ViewModels.Car;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Repositories.IRepositories;
+using Utilities.Contants;
+using Web.Cargill.Api.Services;
+
+namespace Web.Cargill.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class VehicleInspectionController : ControllerBase
+    {
+        private readonly IVehicleInspectionRepository _vehicleInspectionRepository;
+        private readonly RedisConn redisService;
+        private readonly IConfiguration _configuration;
+        private readonly WorkQueueClient _workQueueClient;
+        public VehicleInspectionController(IVehicleInspectionRepository vehicleInspectionRepository, IConfiguration configuration)
+        {
+            _vehicleInspectionRepository = vehicleInspectionRepository;
+            redisService = new RedisConn(configuration);
+            redisService.Connect();
+            _configuration = configuration;
+            _workQueueClient = new WorkQueueClient(configuration);
+
+        }
+        [HttpPost("Insert")]
+        public async Task<IActionResult> Insert([FromBody] RegistrationRecord request)
+        {
+
+            try
+            {
+                var audio = await _vehicleInspectionRepository.GetAudioPathByVehicleNumber(request.PlateNumber);
+                if (!string.IsNullOrEmpty(audio))
+                {
+                    request.AudioPath = audio;
+                    LogHelper.InsertLogTelegram("sql:" + request.PlateNumber);
+                }
+                var id = _vehicleInspectionRepository.SaveVehicleInspection(request);
+                if (id > 0 && (request.AudioPath == null || request.AudioPath == ""))
+                {
+                    request.Id = id;
+                    request.Bookingid = id;
+                    request.text_voice = "Mời biển số xe " + request.PlateNumber + " vào cân";
+                    await redisService.PublishAsync("Add_ReceiveRegistration" + _configuration["CompanyType"], request);
+                    LogHelper.InsertLogTelegram("Queue :" + request.PlateNumber);
+                    var Queue = _workQueueClient.SyncQueue(request);
+                    if (!Queue)
+                    {
+                        Queue = _workQueueClient.SyncQueue(request);
+                    }
+               
+                    //string url_n8n = "https://n8n.adavigo.com/webhook/text-to-speed";
+                    await redisService.PublishAsync("Add_ReceiveRegistration", request);
+                    //var client = new HttpClient();
+                    //var request_n8n = new HttpRequestMessage(HttpMethod.Post, url_n8n);
+                    //request_n8n.Content = new StringContent(JsonConvert.SerializeObject(request), null, "application/json");
+                    //var response = await client.SendAsync(request_n8n);
+                    //if (response.IsSuccessStatusCode)
+                    //{
+                    //    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    //}
+                    //else
+                    //{
+                    //    LogHelper.InsertLogTelegram("Insert - VehicleInspectionController API: Gửi n8n thất bại:  Id" + id);
+                    //}
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.SUCCESS,
+                        message = "Upload audio thành công",
+                        data = id
+                    });
+                }
+                if (id > 0)
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.SUCCESS,
+                        message = "Thêm mới thành công",
+                        data = id
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.ERROR,
+                        message = "Thêm mới lỗi",
+
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("Insert - VehicleInspectionController API: " + ex);
+                return Ok(new
+                {
+                    status = (int)ResponseType.ERROR,
+                    message = "đã xẩy ra lỗi vui lòng liên hệ IT",
+
+                });
+            }
+        }
+    }
+}

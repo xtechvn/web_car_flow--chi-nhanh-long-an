@@ -1,0 +1,23 @@
+﻿using Entities.ViewModels.Car;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repositories.IRepositories
+{
+    public interface IVehicleInspectionRepository
+    {
+        Task<List<CartoFactoryModel>> GetListCartoFactory(CartoFactorySearchModel searchModel);
+        Task<CartoFactoryModel> GetDetailtVehicleInspection(int id);
+        Task<int> UpdateCar(VehicleInspectionUpdateModel model);
+        int SaveVehicleInspection(RegistrationRecord model);
+        Task<string> GetAudioPathByVehicleNumber(string VehicleNumber);
+        Task<List<CartoFactoryModel>> GetListVehicleInspectionSynthetic(DateTime? FromDate, DateTime? ToDate, int LoadType);
+        Task<TotalVehicleInspection> CountTotalVehicleInspectionSynthetic(DateTime? FromDate, DateTime? ToDate);
+        Task<List<TotalWeightByHourModel>> GetTotalWeightByHour(DateTime? RegistrationTime);
+        Task<List<TotalWeightByHourModel>> GetTotalWeightByWeightGroup(DateTime? RegistrationTime);
+        Task<List<TotalWeightByHourModel>> GetTotalWeightByTroughType(DateTime? RegistrationTime);
+    }
+}

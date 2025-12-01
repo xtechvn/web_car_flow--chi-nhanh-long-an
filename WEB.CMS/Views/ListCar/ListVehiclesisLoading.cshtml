@@ -1,0 +1,72 @@
+﻿@using Entities.ViewModels.Car;
+@using Entities.Models;
+@{
+    Layout = null;
+    var AllCode = (List<AllCode>)ViewBag.AllCode;
+}
+@model List<CartoFactoryModel>
+@if (Model != null && Model.Count > 0)
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên KH (Trại, đại lý)</th>
+                <th>Tên lái xe</th>
+                <th>Biển số xe</th>
+                <th>Giờ vào cân</th>
+                <th>Tình Trạng</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody-@ViewBag.type">
+            @foreach (var item in Model)
+            {
+                <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
+                    <td>@item.RecordNumber</td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.DriverName</td>
+                    <td>
+                        @item.VehicleNumber
+                    </td>
+                    <td>
+                        @(item.VehicleWeighingTimeComplete!=null?((DateTime)item.VehicleWeighingTimeComplete).ToString("HH:mm dd/MM/yyyy"):"")
+                    </td>
+                    <td>
+                        <div class="status-dropdown">
+                            <button class="dropdown-toggle " data-options='[
+                            @foreach (var allcode in AllCode)
+                            {
+
+                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
+
+                            }
+                                                                ]'>
+                                @item.VehicleWeighingStatusName
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+else
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên KH (Trại, đại lý)</th>
+                <th>Tên lái xe</th>
+                <th>Biển số xe</th>
+                <th>Giờ vào cân</th>
+                <th>Tình Trạng</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody-@ViewBag.type">
+        </tbody>
+    </table>
+}
+
+
