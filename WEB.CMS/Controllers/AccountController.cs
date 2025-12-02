@@ -10,6 +10,7 @@ using Repositories.IRepositories;
 using System.Security.Claims;
 using Utilities;
 using Utilities.Contants;
+using WEB.CMS.Customize;
 using WEB.CMS.Models;
 
 namespace WEB.CMS.Controllers

@@ -321,7 +321,7 @@ namespace Repositories.Repositories
                     model.Status = 0;
                 }
                 await _UserDAL.UpdateAsync(model);
-                return model.Status;
+                return (int)model.Status;
             }
             catch (Exception ex)
             {

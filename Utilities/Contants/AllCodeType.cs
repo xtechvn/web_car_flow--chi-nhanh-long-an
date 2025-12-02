@@ -13,6 +13,7 @@
         public static string VEHICLEWEIGHEDSTATUS = "VEHICLEWEIGHEDSTATUS";//8
         public static string BRANCH_CODE = "BRANCH_CODE";
         public static string Loading_Type = "Loading_Type";
+        public static string TIME_RESET = "TIME_RESET";
 
 
     }

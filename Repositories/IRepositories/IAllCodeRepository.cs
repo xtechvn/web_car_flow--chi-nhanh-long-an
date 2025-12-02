@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Entities.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,5 +26,6 @@ namespace Repositories.IRepositories
 
         Task<long> UpdateAllCode(AllCode model);
         Task<long> InsertAllcode(AllCode model);
+        Task<long> UpdateResetTime(int Id, DateTime? time);
     }
 }

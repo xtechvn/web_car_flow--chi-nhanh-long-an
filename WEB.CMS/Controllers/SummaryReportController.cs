@@ -5,9 +5,11 @@ using Repositories.IRepositories;
 using Repositories.Repositories;
 using Utilities;
 using Utilities.Contants;
+using WEB.CMS.Customize;
 
 namespace WEB.CMS.Controllers
 {
+    [CustomAuthorize]
     public class SummaryReportController : Controller
     {
         private readonly IVehicleInspectionRepository _vehicleInspectionRepository;

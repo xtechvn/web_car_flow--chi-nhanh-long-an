@@ -19,5 +19,12 @@ namespace Repositories.IRepositories
         Task<List<TotalWeightByHourModel>> GetTotalWeightByHour(DateTime? RegistrationTime);
         Task<List<TotalWeightByHourModel>> GetTotalWeightByWeightGroup(DateTime? RegistrationTime);
         Task<List<TotalWeightByHourModel>> GetTotalWeightByTroughType(DateTime? RegistrationTime);
+        Task<List<CartoFactoryModel>> GetListRegisteredVehicle(CartoFactorySearchModel searchModel);
+
+        Task<List<CartoFactoryModel>> GetListVehicleProcessingIsLoading(CartoFactorySearchModel searchModel);
+        Task<List<CartoFactoryModel>> GetListVehicleWeighedInput(CartoFactorySearchModel searchModel);
+        Task<List<CartoFactoryModel>> GetListVehicleCarCallList(CartoFactorySearchModel searchModel);
+        Task<List<CartoFactoryModel>> GetListVehicleCallTheScale(CartoFactorySearchModel searchModel);
+        Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel);
     }
 }

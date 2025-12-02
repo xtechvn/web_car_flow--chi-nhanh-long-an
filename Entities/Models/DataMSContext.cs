@@ -23,6 +23,7 @@ namespace Entities.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
+        public virtual DbSet<TroughWeight> TroughWeights { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserDepart> UserDeparts { get; set; }
         public virtual DbSet<UserPosition> UserPositions { get; set; }
@@ -35,7 +36,7 @@ namespace Entities.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=103.163.216.41;Initial Catalog=Cargill;Persist Security Info=True;User ID=us;Password=us@585668;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Data Source=103.163.216.41;Initial Catalog=Cargill_LongAn;Persist Security Info=True;User ID=us;Password=us@585668;TrustServerCertificate=True");
             }
         }
 
@@ -162,35 +163,46 @@ namespace Entities.Models
                     .HasConstraintName("FK_RolePermission_Role");
             });
 
+            modelBuilder.Entity<TroughWeight>(entity =>
+            {
+                entity.ToTable("TroughWeight");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.VehicleTroughWeight).HasColumnType("decimal(8, 0)");
+            });
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Address).HasMaxLength(1000);
 
-                entity.Property(e => e.Address).HasMaxLength(500);
-
-                entity.Property(e => e.Avata).HasMaxLength(500);
+                entity.Property(e => e.Avata).HasMaxLength(1000);
 
                 entity.Property(e => e.BirthDay).HasColumnType("datetime");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
-                    .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
-                entity.Property(e => e.FullName).HasMaxLength(500);
+                entity.Property(e => e.FullName).HasMaxLength(1000);
 
                 entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.NickName).HasMaxLength(500);
+                entity.Property(e => e.NickName).HasMaxLength(1000);
 
-                entity.Property(e => e.Note).HasMaxLength(2500);
+                entity.Property(e => e.Note).HasMaxLength(4000);
 
                 entity.Property(e => e.Password)
-                    .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
@@ -199,12 +211,10 @@ namespace Entities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ResetPassword)
-                    .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UserName)
-                    .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
             });
@@ -240,19 +250,11 @@ namespace Entities.Models
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserRole_Role");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserRoles)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserRole_User");
             });
 
             modelBuilder.Entity<VehicleAudio>(entity =>
             {
                 entity.ToTable("VehicleAudio");
-
-                entity.HasIndex(e => new { e.OrderNumber, e.PlateNumber }, "IX_VehicleAudio_Order_Plate");
 
                 entity.Property(e => e.AudioPath)
                     .IsRequired()
@@ -271,6 +273,8 @@ namespace Entities.Models
             {
                 entity.ToTable("VehicleInspection");
 
+                entity.Property(e => e.AudioPath).HasMaxLength(500);
+
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CustomerName).HasMaxLength(500);
@@ -283,6 +287,8 @@ namespace Entities.Models
 
                 entity.Property(e => e.LicenseNumber).HasMaxLength(30);
 
+                entity.Property(e => e.Note).HasMaxLength(500);
+
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -292,6 +298,8 @@ namespace Entities.Models
                 entity.Property(e => e.TimeCallVehicleTroughTimeComeIn).HasColumnType("datetime");
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.VehicleArrivalDate).HasColumnType("datetime");
 
                 entity.Property(e => e.VehicleLoad).HasMaxLength(50);
 

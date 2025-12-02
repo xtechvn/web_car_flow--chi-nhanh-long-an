@@ -15,8 +15,10 @@ Repositories/bin/
 Repositories/obj/
 Utilities/bin/
 Utilities/obj/
-Web.Cargill.CMS/bin/
-Web.Cargill.CMS/obj/
+Web.CMS/bin/
+Web.CMS/obj/
+Web.Cargill.Api/bin/
+Web.Cargill.Api/obj/
 .vs
 App_Push_Consummer/bin/
 App_Push_Consummer/obj/

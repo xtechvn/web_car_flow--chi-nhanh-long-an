@@ -1,0 +1,66 @@
+﻿@using Entities.ViewModels.Car;
+@using Entities.Models;
+@{
+    Layout = null;
+    var AllCode = (List<AllCode>)ViewBag.AllCode;
+    var LoadingType = (List<AllCode>)ViewBag.LoadingType;
+}
+@model List<CartoFactoryModel>
+@if (Model != null && Model.Count > 0)
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Giờ đăng ký online</th>
+                <th>Tên khách hàng (Trại, đại lý)</th>
+                <th>Tên lái xe</th>
+                <th>Số điện thoại</th>
+                <th>Biển số xe</th>
+                <th>Tải trọng xe (kg)</th>
+                <th>Hoàn hảo/Trại</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody-@ViewBag.type">
+            @foreach (var item in Model)
+            {
+                <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
+                    <td>@item.RecordNumber</td>
+                    <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.DriverName</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>
+                        @item.VehicleNumber
+                    </td>
+                    <td>@item.VehicleLoad</td>
+                    <td>@item.LicenseNumber</td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+}
+else
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Giờ đăng ký online</th>
+                <th>Tên khách hàng (Trại, đại lý)</th>
+                <th>Tên lái xe</th>
+                <th>Số điện thoại</th>
+                <th>Biển số xe</th>
+                <th>Tải trọng xe (kg)</th>
+                <th>Hoàn hảo/Trại</th>
+               
+            </tr>
+        </thead>
+        <tbody id="dataBody-@ViewBag.type">
+        </tbody>
+    </table>
+}
+

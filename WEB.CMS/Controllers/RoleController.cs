@@ -5,9 +5,11 @@ using Newtonsoft.Json;
 using Repositories.IRepositories;
 using Repositories.Repositories;
 using Utilities;
+using WEB.CMS.Customize;
 
 namespace WEB.CMS.Controllers
 {
+    [CustomAuthorize]
     public class RoleController : Controller
     {
         private readonly IRoleRepository _RoleRepository;

@@ -23,6 +23,36 @@ namespace DAL
         {
             _DbWorker = new DbWorker(connection);
         }
+        public async Task<List<CartoFactoryModel>> GetListRegisteredVehicle(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListRegisteredVehicle, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }   
         public async Task<List<CartoFactoryModel>> GetListCartoFactory(CartoFactorySearchModel searchModel)
         {
             try
@@ -296,6 +326,156 @@ namespace DAL
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("CountTotalVehicleInspectionSynthetic - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleProcessingIsLoading(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleProcessingIsLoading, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleWeighedInput(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleWeighedInput, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleCarCallList(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleCarCallList, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleCallTheScale(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleCallTheScale, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@VehicleNumber", searchModel.VehicleNumber==null? DBNull.Value :searchModel.VehicleNumber),
+                    new SqlParameter("@PhoneNumber", searchModel.PhoneNumber==null? DBNull.Value :searchModel.PhoneNumber),
+                    new SqlParameter("@VehicleStatus", searchModel.VehicleStatus==null? DBNull.Value :searchModel.VehicleStatus),
+                    new SqlParameter("@LoadType", searchModel.LoadType==null? DBNull.Value :searchModel.LoadType),
+                    new SqlParameter("@VehicleWeighingType", searchModel.VehicleWeighingType==null? DBNull.Value :searchModel.VehicleWeighingType),
+                    new SqlParameter("@VehicleTroughStatus", searchModel.VehicleTroughStatus==null? DBNull.Value :searchModel.VehicleTroughStatus),
+                    new SqlParameter("@TroughType", searchModel.TroughType==null? DBNull.Value :searchModel.TroughType),
+                    new SqlParameter("@VehicleWeighingStatus", searchModel.VehicleWeighingStatus==null? DBNull.Value :searchModel.VehicleWeighingStatus),
+                    new SqlParameter("@LoadingStatus", searchModel.LoadingStatus==null? DBNull.Value :searchModel.LoadingStatus),
+                    new SqlParameter("@VehicleWeighedstatus", searchModel.VehicleWeighedstatus==null? DBNull.Value :searchModel.VehicleWeighedstatus),
+                    new SqlParameter("@RegisterDateOnline", searchModel.RegistrationTime==null? DBNull.Value :searchModel.RegistrationTime),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleListVehicles, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.ToList<CartoFactoryModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
             }
             return null;
         }

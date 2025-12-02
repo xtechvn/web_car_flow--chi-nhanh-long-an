@@ -42,5 +42,12 @@ namespace Utilities.Contants
         public static string SP_GetTotalWeightByHour = "SP_GetTotalWeightByHour";
         public static string SP_GetTotalWeightByTroughType = "SP_GetTotalWeightByTroughType";
         public static string SP_GetTotalWeightByWeightGroup = "SP_GetTotalWeightByWeightGroup";
+        public static string SP_GetListRegisteredVehicle = "SP_GetListRegisteredVehicle";
+
+        public static string SP_GetListVehicleProcessingIsLoading = "SP_GetListVehicleProcessingIsLoading";
+        public static string SP_GetListVehicleWeighedInput = "SP_GetListVehicleWeighedInput";
+        public static string SP_GetListVehicleCarCallList = "SP_GetListVehicleCarCallList";
+        public static string SP_GetListVehicleCallTheScale = "SP_GetListVehicleCallTheScale";
+        public static string SP_GetListVehicleListVehicles = "SP_GetListVehicleListVehicles";
     }
 }

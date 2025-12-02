@@ -11,21 +11,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilities;
+using Utilities.Contants;
 
 namespace Repositories.Repositories
 {
     public class VehicleInspectionRepository: IVehicleInspectionRepository
     {
         private readonly VehicleInspectionDAL _VehicleInspectionDAL;
+        private readonly AllCodeDAL _AllCodeDAL;
         public VehicleInspectionRepository(IOptions<DataBaseConfig> dataBaseConfig) {
             _VehicleInspectionDAL = new VehicleInspectionDAL(dataBaseConfig.Value.SqlServer.ConnectionString);
+            _AllCodeDAL = new AllCodeDAL(dataBaseConfig.Value.SqlServer.ConnectionString);
+        }
+        //danh sách xe đăng ký
+        public async Task<List<CartoFactoryModel>> GetListRegisteredVehicle(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListRegisteredVehicle(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListRegisteredVehicle - VehicleInspectionRepository: " + ex);
+            }
+            return null;
         }
         public async Task<List<CartoFactoryModel>> GetListCartoFactory(CartoFactorySearchModel searchModel)
         {
             try
             {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
                 var now = DateTime.Now;
-                var expireAt = new DateTime(now.Year, now.Month, now.Day, 17, 55, 0);
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
                 if (now >= expireAt)
                 {
                     searchModel.RegistrationTime = expireAt;
@@ -153,6 +193,151 @@ namespace Repositories.Repositories
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("GetTotalWeightByTroughType - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }
+  
+        public async Task<List<CartoFactoryModel>> GetListVehicleProcessingIsLoading(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListVehicleProcessingIsLoading(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListVehicleProcessingIsLoading - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleWeighedInput(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListVehicleWeighedInput(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListVehicleWeighedInput - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleCarCallList(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListVehicleCarCallList(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListVehicleCarCallList - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleCallTheScale(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListVehicleCallTheScale(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListVehicleCallTheScale - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }      public async Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel)
+        {
+            try
+            {
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                if (now >= expireAt)
+                {
+                    searchModel.RegistrationTime = expireAt;
+                }
+                else
+                {
+                    searchModel.RegistrationTime = expireAt.AddDays(-1);
+                }
+                return await _VehicleInspectionDAL.GetListVehicleListVehicles(searchModel);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListVehicleListVehicles - VehicleInspectionRepository: " + ex);
             }
             return null;
         }

@@ -33,10 +33,11 @@ namespace Entities.Models
         public DateTime? UpdatedDate { get; set; }
         public int? VehicleWeighingStatus { get; set; }
         public int? LoadingStatus { get; set; }
-        public int? LoadingType { get; set; }
         public int? VehicleWeighedstatus { get; set; }
         public DateTime? TimeCallVehicleTroughTimeComeIn { get; set; }
         public string AudioPath { get; set; }
+        public string Note { get; set; }
         public DateTime? VehicleArrivalDate { get; set; }
+        public int? LoadingType { get; set; }
     }
 }

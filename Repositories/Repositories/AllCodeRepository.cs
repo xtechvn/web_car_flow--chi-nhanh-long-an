@@ -178,5 +178,21 @@ namespace Repositories.Repositories
             }
             
         }
+        public async Task<long> UpdateResetTime(int Id,DateTime? time)
+        {
+            try
+            {
+                var entity = await _AllCodeDAL.GetById(Id);
+              
+                entity.UpdateTime = time;
+                await _AllCodeDAL.UpdateAsync(entity);
+                return Id;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("UpdateResetTime - AllCodeRepository" + ex);
+                return -1;
+            }
+        }
     }
 }

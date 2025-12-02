@@ -13,6 +13,7 @@ using WEB.CMS.Services;
 
 namespace WEB.CMS.Controllers
 {
+    [CustomAuthorize]
     public class UserController : Controller
     {
         private readonly IUserRepository _UserRepository;

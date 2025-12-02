@@ -137,7 +137,7 @@ namespace WEB.CMS.Controllers
                 ViewBag.AllCode = AllCode;
                 var AllCode2 = await _allCodeRepository.GetListSortByName(AllCodeType.LOAD_TYPE);
                 ViewBag.AllCode2 = AllCode2;
-                var data = await _vehicleInspectionRepository.GetListCartoFactory(SearchModel);
+                var data = await _vehicleInspectionRepository.GetListVehicleProcessingIsLoading(SearchModel);
                 return PartialView(data);
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace WEB.CMS.Controllers
                 ViewBag.AllCode = AllCode;
                 ViewBag.type = SearchModel.type;
                 ViewBag.LoadType = SearchModel.LoadType == null ? "" : SearchModel.LoadType;
-                var data = await _vehicleInspectionRepository.GetListCartoFactory(SearchModel);
+                var data = await _vehicleInspectionRepository.GetListVehicleCallTheScale(SearchModel);
                 return PartialView(data);
             }
             catch (Exception ex)
@@ -194,7 +194,7 @@ namespace WEB.CMS.Controllers
                 ViewBag.type = SearchModel.type;
                 var AllCode = await _allCodeRepository.GetListSortByName(AllCodeType.VEHICLEWEIGHEDSTATUS);
                 ViewBag.AllCode = AllCode;
-                var data = await _vehicleInspectionRepository.GetListCartoFactory(SearchModel);
+                var data = await _vehicleInspectionRepository.GetListVehicleWeighedInput(SearchModel);
                 if (data != null)
                 {
                     data = data.OrderBy(s => s.LoadType).ToList();
@@ -599,6 +599,37 @@ namespace WEB.CMS.Controllers
                 status = (int)ResponseType.ERROR,
                 msg = "cập nhật không thành công"
             });
+        }
+        //danh sách xe đang ký
+        public IActionResult RegisteredVehicle()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("WeighedInput - CarController: " + ex);
+            }
+            return View();
+        }
+        public async Task<IActionResult> ListRegisteredVehicle(CartoFactorySearchModel SearchModel)
+        {
+            try
+            {
+                ViewBag.type = SearchModel.type;//1 đã SL
+                var AllCode = await _allCodeRepository.GetListSortByName(AllCodeType.VEHICLE_STATUS);
+                var LoadingType = await _allCodeRepository.GetListSortByName(AllCodeType.Loading_Type);
+                ViewBag.AllCode = AllCode;
+                ViewBag.LoadingType = LoadingType;
+                var data = await _vehicleInspectionRepository.GetListRegisteredVehicle(SearchModel);
+                return PartialView(data);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("ListCartoFactory - CarController: " + ex);
+            }
+            return PartialView();
         }
     }
 }

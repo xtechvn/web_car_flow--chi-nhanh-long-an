@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.IRepositories;
 using Utilities.Contants;
+using WEB.CMS.Customize;
 
 namespace WEB.CMS.Controllers
 {
+    [CustomAuthorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _DepartmentRepository;
