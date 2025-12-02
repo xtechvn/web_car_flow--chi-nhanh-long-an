@@ -343,7 +343,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 $"📞 Hotline hỗ trợ: 1900-1234\n" +
                 $"🌐 Website: https://cargillhanam.com\n\n" +
                 $"Cảm ơn bạn đã sử dụng dịch vụ! ";
-                string url = "https://api-cargillhanam.adavigo.com/api/vehicleInspection/insert";
+                string url = "https://api-cargillhanam.adavigo.com/api/vehicleInspection/get-time-countdown";
                 var client = new HttpClient();
                 var request_api = new HttpRequestMessage(HttpMethod.Post, url);
                 request_api.Content = new StringContent(JsonConvert.SerializeObject(request), null, "application/json");

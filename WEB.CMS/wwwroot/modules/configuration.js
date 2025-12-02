@@ -23,7 +23,7 @@ var _configuration = {
             type: "post",
             data: { time: time, id: Id },
             success: function (result) {
-                if (result.status == 1) {
+                if (result.status == 0) {
                     _msgalert.success(result.msg);
                     setTimeout(function () { location.reload() }, 1000);
                 } else {

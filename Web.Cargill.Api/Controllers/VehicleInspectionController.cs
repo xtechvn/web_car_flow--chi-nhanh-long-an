@@ -1,8 +1,12 @@
 ﻿using B2B.Utilities.Common;
+using DAL;
 using Entities.ViewModels.Car;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using Newtonsoft.Json;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Repositories.IRepositories;
+using Repositories.Repositories;
 using Utilities.Contants;
 using Web.Cargill.Api.Services;
 
@@ -16,13 +20,15 @@ namespace Web.Cargill.Api.Controllers
         private readonly RedisConn redisService;
         private readonly IConfiguration _configuration;
         private readonly WorkQueueClient _workQueueClient;
-        public VehicleInspectionController(IVehicleInspectionRepository vehicleInspectionRepository, IConfiguration configuration)
+        private readonly IAllCodeRepository _allCodeRepository;
+        public VehicleInspectionController(IVehicleInspectionRepository vehicleInspectionRepository, IConfiguration configuration, IAllCodeRepository allCodeRepository)
         {
             _vehicleInspectionRepository = vehicleInspectionRepository;
             redisService = new RedisConn(configuration);
             redisService.Connect();
             _configuration = configuration;
             _workQueueClient = new WorkQueueClient(configuration);
+            _allCodeRepository = allCodeRepository;
 
         }
         [HttpPost("Insert")]
@@ -100,6 +106,38 @@ namespace Web.Cargill.Api.Controllers
                     status = (int)ResponseType.ERROR,
                     message = "đã xẩy ra lỗi vui lòng liên hệ IT",
 
+                });
+            }
+        }
+        [HttpGet("get-time-countdown")]
+        public async Task<IActionResult> GetTimeCountdown()
+        {
+            try
+            {
+                var TIME_RESET = await _allCodeRepository.GetListSortByName(AllCodeType.TIME_RESET);
+                if (TIME_RESET == null || TIME_RESET.Count == 0)
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.ERROR,
+                        message = "Chưa cấu hình thời gian đặt lại",
+                    });
+                }
+                return Ok(new
+                {
+                    status = (int)ResponseType.SUCCESS,
+                    message = "Upload audio thành công",
+                    data = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.ToString("dd/MM/yyyy HH:mm:ss") : ""
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetTimeCountdown - VehicleInspectionController API: " + ex);
+                return Ok(new
+                {
+                    status = (int)ResponseType.ERROR,
+                    message = "đã xẩy ra lỗi vui lòng liên hệ IT",
                 });
             }
         }

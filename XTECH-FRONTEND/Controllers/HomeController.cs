@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.ViewModels;
+using Google.Apis.Sheets.v4.Data;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Xml.Linq;
 using XTECH_FRONTEND.IRepositories;
+using XTECH_FRONTEND.Model;
 using XTECH_FRONTEND.Utilities;
 
 namespace XTECH_FRONTEND.Controllers
@@ -15,9 +20,24 @@ namespace XTECH_FRONTEND.Controllers
             _mongoService = mongoService;
         }
         // GET: /home/
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-           return View();           
+            var request = new CarRegistrationResponse();
+            string url = "http://localhost:5065/api/vehicleInspection/get-time-countdown";
+            var client = new HttpClient();
+            var request_api = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = await client.SendAsync(request_api);
+            if (response.IsSuccessStatusCode)
+            {
+                var text = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<ApiCountdownModel>(text);
+                ViewBag.Data = result.data;
+            }
+            else
+            {
+                LogHelper.InsertLogTelegram("Insert - lỗi ");
+            }
+            return View();           
         }
         public IActionResult ListData()
         {

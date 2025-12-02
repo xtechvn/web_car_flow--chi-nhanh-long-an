@@ -342,12 +342,12 @@
                 }
                 // Call API to register car
                 const response = await registerCar(plateNumber, phoneNumber, name, referee, GPLX, Camp);
-                
+
 
                 if (response.success) {
                     showSuccess(response.message);
                     updateOutput(response);
-                    
+
                     // Start countdown for next submission (15 minutes)
                     setTimeout(() => {
                         startCountdown(15);
@@ -460,9 +460,25 @@
             timerSection.style.display = 'block';
             submitBtn.disabled = true;
             submitBtn.textContent = 'VUI LÒNG ĐỢI...';
+
+            // --- Lấy giờ từ ViewBag.Data ---
+            // viewBagTime dạng: "02/12/2025 08:00:00"
+            const viewBagTime = "@ViewBag.Data";
+            const parts = viewBagTime.split(/[/ :]/);  // [dd, MM, yyyy, HH, mm, ss]
+
+            const today = new Date();
+
+            // target = hôm nay + giờ của ViewBag.Data
+            const target = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                parts[3],   // HH
+                parts[4],   // mm
+                parts[5]    // ss
+            );
+
             const now = new Date();
-            let target = new Date();
-            target.setHours(18, 0, 0, 0);
             let remaining = Math.floor((target - now) / 1000);
 
             const updateCountdown = () => {
@@ -475,10 +491,10 @@
                 }
 
                 countdown.textContent = formatTime2(remaining);
-                remaining -= 1; // Decrease by 1 second (1/60 minute)
+                remaining -= 1;
             };
 
-            updateCountdown(); // Initial call
+            updateCountdown();
             countdownTimer = setInterval(updateCountdown, 1000);
         }
         function formatTime2(diff) {
@@ -490,12 +506,29 @@
         }
         $(document).ready(function () {
             const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            console.log('Current time:', hours, minutes);
-            // Kiểm tra khoảng 17:55 đến 18:00
-            if (hours === 17 && minutes >= 55 ) {
+            console.log('Current time:', now.getHours(), now.getMinutes());
 
+            // Lấy datetime từ ViewBag.Data
+            const targetString = "@ViewBag.Data";   // ví dụ "02/12/2025 08:00:00"
+            const parts = targetString.split(/[/ :]/);  // [dd, MM, yyyy, HH, mm, ss]
+
+            // Lấy ngày hiện tại
+            const today = new Date();
+            // Tạo targetDate = hôm nay + giờ từ ViewBag.Data
+            const targetDate = new Date(
+                today.getFullYear(),     // yyyy hiện tại
+                today.getMonth(),        // MM hiện tại
+                today.getDate(),         // dd hiện tại
+                parts[3],                // HH từ ViewBag.Data
+                parts[4],                // mm từ ViewBag.Data
+                parts[5]                 // ss từ ViewBag.Data
+            )
+            // Trừ 5 phút
+            const checkTime = new Date(targetDate.getTime() - 5 * 60 * 1000);
+
+            console.log("CheckTime:", checkTime);
+            // Kiểm tra điều kiện
+            if (now >= checkTime) {
                 setTimeout(() => {
                     startCountdown17_18();
                 }, 1000);
@@ -503,9 +536,9 @@
                 return;
             }
         });
-      
-   
-  
+
+
+
     </script>
 
 </body>
