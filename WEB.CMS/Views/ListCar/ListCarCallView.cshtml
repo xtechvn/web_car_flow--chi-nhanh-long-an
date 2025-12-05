@@ -10,10 +10,39 @@
     .data-table td {
         white-space: unset !important;
     }
+
+    .icon-check {
+        cursor: pointer;
+        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M15.9422 1.06754L5.94223 11.0675C5.88418 11.1256 5.81525 11.1717 5.73938 11.2032C5.66351 11.2347 5.58218 11.2508 5.50004 11.2508C5.41791 11.2508 5.33658 11.2347 5.2607 11.2032C5.18483 11.1717 5.1159 11.1256 5.05785 11.0675L0.682855 6.69254C0.565579 6.57526 0.499695 6.4162 0.499695 6.25035C0.499695 6.0845 0.565579 5.92544 0.682855 5.80816C0.80013 5.69088 0.95919 5.625 1.12504 5.625C1.29089 5.625 1.44995 5.69088 1.56723 5.80816L5.50004 9.74175L15.0579 0.18316C15.1751 0.0658843 15.3342 -1.2357e-09 15.5 0C15.6659 1.2357e-09 15.825 0.0658843 15.9422 0.18316C16.0595 0.300435 16.1254 0.459495 16.1254 0.625347C16.1254 0.7912 16.0595 0.95026 15.9422 1.06754Z" fill="%233A8245"/></svg>')
+    }
+
+    .icon-cancel {
+        cursor: pointer;
+        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.41421 6L11.7071 1.70711C12.0976 1.31658 12.0976 0.683417 11.7071 0.292893C11.3166 -0.0976311 10.6834 -0.0976311 10.2929 0.292893L6 4.58579L1.70711 0.292893C1.31658 -0.0976311 0.683417 -0.0976311 0.292893 0.292893C-0.0976311 0.683417 -0.0976311 1.31658 0.292893 1.70711L4.58579 6L0.292893 10.2929C-0.0976311 10.6834 -0.0976311 11.3166 0.292893 11.7071C0.683417 12.0976 1.31658 12.0976 1.70711 11.7071L6 7.41421L10.2929 11.7071C10.6834 12.0976 11.3166 12.0976 11.7071 11.7071C12.0976 11.3166 12.0976 10.6834 11.7071 10.2929L7.41421 6Z" fill="%23FF0000"/></svg>');
+    }
+
+    .td-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px; /* khoảng cách giữa input và icon */
+    }
+
+        .td-inline .weight {
+            width: 80px;
+        }
+
+        .td-inline i {
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+    .data-table input {
+        width: 80% !important;
+    }
 </style>
 @if (Model != null && Model.Count > 0)
 {
-    <table class="data-table">
+    <table class="data-table" id="ListCarCall-@ViewBag.type">
         <thead>
             <tr>
                 <th>STT</th>
@@ -29,47 +58,74 @@
         <tbody id="dataBody-@ViewBag.type">
             @foreach (var item in Model)
             {
-                <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="@(item.VehicleTroughStatus == 4 ?"background:antiquewhite;": "" )">
-                    <td>@item.RecordNumber</td>
-                    <td>@item.CustomerName</td>
-                    <td>@item.DriverName</td>
-                    <td>
-                        <a class="btn-detail"
-                           data-id="@item.Id" style="cursor:pointer">@item.VehicleNumber</a>
-                    </td>
-                    <td>
-                        @(((DateTime)item.VehicleWeighingTimeComeOut).ToString("HH:mm dd/MM/yyyy"))
-                    </td>
+                if (item.ListTroughWeight != null && item.ListTroughWeight.Count > 0)
+                {
+                    foreach (var TroughWeight in item.ListTroughWeight)
+                    {
+                        <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="@(item.VehicleTroughStatus == 4 ?"background:antiquewhite;": "" )">
 
-                    <td>
-                        <div class="status-dropdown">
-                            <button class="dropdown-toggle  @(ViewBag.type == 1 ? "disabled" : "")"
-                                    data-type="1"
-                                    data-options='[
+                            <td>@item.RecordNumber</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.DriverName</td>
+                            <td>
+                                <a class="btn-detail"
+                                   data-id="@item.Id" style="cursor:pointer">@item.VehicleNumber</a>
+                            </td>
+                            <td>
+                                @(((DateTime)item.VehicleWeighingTimeComeOut).ToString("HH:mm dd/MM/yyyy"))
+                            </td>
+
+                            <td>
+                                <div class="status-dropdown">
+                                    @if (TroughWeight.VehicleTroughWeight == null || TroughWeight.VehicleTroughWeight <= 0)
+                                    {
+                                        <button class="dropdown-toggle  @(ViewBag.type == 1 ? "disabled" : "") @(TroughWeight.VehicleTroughWeight==null||TroughWeight.VehicleTroughWeight <= 0 ? "CartoFactory_"+item.Id+"_troughWeight" : "")"
+                                                data-type="1"
+                                                data-options='[
                             @foreach (var allcode in AllCode2)
                             {
                                 @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
                             }
                 ]'
-                                    @(ViewBag.type == 1 ? "disabled" : "")>
-                                @item.TroughTypeName
-                            </button>
-
-                        </div>
-                    </td>
-                    <td>
-                        <input type="text"
-                               class="input-form weight @(ViewBag.type == 1 ? "disabled" : "")"
-                               maxlength="8"
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
-                               value="@(item.VehicleTroughWeight > 0 ? item.VehicleTroughWeight.ToString() : "")"
-                               placeholder="Vui lòng nhập" @(ViewBag.type == 1 ? "disabled" : "") />
+                                                @(ViewBag.type == 1 ? "disabled" : "")>
+                                            @TroughWeight.TroughType
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <p style="font-size:13px!important">Máng @TroughWeight.TroughType</p>
 
 
-                    </td>
-                    <td>
-                        <div class="status-dropdown">
-                            <button class="dropdown-toggle" data-options='[
+                                    }
+
+
+                                </div>
+                            </td>
+                            <td>
+                                <input class="TroughWeightId" id="TroughWeightId_@item.Id" value="@TroughWeight.Id" style="display:none;" />
+                                <input type="text"
+                                       class="input-form CartoFactory_TroughWeight @(ViewBag.type == 1 ? "disabled" : "") @(TroughWeight.VehicleTroughWeight==null||TroughWeight.VehicleTroughWeight <= 0 ? "weight CartoFactory_"+item.Id+"_weight" : "")"
+                                       maxlength="8"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
+                                       value="@(TroughWeight.VehicleTroughWeight > 0 ? TroughWeight.VehicleTroughWeight.ToString() : "")"
+                                       placeholder="Vui lòng nhập" @(ViewBag.type == 1 ? "disabled" : "") />
+                                @if ((TroughWeight.VehicleTroughWeight != null || TroughWeight.VehicleTroughWeight > 0 )&& ViewBag.type == 0)
+                                {
+                                    @*<a class="cursor-pointer edit-time" title="Chỉnh sửa">
+                                            <i class="icon-edit"></i>
+                                        </a>*@
+                                    <a class="cursor-pointer check-troughWeight" title="Lưu" style="margin-left: 6px;">
+                                        <i class="icon-check"></i>
+                                    </a>
+                                    <a class="cursor-pointer cancel-troughWeight" title="Hủy thao tác">
+                                        <i class="icon-cancel"></i>
+                                    </a>
+                                }
+
+                            </td>
+                            <td>
+                                <div class="status-dropdown">
+                                    <button class="dropdown-toggle" data-options='[
                             @foreach (var allcode in AllCode)
                             {
 
@@ -77,11 +133,15 @@
 
                             }
                                                         ]'>
-                                @item.VehicleTroughStatusName
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                                        @item.VehicleTroughStatusName
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                }
+
             }
 
         </tbody>
@@ -89,7 +149,7 @@
 }
 else
 {
-    <table class="data-table">
+    <table class="data-table" id="ListCarCall-@ViewBag.type">
         <thead>
             <tr>
                 <th>STT</th>
@@ -106,5 +166,12 @@ else
         </tbody>
     </table>
 }
+
+
+<script>
+
+ // Gộp cột 0,1,2 nếu cột 0-4 giống nhau
+    _cartcalllist.autoRowspanWithCondition("ListCarCall-" +@ViewBag.type, [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+</script>
 
 

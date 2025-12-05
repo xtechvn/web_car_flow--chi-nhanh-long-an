@@ -102,7 +102,7 @@
 
         // Nếu tràn dưới -> bật drop-up (hiển thị phía trên button)
         if (top + menuHeight > winHeight) {
-           top = menuHeight;
+            top = menuHeight;
             $menu.addClass('drop-up');
         } else {
             $menu.removeClass('drop-up');
@@ -173,10 +173,13 @@
                                         $('#dataBody-1').find('.CartoFactory_' + id).remove();
                                     }
                                 }
-
-                                // 🔥 Sau khi update → reload lại dữ liệu cả 2 bảng
-                                //_cartcalllist.ListCartoFactory();
-                                //_cartcalllist.ListCartoFactory_Da_SL();
+                                if ($currentBtn != null)
+                                $currentBtn
+                                    .text(text)
+                                    .removeClass(function (_, old) {
+                                        return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                    })
+                                    .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
 
                             } else {
                                 _msgalert.error(result.msg);
@@ -188,22 +191,22 @@
                         }
 
                     });
-                    if (status_type == 0) {
-                        $currentBtn
-                            .text(text)
-                            .removeClass(function (_, old) {
-                                return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
-                            })
-                            .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
-                    }
-                    connection.invoke("BroadcastUpdateMang", val_TT, "Đang xử lý")
-                        .catch(err => console.error(err.toString()));
+                    //if (status_type == 0) {
+                    //    $currentBtn
+                    //        .text(text)
+                    //        .removeClass(function (_, old) {
+                    //            return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                    //        })
+                    //        .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
+                    //}
+                   
                 } else {
-                    var weight = $row.find('input.weight').val() || 0;
+                    var weight = $('.CartoFactory_' + id_row).find('input.weight').val() || 0;
                     var note = null;
+                    var text_type = $('.CartoFactory_' + id_row +'_troughWeight').text().trim();
 
                     // 👉 Nếu chọn Hoàn thành mà chưa nhập trọng lượng → hiển thị input phụ
-                    if (val_TT == 0 && (weight == 0 || weight === "")) {
+                    if ((val_TT == 0 || val_TT == 5) && text_type !='' && (weight == 0 || weight === "")) {
                         if ($menu.find(".extra-weight").length === 0) {
                             let $extra = $('<div class="extra-weight" style="margin:10px 0;">' +
                                 '<input type="number" class="weight-input" ' +
@@ -243,9 +246,9 @@
                                 alert("Vui lòng nhập lý do!");
                                 return;
                             }
-                           
+
                         }
-                    
+
                     }
                     // ✅ Gọi API update
                     var status_type = 0;
@@ -266,10 +269,14 @@
                                         $('#dataBody-1').find('.CartoFactory_' + id).remove();
                                     }
                                 }
-
-                                // 🔥 Sau khi update → reload lại dữ liệu cả 2 bảng
-                                //_cartcalllist.ListCartoFactory();
-                                //_cartcalllist.ListCartoFactory_Da_SL();
+                                if ($currentBtn != null)
+                                $currentBtn
+                                    .text(text)
+                                    .removeClass(function (_, old) {
+                                        return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                    })
+                                    .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
+                                
 
                             } else {
                                 _msgalert.error(result.msg);
@@ -281,15 +288,15 @@
                         }
 
                     });
-                  
-                    if (status_type == 0) {
-                        $currentBtn
-                            .text(text)
-                            .removeClass(function (_, old) {
-                                return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
-                            })
-                            .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
-                    }
+
+                    //if (status_type == 0) {
+                    //    $currentBtn
+                    //        .text(text)
+                    //        .removeClass(function (_, old) {
+                    //            return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                    //        })
+                    //        .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
+                    //}
 
                     // ✅ xử lý máng trống / đang xử lý
                     if (val_TT == 0) {
@@ -340,7 +347,7 @@
                                     .removeClass("empty").addClass("processing");
                             }
                         }
-                       
+
                     }
                 }
             }
@@ -380,6 +387,7 @@
         // Add more objects as needed
     ];
     const AllCode2 = [
+        { Description: "Ngắt máng", CodeValue: "5" },
         { Description: "Bỏ lượt", CodeValue: "4" },
         { Description: "Blank", CodeValue: "3" },
         { Description: "Đang xếp hàng", CodeValue: "2" },
@@ -407,7 +415,27 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
-        return `
+        var html = ``;
+        if (item.listTroughWeight != null) {
+            for (var itemTroughWeight = 0; itemTroughWeight < item.listTroughWeight.length; itemTroughWeight++) {
+
+                var html_input = ` <div class="status-dropdown">
+            ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? "" : ""}
+                <button class="dropdown-toggle ${isProcessed ? "disabled" : ""} ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? "CartoFactory_" + item.id + "_troughWeight" : ""}"
+                        data-type="1"
+                        data-options='${jsonString}'
+                        ${isProcessed ? "disabled" : ""}>
+                  Máng  ${item.listTroughWeight[itemTroughWeight].troughType || ""}
+                </button>
+            </div>`
+                var html_div = ` <div class="status-dropdown"> <p style="font-size:13px!important">Máng ${item.listTroughWeight[itemTroughWeight].troughType || ""}</p></div>`
+                var html_icon = `  <a class="cursor-pointer check-troughWeight" title="Lưu" style="margin-left: 6px;">
+                                        <i class="icon-check"></i>
+                                    </a>
+                                    <a class="cursor-pointer cancel-troughWeight" title="Hủy thao tác">
+                                        <i class="icon-cancel"></i>
+                                    </a>`
+                html += `
     <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}">
         <td>${item.recordNumber}</td>
         <td>${item.customerName}</td>
@@ -416,21 +444,16 @@
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
         <td>
-            <div class="status-dropdown">
-                <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}"
-                        data-type="1"
-                        data-options='${jsonString}'
-                        ${isProcessed ? "disabled" : ""}>
-                    ${item.troughTypeName || ""}
-                </button>
-            </div>
+           ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? html_div : html_input}
         </td>
       <td>
+        <input class="TroughWeightId" id="TroughWeightId_${item.id}.Id" value="${item.listTroughWeight[itemTroughWeight].id}" style="display:none;" />
         <input type="text"
-               class="input-form weight"
-               value="${item.vehicleTroughWeight > 0 ? item.vehicleTroughWeight : ""}"
+               class="input-form  ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? " CartoFactory_" + item.id + "_weight" : "weight"}"
+               value="${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? item.listTroughWeight[itemTroughWeight].vehicleTroughWeight : ""}"
                placeholder="Vui lòng nhập"
                ${isProcessed ? "disabled" : ""} />
+                ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 && isProcessed == false ? html_icon : ""}
     </td>
         <td>
             <div class="status-dropdown">
@@ -440,51 +463,55 @@
                 </button>
             </div>
         </td>
-    </tr>`;
+    </tr>`
+            }
+        }
+
+        return html;
     }
-    function renderRow(item, isProcessed) {
-        var date = new Date(item.vehicleWeighingTimeComeOut);
-        let formatted =
-            String(date.getHours()).padStart(2, '0') + ":" +
-            String(date.getMinutes()).padStart(2, '0') + " " +
-            String(date.getDate()).padStart(2, '0') + "/" +
-            String(date.getMonth() + 1).padStart(2, '0') + "/" +
-            date.getFullYear();
-        return `
-    <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}">
-        <td>${item.recordNumber}</td>
-        <td>${item.customerName}</td>
-        <td>${item.driverName}</td>
-        <td><a class="btn-detail"
-                           data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
-        <td>${formatted || ""}</td>
-        <td>
-            <div class="status-dropdown">
-                <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}"
-                        data-type="1"
-                        data-options='${jsonString}'
-                        ${isProcessed ? "disabled" : ""}>
-                    ${item.troughTypeName || ""}
-                </button>
-            </div>
-        </td>
-      <td>
-        <input type="text"
-               class="input-form weight"
-               value="${item.vehicleTroughWeight > 0 ? item.vehicleTroughWeight : ""}"
-               placeholder="Vui lòng nhập"
-               ${isProcessed ? "disabled" : ""} />
-    </td>
-        <td>
-            <div class="status-dropdown">
-                <button class="dropdown-toggle"
-                        data-options='${jsonString2}'>
-                    ${item.vehicleTroughStatusName || ""}
-                </button>
-            </div>
-        </td>
-    </tr>`;
-    }
+    //function renderRow(item, isProcessed) {
+    //    var date = new Date(item.vehicleWeighingTimeComeOut);
+    //    let formatted =
+    //        String(date.getHours()).padStart(2, '0') + ":" +
+    //        String(date.getMinutes()).padStart(2, '0') + " " +
+    //        String(date.getDate()).padStart(2, '0') + "/" +
+    //        String(date.getMonth() + 1).padStart(2, '0') + "/" +
+    //        date.getFullYear();
+    //    return `
+    //<tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}">
+    //    <td>${item.recordNumber}</td>
+    //    <td>${item.customerName}</td>
+    //    <td>${item.driverName}</td>
+    //    <td><a class="btn-detail"
+    //                       data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
+    //    <td>${formatted || ""}</td>
+    //    <td>
+    //        <div class="status-dropdown">
+    //            <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}"
+    //                    data-type="1"
+    //                    data-options='${jsonString}'
+    //                    ${isProcessed ? "disabled" : ""}>
+    //                ${item.troughTypeName || ""}
+    //            </button>
+    //        </div>
+    //    </td>
+    //  <td>
+    //    <input type="text"
+    //           class="input-form weight"
+    //           value="${item.vehicleTroughWeight > 0 ? item.vehicleTroughWeight : ""}"
+    //           placeholder="Vui lòng nhập"
+    //           ${isProcessed ? "disabled" : ""} />
+    //</td>
+    //    <td>
+    //        <div class="status-dropdown">
+    //            <button class="dropdown-toggle"
+    //                    data-options='${jsonString2}'>
+    //                ${item.vehicleTroughStatusName || ""}
+    //            </button>
+    //        </div>
+    //    </td>
+    //</tr>`;
+    //}
     function renderRow_Bo_luot(item, isProcessed) {
         var date = new Date(item.vehicleWeighingTimeComeOut);
         let formatted =
@@ -622,12 +649,14 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
     });
     connection.on("ListCarCall_Bo_LUOT", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow_Bo_luot(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
     });
     // Nhận data từ server (SignalR)
     connection.on("UpdateMangStatus", function (oldMangId, newMangId, carId) {
@@ -666,6 +695,8 @@
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable(); // sắp xếp lại ngay khi thêm
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.initMangStatus();
     });
 
     // Nhận data mới từ gọi xe cân đầu vào
@@ -673,6 +704,7 @@
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable();
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
     });
     connection.on("ListWeighedInput", function (item) {
         $('#dataBody-0').find('.CartoFactory_' + item.id).remove();
@@ -685,6 +717,7 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
     });
 
     connection.onreconnecting(error => {
@@ -697,6 +730,23 @@
 
     connection.onclose(error => {
         console.error("❌ Kết nối bị đóng.", error);
+    });
+    $(document).on('click', '.check-troughWeight', function (e) {
+        var element = $(this);
+        var TroughWeightId = element.closest('tr').find('input.TroughWeightId').val();
+        var weight_TroughWeightId = element.closest('td').find('input.weight').val();
+        _cartcalllist.UpdateTroughWeight(TroughWeightId, weight_TroughWeightId);
+    });
+    $(document).on('click', '.cancel-troughWeight', function (e) {
+        var element = $(this);
+        var TroughWeightId = element.closest('tr').find('input.TroughWeightId').val();
+        _cartcalllist.CancelTroughWeight(TroughWeightId, element);
+    });
+    $(document).on('change', '.CartoFactory_TroughWeight', function () {
+        var element = $(this);
+        element.addClass('weight');
+
+        // Gọi ajax hoặc function bạn cần
     });
 });
 var _cartcalllist = {
@@ -711,7 +761,7 @@ var _cartcalllist = {
             let stillHasCar = $("#dataBody-0 tr, #dataBody-1 tr").toArray().some(tr => {
                 let btnText = $(tr).find("button[data-type='1']").text().trim();
                 let trangThai = $(tr).find("td:last .dropdown-toggle").text().trim();
-                return btnText === mangName && trangThai !== "Hoàn thành" && trangThai !== "Bỏ lượt" ;
+                return btnText === mangName && trangThai !== "Hoàn thành" && trangThai !== "Bỏ lượt";
             });
 
             if (stillHasCar) {
@@ -832,6 +882,91 @@ var _cartcalllist = {
 
         });
         return await status_type;
-    }
+    },
+    autoRowspanWithCondition: function (tableId, colIndexes, compareCols) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+
+        const rows = Array.from(table.querySelectorAll("tbody tr"));
+
+        // Khởi tạo object lưu text các cột compare của hàng trước
+        let prevRowCompareText = {};
+
+        colIndexes.forEach(colIndex => {
+            let prevCell = null;
+            let prevText = "";
+            let span = 1;
+
+            rows.forEach(row => {
+                const cell = row.cells[colIndex];
+                if (!cell) return;
+
+                // Lấy text sạch
+                const text = cell.innerText.replace(/\s+/g, ' ').trim();
+
+                // Kiểm tra điều kiện các cột compareCols có giống nhau
+                const sameAll = compareCols.every(c => {
+                    const compareCell = row.cells[c];
+                    if (!compareCell) return false;
+                    const compareText = compareCell.innerText.replace(/\s+/g, ' ').trim();
+                    return compareText === prevRowCompareText[c];
+                });
+
+                if (text === prevText && sameAll) {
+                    span++;
+                    prevCell.rowSpan = span;
+                    cell.style.display = "none"; // ẩn ô trùng
+                } else {
+                    prevText = text;
+                    prevCell = cell;
+                    span = 1;
+
+                    // Lưu text của các cột so sánh cho hàng này
+                    compareCols.forEach(c => {
+                        const compareCell = row.cells[c];
+                        prevRowCompareText[c] = compareCell ? compareCell.innerText.replace(/\s+/g, ' ').trim() : '';
+                    });
+                }
+            });
+        });
+    },
+    UpdateTroughWeight: function (id, weight_TroughWeightId) {
+       
+        $.ajax({
+            url: "/Car/UpdateTroughWeight",
+            type: "post",
+            data: { id: id, VehicleTroughWeight: weight_TroughWeightId },
+            success: function (result) {
+                if (result.status == 0) {
+                    _msgalert.success(result.msg);
+                } else {
+                    _msgalert.error(result.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+            }
+        });
+    },
+    CancelTroughWeight: function (id, element) {
+
+        $.ajax({
+            url: "/Car/CancelTroughWeight",
+            type: "post",
+            data: { id: id},
+            success: function (result) {
+                if (result.status == 0) {
+                    element.closest('td').find('input.weight').val(result.data);
+                    element.closest('td').find('input.weight').removeClass("weight");
+                    _msgalert.success(result.msg);
+                } else {
+                    _msgalert.error(result.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+            }
+        });
+    },
 
 }

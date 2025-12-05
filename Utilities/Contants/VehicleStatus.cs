@@ -37,6 +37,7 @@
         Da_goi = 1,
         Boc_Hang = 2,
         Bo_Luot = 4,
+        Ngat_mang = 5,
       
     }
 }

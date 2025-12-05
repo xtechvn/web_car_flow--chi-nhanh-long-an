@@ -39,5 +39,6 @@ namespace Entities.Models
         public string Note { get; set; }
         public DateTime? VehicleArrivalDate { get; set; }
         public int? LoadingType { get; set; }
+        public DateTime? ProcessingIsLoadingDate { get; set; }
     }
 }

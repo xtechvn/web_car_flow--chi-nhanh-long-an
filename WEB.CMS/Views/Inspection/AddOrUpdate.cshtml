@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+
+}
+@using Entities.Models
+@using Entities.ViewModels
+@model InspectionModel
+
+<form id="form_inspection" onsubmit="return false">
+    @if (Model == null)
+    {
+        <input type="hidden" id="Id" value="0" />
+        <div class="form-grid">
+            <!-- Họ tên -->
+            <div class="form-group">
+                <label>Biển số xe <span>*</span></label>
+                <input type="text" id="VehicleNumber" name="VehicleNumber" placeholder="Nhập tên menu">
+            </div>
+
+            <!-- Ngày sinh -->
+            <div class="form-group">
+                <label>Trọng lượng(Kg)<span>*</span></label>
+                <input type="text" id="VehicleWeight" name="VehicleWeight" />
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label>Ngày đăng kiểm<span>*</span></label>
+                <input  type="date" id="InspectionDate" name="InspectionDate">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Ngày hết hạn đăng kiểm<span>*</span></label>
+                <input  type="date" id="ExpirationDate" name="ExpirationDate">
+            </div>
+
+        </div>
+        <div class="actions">
+            <button class="cancel">Bỏ qua</button>
+            <button class="confirm" onclick="_inspection.OnSave()">Thêm mới</button>
+        </div>
+    }
+    else
+    {
+
+        <input type="hidden" id="Id" value="@Model.Id" />
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Biển số xe <span>*</span></label>
+                <input type="text" style="background:#69696945" id="VehicleNumber" name="VehicleNumber" placeholder="Nhập tên menu" value="@Model.VehicleNumber" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Trọng lượng(Kg)<span>*</span></label>
+                <input type="text" id="VehicleWeight" name="VehicleWeight" value="@(((decimal)Model.VehicleWeight).ToString("N0"))" />
+            </div>
+
+            <div class="form-group">
+                <label>Ngày đăng kiểm<span>*</span></label>
+                <input type="date" id="InspectionDate" name="InspectionDate" value="@Model.InspectionDate.Value.ToString("yyyy-MM-dd")">
+            </div>
+
+            <div class="form-group">
+                <label>Ngày hết hạn đăng kiểm<span>*</span></label>
+                <input type="date" id="ExpirationDate" name="ExpirationDate" value="@Model.ExpirationDate.Value.ToString("yyyy-MM-dd")">
+            </div>
+
+        </div>
+        <div class="actions">
+            <button class="cancel">Bỏ qua</button>
+            <button class="confirm" onclick="_inspection.OnSave()">Cập nhật</button>
+        </div>
+      
+    }
+
+</form>
+

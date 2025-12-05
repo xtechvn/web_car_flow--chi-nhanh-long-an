@@ -18,6 +18,7 @@ namespace Entities.Models
 
         public virtual DbSet<AllCode> AllCodes { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Inspection> Inspections { get; set; }
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<MenuPermission> MenuPermissions { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
@@ -81,6 +82,21 @@ namespace Entities.Models
                 entity.Property(e => e.IsReport).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Inspection>(entity =>
+            {
+                entity.ToTable("Inspection");
+
+                entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.InspectionDate).HasColumnType("datetime");
+
+                entity.Property(e => e.VehicleNumber)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.VehicleWeight).HasColumnType("decimal(10, 2)");
             });
 
             modelBuilder.Entity<Menu>(entity =>
@@ -292,6 +308,8 @@ namespace Entities.Models
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.Property(e => e.ProcessingIsLoadingDate).HasColumnType("datetime");
 
                 entity.Property(e => e.RegisterDateOnline).HasColumnType("datetime");
 

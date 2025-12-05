@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 using Repositories.IRepositories;
 using Repositories.Repositories;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities;
 using Utilities.Contants;
@@ -60,6 +61,26 @@ namespace WEB.CMS.Controllers
                 var data = await _vehicleInspectionRepository.GetListVehicleCarCallList(SearchModel);
                 if (data != null && data.Count > 0)
                     data = data.OrderBy(x => x.VehicleWeighingTimeComeOut).ToList();
+                if (data != null && data.Count > 0)
+                {
+                    foreach (var item in data)
+                    {
+                        item.ListTroughWeight = await _vehicleInspectionRepository.GetListTroughWeightByVehicleInspectionId(item.Id);
+                        if ((item.ListTroughWeight == null || item.VehicleTroughStatus != (int)VehicleTroughStatus.Blank ||item.VehicleTroughStatus != (int)VehicleTroughStatus.Bo_Luot) && SearchModel.type == 0 )
+                        {
+                            if (item.ListTroughWeight == null)
+                            {
+                                var list = new List<TroughWeight>();
+                                var detail = new TroughWeight();
+                                list.Add(detail);
+                                item.ListTroughWeight= list;
+                            } 
+                            else
+                                item.ListTroughWeight.Add(new TroughWeight());
+                        }
+                    }
+                }
+
                 return PartialView(data);
             }
             catch (Exception ex)

@@ -21,6 +21,7 @@ namespace Entities.ViewModels.Car
         public int? LoadingStatus { get; set; }           // Trạng sử lý đang tải
         public int? VehicleWeighedstatus { get; set; }    // Trạng thái xe đã được cân đầu vào
         public DateTime? RegistrationTime { get; set; } // Thời gian đăng ký
+
     }
     public class RegistrationRecord
     {

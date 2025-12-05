@@ -225,15 +225,17 @@
     const jsonString2 = JSON.stringify(options2);
     // Hàm render row
     function renderRow(item) {
-
+        var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
+                                        <i class="icon-edit"></i>
+                                    </a>`
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}"  style="background: ${item.trangThai == 1 || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
-            <td>${item.vehicleNumber}</td>
+            <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
             <td>${item.vehicleLoad}</td>
             <td>${item.licenseNumber}</td>
             <td>${item.vehicleStatusName}</td>

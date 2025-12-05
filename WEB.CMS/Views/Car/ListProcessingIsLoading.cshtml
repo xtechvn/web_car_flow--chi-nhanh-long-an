@@ -20,7 +20,7 @@
                 <th>Tải trọng xe (kg)</th>
                 <th>Hoàn hảo/Trại</th>
                 <th>TT xe có mặt</th>
-               
+
                 <th>Nhóm tài</th>
                 <th>Tình trạng</th>
             </tr>
@@ -28,35 +28,44 @@
         <tbody id="dataBody-@ViewBag.type">
             @foreach (var item in Model)
             {
-                <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
-                    <td>@item.RecordNumber</td>
-                    <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
-                    <td>@item.CustomerName</td>
-                    <td>@item.DriverName</td>
-                    <td>@item.PhoneNumber</td>
-                    <td>
-                        @item.VehicleNumber
-                    </td>
-                    <td>@item.VehicleLoad</td>
-                    <td>@item.LicenseNumber</td>
-                    <td>@item.VehicleStatusName</td>             
-                    <td>
-                        @if (ViewBag.type == 1)
+                switch (item.TrangThai)
+                {
+                    case 1:
                         {
-                            <div class="">
-                                <p class="  Vehicle-Status" data-type="1">
-                                    @item.LoadTypeName
-                                </p>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="status-dropdown">
-                                <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
-                                @foreach (var allcode in AllCode2)
-                                {
-                                    if (allcode.CodeValue == 0)
+                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="background: red;">
+                                <td>
+                                    @item.RecordNumber 
+                                </td>
+                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.DriverName</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>
+                                    @item.VehicleNumber
+                                    <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
+                                        <i class="icon-edit"></i>
+                                    </a>
+                                </td>
+                                <td>@item.VehicleLoad</td>
+                                <td>@item.LicenseNumber</td>
+                                <td>@item.VehicleStatusName</td>
+                                <td>
+                                    @if (ViewBag.type == 1)
                                     {
+                                        <div class="">
+                                            <p class="  Vehicle-Status" data-type="1">
+                                                @item.LoadTypeName
+                                            </p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="status-dropdown">
+                                            <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
+                                @foreach (var allcode in AllCode2)
+            {
+                if (allcode.CodeValue == 0)
+                {
                                         @:{"text":"@allcode.Description","class":"status-green","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
 
                                     }
@@ -69,14 +78,14 @@
 
                                     }
                                                                     ]'>
-                                    @item.LoadTypeName
-                                </button>
-                            </div>
-                        }
-                    </td>
-                    <td>
-                        <div class="status-dropdown">
-                            <button class="dropdown-toggle " data-options='[
+                                                @item.LoadTypeName
+                                            </button>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="status-dropdown">
+                                        <button class="dropdown-toggle " data-options='[
                             @foreach (var allcode in AllCode)
                             {
 
@@ -84,11 +93,152 @@
 
                             }
                                                         ]'>
-                                @item.LoadingStatusName
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                                            @item.LoadingStatusName
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        break;
+                    case 2:
+                        {
+                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber"  style="background: red;">
+                                <td>
+                                    @item.RecordNumber
+                                </td>
+                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.DriverName</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>
+                                    @item.VehicleNumber
+                                    <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(@item.Id)" title="Chỉnh sửa">
+                                        <i class="icon-edit"></i>
+                                    </a>
+                                </td>
+                                <td>@item.VehicleLoad</td>
+                                <td>@item.LicenseNumber</td>
+                                <td>@item.VehicleStatusName</td>
+                                <td>
+                                    @if (ViewBag.type == 1)
+                                    {
+                                        <div class="">
+                                            <p class="  Vehicle-Status" data-type="1">
+                                                @item.LoadTypeName
+                                            </p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="status-dropdown">
+                                            <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
+                                @foreach (var allcode in AllCode2)
+            {
+                if (allcode.CodeValue == 0)
+                {
+                                        @:{"text":"@allcode.Description","class":"status-green","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
+                                    }
+                                    else
+                                    {
+                                        @:{"text":"@allcode.Description","class":"status-normal","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
+                                    }
+
+
+                                    }
+                                                                    ]'>
+                                                @item.LoadTypeName
+                                            </button>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="status-dropdown">
+                                        <button class="dropdown-toggle " data-options='[
+                            @foreach (var allcode in AllCode)
+                            {
+
+                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
+
+                            }
+                                                        ]'>
+                                            @item.LoadingStatusName
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        break;
+
+                    case 4:
+                    case 3:
+                        {
+                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
+                                <td>@item.RecordNumber</td>
+                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.DriverName</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>
+                                    @item.VehicleNumber
+                                </td>
+                                <td>@item.VehicleLoad</td>
+                                <td>@item.LicenseNumber</td>
+                                <td>@item.VehicleStatusName</td>
+                                <td>
+                                    @if (ViewBag.type == 1)
+                                    {
+                                        <div class="">
+                                            <p class="  Vehicle-Status" data-type="1">
+                                                @item.LoadTypeName
+                                            </p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="status-dropdown">
+                                            <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
+                                @foreach (var allcode in AllCode2)
+            {
+                if (allcode.CodeValue == 0)
+                {
+                                        @:{"text":"@allcode.Description","class":"status-green","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
+                                    }
+                                    else
+                                    {
+                                        @:{"text":"@allcode.Description","class":"status-normal","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
+                                    }
+
+
+                                    }
+                                                                    ]'>
+                                                @item.LoadTypeName
+                                            </button>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="status-dropdown">
+                                        <button class="dropdown-toggle " data-options='[
+                            @foreach (var allcode in AllCode)
+                            {
+
+                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
+
+                            }
+                                                        ]'>
+                                            @item.LoadingStatusName
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        break;
+                }
+
             }
 
         </tbody>

@@ -427,7 +427,7 @@ var _Call_The_Scale = {
             type: 0,
         }
         $.ajax({
-            url: "/Car/ListVehicleCallTheScale",
+            url: "/Car/ListCallTheScale",
             type: "post",
             data: { SearchModel: model },
             success: function (result) {
@@ -453,7 +453,7 @@ var _Call_The_Scale = {
             type: 0,
         }
         $.ajax({
-            url: "/Car/ListVehicleCallTheScale",
+            url: "/Car/ListCallTheScale",
             type: "post",
             data: { SearchModel: model },
             success: function (result) {
@@ -479,7 +479,7 @@ var _Call_The_Scale = {
             type:1,
         }
         $.ajax({
-            url: "/Car/ListVehicleCallTheScale",
+            url: "/Car/ListCallTheScale",
             type: "post",
             data: { SearchModel: model },
             success: function (result) {

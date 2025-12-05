@@ -1,4 +1,5 @@
-﻿using Entities.ViewModels.Car;
+﻿using Entities.Models;
+using Entities.ViewModels.Car;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,9 @@ namespace Repositories.IRepositories
         Task<List<CartoFactoryModel>> GetListVehicleCarCallList(CartoFactorySearchModel searchModel);
         Task<List<CartoFactoryModel>> GetListVehicleCallTheScale(CartoFactorySearchModel searchModel);
         Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel);
+        Task<List<TroughWeight>> GetListTroughWeightByVehicleInspectionId(int id);
+        Task<int> InsertTroughWeight(TroughWeight model);
+        Task<int> UpdateTroughWeight(TroughWeight model);
+        Task<TroughWeight> GetDetailTroughWeightById(int id);
     }
 }

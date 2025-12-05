@@ -21,6 +21,9 @@ namespace Entities.ViewModels.Car
         public string Note { get; set; }
         public string LoadingTypeName { get; set; }
         public string FullName { get; set; }
+        public int TrangThai { get; set; }
+        public int InspectionId { get; set; } 
+        public List<TroughWeight> ListTroughWeight { get; set; }
 
     }
 }

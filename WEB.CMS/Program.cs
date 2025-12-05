@@ -45,6 +45,7 @@ builder.Services.AddSingleton<IVehicleInspectionRepository, VehicleInspectionRep
 builder.Services.AddSingleton<IRoleRepository, RoleRepository>();
 builder.Services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddSingleton<IMenuRepository, MenuRepository>();
+builder.Services.AddSingleton<IInspectionRepository, InspectionRepository>();
 builder.Services.AddSingleton<RedisConn>();
 builder.Services.AddHostedService<RedisSubscriberService>();
 builder.Services.AddSingleton<ManagementUser>();

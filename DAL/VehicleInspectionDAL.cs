@@ -12,6 +12,7 @@ using Utilities;
 using Entities.ViewModels.Car;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 
 namespace DAL
@@ -52,7 +53,7 @@ namespace DAL
                 LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
             }
             return null;
-        }   
+        }
         public async Task<List<CartoFactoryModel>> GetListCartoFactory(CartoFactorySearchModel searchModel)
         {
             try
@@ -119,7 +120,7 @@ namespace DAL
                     new SqlParameter("@Note", (object?)model.Note ?? DBNull.Value),
                     new SqlParameter("@VehicleArrivalDate", (object?)model.VehicleArrivalDate ?? DBNull.Value),
                     new SqlParameter("@LoadingType", (object?)model.LoadingType ?? DBNull.Value),
-           
+
                 };
 
                 // Gọi SP
@@ -141,12 +142,12 @@ namespace DAL
                 SqlParameter[] objParam = new SqlParameter[]
                 {
                     new SqlParameter("@Id", id),
-                   
+
                 };
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetDetailtVehicleInspection, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    var data= dt.ToList<CartoFactoryModel>();
+                    var data = dt.ToList<CartoFactoryModel>();
                     return data.FirstOrDefault();
                 }
             }
@@ -156,7 +157,7 @@ namespace DAL
             }
             return null;
         }
-        public  int SaveVehicleInspection(RegistrationRecord model)
+        public int SaveVehicleInspection(RegistrationRecord model)
         {
             try
             {
@@ -209,7 +210,7 @@ namespace DAL
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleInspectionByVehicleNumber, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    var AudioPath = dt.Rows[0]["AudioPath"].Equals(DBNull.Value) ? null : dt.Rows[0]["AudioPath"].ToString(); 
+                    var AudioPath = dt.Rows[0]["AudioPath"].Equals(DBNull.Value) ? null : dt.Rows[0]["AudioPath"].ToString();
                     return AudioPath;
                 }
             }
@@ -227,7 +228,7 @@ namespace DAL
                 objParam[0] = new SqlParameter("@FromDate", FromDate == null ? DateTime.Now : FromDate);
                 objParam[1] = new SqlParameter("@ToDate", ToDate == null ? DateTime.Now : ToDate);
                 objParam[2] = new SqlParameter("@LoadType", LoadType);
-                
+
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListVehicleInspectionSynthetic, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -246,14 +247,14 @@ namespace DAL
             {
                 SqlParameter[] objParam = new SqlParameter[]
                 {
- 
+
                     new SqlParameter("@FromDate", FromDate==null? DateTime.Now :FromDate),
                     new SqlParameter("@ToDate", ToDate==null? DateTime.Now :ToDate),
                 };
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_CountTotalVehicleInspectionSynthetic, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                   var data = dt.ToList<TotalVehicleInspection>();
+                    var data = dt.ToList<TotalVehicleInspection>();
                     return data.FirstOrDefault();
                 }
             }
@@ -262,20 +263,20 @@ namespace DAL
                 LogHelper.InsertLogTelegram("CountTotalVehicleInspectionSynthetic - VehicleInspectionDAL: " + ex);
             }
             return null;
-        }  
+        }
         public async Task<List<TotalWeightByHourModel>> GetTotalWeightByHour(DateTime? RegistrationTime)
         {
             try
             {
                 SqlParameter[] objParam = new SqlParameter[]
                 {
- 
+
                     new SqlParameter("@RegisterDateOnline", RegistrationTime==null? DateTime.Now :RegistrationTime),
                 };
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetTotalWeightByHour, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                   var data = dt.ToList<TotalWeightByHourModel>();
+                    var data = dt.ToList<TotalWeightByHourModel>();
                     return data;
                 }
             }
@@ -284,20 +285,20 @@ namespace DAL
                 LogHelper.InsertLogTelegram("CountTotalVehicleInspectionSynthetic - VehicleInspectionDAL: " + ex);
             }
             return null;
-        }    
+        }
         public async Task<List<TotalWeightByHourModel>> GetTotalWeightByWeightGroup(DateTime? RegistrationTime)
         {
             try
             {
                 SqlParameter[] objParam = new SqlParameter[]
                 {
- 
+
                     new SqlParameter("@RegisterDateOnline", RegistrationTime==null? DateTime.Now :RegistrationTime),
                 };
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetTotalWeightByWeightGroup, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                   var data = dt.ToList<TotalWeightByHourModel>();
+                    var data = dt.ToList<TotalWeightByHourModel>();
                     return data;
                 }
             }
@@ -306,20 +307,20 @@ namespace DAL
                 LogHelper.InsertLogTelegram("CountTotalVehicleInspectionSynthetic - VehicleInspectionDAL: " + ex);
             }
             return null;
-        }    
+        }
         public async Task<List<TotalWeightByHourModel>> GetTotalWeightByTroughType(DateTime? RegistrationTime)
         {
             try
             {
                 SqlParameter[] objParam = new SqlParameter[]
                 {
- 
+
                     new SqlParameter("@RegisterDateOnline", RegistrationTime==null? DateTime.Now :RegistrationTime),
                 };
                 var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetTotalWeightByTroughType, objParam);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                   var data = dt.ToList<TotalWeightByHourModel>();
+                    var data = dt.ToList<TotalWeightByHourModel>();
                     return data;
                 }
             }
@@ -476,6 +477,95 @@ namespace DAL
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("GetListCartoFactory - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<TroughWeight>> GetListTroughWeightByVehicleInspectionId(int id)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+
+                    new SqlParameter("@Id", id),
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetListTroughWeightByVehicleInspectionId, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    var data = dt.ToList<TroughWeight>();
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListTroughWeightByVehicleInspectionId - VehicleInspectionDAL: " + ex);
+            }
+            return null;
+        }
+        public async Task<int> InsertTroughWeight(TroughWeight model)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                 {
+                        new SqlParameter("@VehicleInspectionId", model.VehicleInspectionId),
+                        new SqlParameter("@TroughType", model.TroughType),
+                        new SqlParameter("@VehicleTroughWeight", model.VehicleTroughWeight),
+                        new SqlParameter("@CreatedBy", model.CreatedBy),
+                        new SqlParameter("@StartDate", (object)model.StartDate ?? DBNull.Value),
+                        new SqlParameter("@EndDate", (object)model.EndDate ?? DBNull.Value)
+                 };
+                var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_InsertTroughWeight, objParam);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("InsertTroughWeight - VehicleInspectionDAL: " + ex);
+            }
+            return -1;
+        }
+        public async Task<int> UpdateTroughWeight(TroughWeight model)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+
+                    new SqlParameter("@ID", model.Id),
+                    new SqlParameter("@TroughType",model.TroughType!=null? model.TroughType:DBNull.Value),
+                    new SqlParameter("@VehicleTroughWeight", model.VehicleTroughWeight),
+                    new SqlParameter("@StartDate",model.StartDate!=null? model.StartDate:DBNull.Value),
+                    new SqlParameter("@UpdateBy",model.UpdateBy),
+                };
+                var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_UpdateTroughWeight, objParam);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("UpdateTroughWeight - VehicleInspectionDAL: " + ex);
+            }
+            return -1;
+        } 
+        public async Task<TroughWeight> GetDetailTroughWeightById(int id)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+
+                    new SqlParameter("@ID", id),
+
+                };
+                var dt = _DbWorker.GetDataTable(StoreProcedureConstant.SP_GetDetailTroughWeightById, objParam);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    var data = dt.ToList<TroughWeight>();
+                    return data[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetDetailTroughWeightById - VehicleInspectionDAL: " + ex);
             }
             return null;
         }

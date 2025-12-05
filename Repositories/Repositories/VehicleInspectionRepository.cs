@@ -15,11 +15,12 @@ using Utilities.Contants;
 
 namespace Repositories.Repositories
 {
-    public class VehicleInspectionRepository: IVehicleInspectionRepository
+    public class VehicleInspectionRepository : IVehicleInspectionRepository
     {
         private readonly VehicleInspectionDAL _VehicleInspectionDAL;
         private readonly AllCodeDAL _AllCodeDAL;
-        public VehicleInspectionRepository(IOptions<DataBaseConfig> dataBaseConfig) {
+        public VehicleInspectionRepository(IOptions<DataBaseConfig> dataBaseConfig)
+        {
             _VehicleInspectionDAL = new VehicleInspectionDAL(dataBaseConfig.Value.SqlServer.ConnectionString);
             _AllCodeDAL = new AllCodeDAL(dataBaseConfig.Value.SqlServer.ConnectionString);
         }
@@ -66,14 +67,9 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+
+                searchModel.RegistrationTime = expireAt;
+
                 return await _VehicleInspectionDAL.GetListCartoFactory(searchModel);
             }
             catch (Exception ex)
@@ -111,19 +107,19 @@ namespace Repositories.Repositories
         {
             try
             {
-                return  _VehicleInspectionDAL.SaveVehicleInspection(model);
+                return _VehicleInspectionDAL.SaveVehicleInspection(model);
             }
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("SaveVehicleInspection - VehicleInspectionRepository: " + ex);
             }
             return 0;
-        }  
+        }
         public Task<string> GetAudioPathByVehicleNumber(string VehicleNumber)
         {
             try
             {
-                return  _VehicleInspectionDAL.GetAudioPathByVehicleNumber(VehicleNumber);
+                return _VehicleInspectionDAL.GetAudioPathByVehicleNumber(VehicleNumber);
             }
             catch (Exception ex)
             {
@@ -135,21 +131,21 @@ namespace Repositories.Repositories
         {
             try
             {
-  
-                return await _VehicleInspectionDAL.GetListVehicleInspectionSynthetic(FromDate,ToDate, LoadType);
+
+                return await _VehicleInspectionDAL.GetListVehicleInspectionSynthetic(FromDate, ToDate, LoadType);
             }
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("GetListVehicleInspectionSynthetic - VehicleInspectionRepository: " + ex);
             }
             return null;
-        }    
+        }
         public async Task<TotalVehicleInspection> CountTotalVehicleInspectionSynthetic(DateTime? FromDate, DateTime? ToDate)
         {
             try
             {
-             
-                return await _VehicleInspectionDAL.CountTotalVehicleInspectionSynthetic(FromDate,ToDate);
+
+                return await _VehicleInspectionDAL.CountTotalVehicleInspectionSynthetic(FromDate, ToDate);
             }
             catch (Exception ex)
             {
@@ -169,7 +165,7 @@ namespace Repositories.Repositories
                 LogHelper.InsertLogTelegram("GetTotalWeightByHour - VehicleInspectionRepository: " + ex);
             }
             return null;
-        }    
+        }
         public async Task<List<TotalWeightByHourModel>> GetTotalWeightByWeightGroup(DateTime? RegistrationTime)
         {
             try
@@ -182,7 +178,7 @@ namespace Repositories.Repositories
                 LogHelper.InsertLogTelegram("GetTotalWeightByHour - VehicleInspectionRepository: " + ex);
             }
             return null;
-        }    
+        }
         public async Task<List<TotalWeightByHourModel>> GetTotalWeightByTroughType(DateTime? RegistrationTime)
         {
             try
@@ -196,7 +192,7 @@ namespace Repositories.Repositories
             }
             return null;
         }
-  
+
         public async Task<List<CartoFactoryModel>> GetListVehicleProcessingIsLoading(CartoFactorySearchModel searchModel)
         {
             try
@@ -210,14 +206,7 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+                searchModel.RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleProcessingIsLoading(searchModel);
             }
             catch (Exception ex)
@@ -239,14 +228,7 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+                searchModel.RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleWeighedInput(searchModel);
             }
             catch (Exception ex)
@@ -268,14 +250,7 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+                searchModel.RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleCarCallList(searchModel);
             }
             catch (Exception ex)
@@ -297,14 +272,7 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+                searchModel.RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleCallTheScale(searchModel);
             }
             catch (Exception ex)
@@ -312,7 +280,8 @@ namespace Repositories.Repositories
                 LogHelper.InsertLogTelegram("GetListVehicleCallTheScale - VehicleInspectionRepository: " + ex);
             }
             return null;
-        }      public async Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel)
+        }
+        public async Task<List<CartoFactoryModel>> GetListVehicleListVehicles(CartoFactorySearchModel searchModel)
         {
             try
             {
@@ -325,19 +294,64 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+                searchModel.RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleListVehicles(searchModel);
             }
             catch (Exception ex)
             {
                 LogHelper.InsertLogTelegram("GetListVehicleListVehicles - VehicleInspectionRepository: " + ex);
+            }
+            return null;
+        }
+        public async Task<List<TroughWeight>> GetListTroughWeightByVehicleInspectionId(int id)
+        {
+            try
+            {
+
+                return await _VehicleInspectionDAL.GetListTroughWeightByVehicleInspectionId(id);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListTroughWeightByVehicleInspectionId - VehicleInspectionRepository: " + ex);
+            }
+            return  new List<TroughWeight>();
+        }
+        public async Task<int> InsertTroughWeight(TroughWeight model)
+        {
+            try
+            {
+
+                return await _VehicleInspectionDAL.InsertTroughWeight(model);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListTroughWeightByVehicleInspectionId - VehicleInspectionRepository: " + ex);
+            }
+            return -1;
+        }
+        public async Task<int> UpdateTroughWeight(TroughWeight model)
+        {
+            try
+            {
+
+                return await _VehicleInspectionDAL.UpdateTroughWeight(model);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetListTroughWeightByVehicleInspectionId - VehicleInspectionRepository: " + ex);
+            }
+            return -1;
+        }
+        public async Task<TroughWeight> GetDetailTroughWeightById(int id)
+        {
+            try
+            {
+
+                return await _VehicleInspectionDAL.GetDetailTroughWeightById(id);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetDetailTroughWeightById - VehicleInspectionRepository: " + ex);
             }
             return null;
         }

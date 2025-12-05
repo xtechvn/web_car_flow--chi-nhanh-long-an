@@ -49,5 +49,16 @@ namespace Utilities.Contants
         public static string SP_GetListVehicleCarCallList = "SP_GetListVehicleCarCallList";
         public static string SP_GetListVehicleCallTheScale = "SP_GetListVehicleCallTheScale";
         public static string SP_GetListVehicleListVehicles = "SP_GetListVehicleListVehicles";
+        public static string SP_GetListTroughWeightByVehicleInspectionId = "SP_GetListTroughWeightByVehicleInspectionId";
+
+        public static string sp_InsertTroughWeight = "SP_GetListTroughWeightByVehicleInspectionId";
+        public static string SP_InsertTroughWeight = "SP_InsertTroughWeight";
+        public static string SP_UpdateTroughWeight = "SP_UpdateTroughWeight";
+        public static string SP_GetDetailTroughWeightById = "SP_GetDetailTroughWeightById";
+
+        public static string SP_GetListInspection = "SP_GetListInspection";
+        public static string SP_InsertInspection = "SP_InsertInspection";
+        public static string SP_UpdateInspection = "SP_UpdateInspection";
+        public static string SP_GetDetailInspectionById = "SP_GetDetailInspectionById";
     }
 }
