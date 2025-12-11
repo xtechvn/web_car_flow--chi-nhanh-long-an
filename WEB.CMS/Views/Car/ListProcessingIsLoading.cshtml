@@ -32,17 +32,32 @@
                 {
                     case 1:
                         {
-                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="background: red;">
+                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="background: orange;">
                                 <td>
                                     @item.RecordNumber 
                                 </td>
                                 <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
-                                <td>@item.CustomerName</td>
+                                <td>
+                                    <div style="display: flex; align-items: center">
+                                        <div style="white-space: pre-line;">
+                                            @item.CustomerName
+
+                                        </div>
+                                        <div>
+                                            @if (ViewBag.type == 0)
+                                            {
+                                                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(@item.Id)" title="Chỉnh sửa">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
                                 <td>
                                     @item.VehicleNumber
-                                    <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
+                                    <a class="cursor-pointer"style="margin-left:10px;" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
                                         <i class="icon-edit"></i>
                                     </a>
                                 </td>
@@ -107,7 +122,22 @@
                                     @item.RecordNumber
                                 </td>
                                 <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
-                                <td>@item.CustomerName</td>
+                                <td>
+                                    <div style="display: flex; align-items: center">
+                                        <div style="white-space: pre-line;">
+                                            @item.CustomerName
+
+                                        </div>
+                                        <div>
+                                            @if (ViewBag.type == 0)
+                                            {
+                                                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(@item.Id)" title="Chỉnh sửa">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
                                 <td>
@@ -177,7 +207,22 @@
                             <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
                                 <td>@item.RecordNumber</td>
                                 <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
-                                <td>@item.CustomerName</td>
+                                <td>
+                                    <div style="display: flex; align-items: center">
+                                        <div style="white-space: pre-line;">
+                                            @item.CustomerName
+
+                                        </div>
+                                        <div>
+                                            @if (ViewBag.type == 0)
+                                            {
+                                                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(@item.Id)" title="Chỉnh sửa">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
                                 <td>

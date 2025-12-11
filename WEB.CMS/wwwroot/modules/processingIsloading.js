@@ -229,7 +229,7 @@
                                         <i class="icon-edit"></i>
                                     </a>`
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}"  style="background: ${item.trangThai == 1 || item.trangThai == 2 ? "red;" : ""}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
             <td>${item.customerName}</td>
@@ -445,5 +445,34 @@ var _processing_is_loading = {
             }
         });
         return status_type;
+    },
+    AddOrUpdateName: function () {
+        var id = $('#Id').val();
+        var name = $('#CustomerName').val();
+        $.ajax({
+            url: "/Car/UpdateName",
+            type: "post",
+            data: { id: id, name: name },
+            success: function (result) {
+                status_type = result.status;
+                if (result.status == 0) {
+                    _msgalert.success(result.msg)
+                    setTimeout(
+                        window.location.reload()
+                        , 1000);
+                    
+                } else {
+                    _msgalert.error(result.msg)
+                }
+            },
+ 
+        });
+        return status_type;
+    },
+    AddOrUpdateNamePopup: function (id) {
+        let title = `Cập nhật thông tin khách hàng`;
+        let url = '/Car/AddOrUpdateNamePopup';
+        let param = { id: id };
+        _magnific.OpenSmallPopup(title, url, param);
     },
 }

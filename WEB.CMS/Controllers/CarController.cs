@@ -209,7 +209,7 @@ namespace WEB.CMS.Controllers
             }
             return PartialView();
         }
-        public async Task<IActionResult> UpdateStatus(int id, int status, int type, int weight = 0, string Note = null  )
+        public async Task<IActionResult> UpdateStatus(int id, int status, int type, int weight = 0, string Note = null)
         {
             try
             {
@@ -364,13 +364,13 @@ namespace WEB.CMS.Controllers
                             detail.ListTroughWeight = await _vehicleInspectionRepository.GetListTroughWeightByVehicleInspectionId(detail.Id);
                             if (detail.ListTroughWeight != null)
                             {
-                               var count_TroughWeight= detail.ListTroughWeight.Where(s => s.TroughType == status).ToList();
+                                var count_TroughWeight = detail.ListTroughWeight.Where(s => s.TroughType == status).ToList();
                                 if (count_TroughWeight.Count > 0)
                                 {
                                     return Ok(new
                                     {
                                         status = (int)ResponseType.ERROR,
-                                        msg = "Cập nhật không thành công.Máng số "+ status+" đã có"
+                                        msg = "Cập nhật không thành công.Máng số " + status + " đã có"
                                     });
                                 }
                             }
@@ -390,12 +390,12 @@ namespace WEB.CMS.Controllers
                                 await _hubContext.Clients.All.SendAsync("UpdateMangStatus", detail.TroughType, model.TroughType, detail.Id);
                                 if (model.VehicleTroughStatus == null || detail.VehicleTroughStatus == (int)VehicleTroughStatus.Blank || VehicleTroughStatusOld == (int)VehicleTroughStatus.Ngat_mang)
                                 {
-                                    
-                                        if (detail.ListTroughWeight == null) detail.ListTroughWeight = new List<TroughWeight>();
-                                        var TroughWeight_model = new TroughWeight();
-                                        TroughWeight_model.TroughType = status;
-                                        detail.ListTroughWeight.Add(TroughWeight_model);
-                                    
+
+                                    if (detail.ListTroughWeight == null) detail.ListTroughWeight = new List<TroughWeight>();
+                                    var TroughWeight_model = new TroughWeight();
+                                    TroughWeight_model.TroughType = status;
+                                    detail.ListTroughWeight.Add(TroughWeight_model);
+
                                     await _hubContext.Clients.All.SendAsync("ListCarCall", detail);
 
                                 }
@@ -429,7 +429,7 @@ namespace WEB.CMS.Controllers
 
                             }
 
-                            if (status == (int)VehicleTroughStatus.Hoan_thanh )
+                            if (status == (int)VehicleTroughStatus.Hoan_thanh)
                             {
                                 model.VehicleTroughTimeComeOut = DateTime.Now;
                                 if (detail.VehicleTroughStatus == (int)VehicleTroughStatus.Boc_Hang)
@@ -452,8 +452,8 @@ namespace WEB.CMS.Controllers
                                     });
                                 }
                             }
-                     
-                            if ( status == (int)VehicleTroughStatus.Ngat_mang)
+
+                            if (status == (int)VehicleTroughStatus.Ngat_mang)
                             {
                                 model.VehicleTroughTimeComeOut = DateTime.Now;
                                 if (detail.VehicleTroughStatus == (int)VehicleTroughStatus.Boc_Hang)
@@ -497,12 +497,12 @@ namespace WEB.CMS.Controllers
                                     if (detail.ListTroughWeight == null) detail.ListTroughWeight = new List<TroughWeight>();
                                     detail.ListTroughWeight.Add(new TroughWeight());
                                 }
-                                if (status == (int)VehicleTroughStatus.Boc_Hang )
+                                if (status == (int)VehicleTroughStatus.Boc_Hang)
                                 {
                                     if (detail.ListTroughWeight == null) detail.ListTroughWeight = new List<TroughWeight>();
                                     var detai_TroughWeight = new TroughWeight();
                                     detai_TroughWeight.TroughType = detail.TroughType;
-                                   
+
                                     detail.ListTroughWeight.Add(detai_TroughWeight);
                                 }
                                 detail.VehicleTroughWeight = weight;
@@ -766,7 +766,7 @@ namespace WEB.CMS.Controllers
             {
 
                 var detail = await _vehicleInspectionRepository.GetDetailTroughWeightById(id);
-                if (detail !=null)
+                if (detail != null)
                 {
                     return Ok(new
                     {
@@ -785,6 +785,54 @@ namespace WEB.CMS.Controllers
             {
                 status = (int)ResponseType.ERROR,
                 msg = "Thao tác không thành công"
+            });
+        }
+        public async Task<IActionResult> AddOrUpdateNamePopup(int id)
+        {
+            if (id > 0)
+            {
+                ViewBag.Id = id;
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(id);
+                ViewBag.name = detail.CustomerName;
+              
+                return PartialView();
+            }
+            return PartialView();
+        }
+        public async Task<IActionResult> UpdateName(int id, string name)
+        {
+            try
+            {
+                var model = new VehicleInspectionUpdateModel();
+                model.Id = id;
+                model.CustomerName = name;
+                var Update = await _vehicleInspectionRepository.UpdateCar(model);
+                if (Update > 0)
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.SUCCESS,
+                        msg = "Cập nhật  thành công"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.FAILED,
+                        msg = "Cập nhật không thành công"
+                    });
+                }
+                   
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("WeighedInput - CarController: " + ex);
+            }
+            return Ok(new
+            {
+                status = (int)ResponseType.FAILED,
+                msg = "Cập nhật không thành công"
             });
         }
     }

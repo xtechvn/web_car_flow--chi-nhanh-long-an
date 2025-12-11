@@ -38,14 +38,9 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                if (now >= expireAt)
-                {
-                    searchModel.RegistrationTime = expireAt;
-                }
-                else
-                {
-                    searchModel.RegistrationTime = expireAt.AddDays(-1);
-                }
+
+                searchModel.RegistrationTime = expireAt;
+
                 return await _VehicleInspectionDAL.GetListRegisteredVehicle(searchModel);
             }
             catch (Exception ex)
@@ -314,7 +309,7 @@ namespace Repositories.Repositories
             {
                 LogHelper.InsertLogTelegram("GetListTroughWeightByVehicleInspectionId - VehicleInspectionRepository: " + ex);
             }
-            return  new List<TroughWeight>();
+            return new List<TroughWeight>();
         }
         public async Task<int> InsertTroughWeight(TroughWeight model)
         {
