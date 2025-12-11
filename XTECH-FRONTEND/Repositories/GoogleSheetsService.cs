@@ -407,7 +407,7 @@ namespace XTECH_FRONTEND.Repositories
                 var db = redis.GetDatabase();
                 // Tính effective date dựa trên giờ địa phương (UTC+7)
                 DateTime now = DateTime.Now; // Sử dụng giờ hệ thống (giả định đã cấu hình đúng timezone)
-                string key = $"counter:daily_car_count_Pro";
+                string key = $"counter:daily_car_count_Pro_Long_An";
 
                 long nextNumber = db.StringIncrement(key);
 

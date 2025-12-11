@@ -206,7 +206,7 @@
                     var text_type = $('.CartoFactory_' + id_row +'_troughWeight').text().trim();
 
                     // 👉 Nếu chọn Hoàn thành mà chưa nhập trọng lượng → hiển thị input phụ
-                    if ((val_TT == 0 || val_TT == 5) && text_type !='' && (weight == 0 || weight === "")) {
+                    if ((val_TT == 0 || val_TT == 5)  && (weight == 0 || weight === "")) {
                         if ($menu.find(".extra-weight").length === 0) {
                             let $extra = $('<div class="extra-weight" style="margin:10px 0;">' +
                                 '<input type="number" class="weight-input" ' +
