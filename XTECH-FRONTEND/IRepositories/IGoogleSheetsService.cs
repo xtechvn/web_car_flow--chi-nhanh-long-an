@@ -8,6 +8,6 @@ namespace XTECH_FRONTEND.IRepositories
         Task<bool> SaveRegistrationAsync(RegistrationRecord record);
         Task<DateTime?> GetLastSubmissionTimeAsync(string phoneNumber);
         Task UpdateLastSubmissionTimeAsync(string phoneNumber, DateTime submissionTime);
-        Task<int> GetDailyQueueCountRedis();
+        Task<int> GetDailyQueueCountRedis(DateTime? time);
     }
 }

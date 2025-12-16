@@ -11,6 +11,7 @@ namespace XTECH_FRONTEND.Model
         public string GPLX { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Camp { get; set; } = string.Empty;
+        public string Timedow { get; set; } = string.Empty;
     }
 
     public class CarRegistrationResponse
@@ -27,6 +28,7 @@ namespace XTECH_FRONTEND.Model
         public string GPLX { get; set; } 
         public string Referee { get; set; } 
         public string Name { get; set; } 
+   
     }
 
     public class RegistrationRecord

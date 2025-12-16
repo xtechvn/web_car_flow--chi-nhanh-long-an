@@ -253,9 +253,28 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 10000, 30000]) // retry sau 0s, 2s, 10s, 30s
+        .withUrl("/CarHub", {
+            transport: signalR.HttpTransportType.WebSockets
+        })
+        .withAutomaticReconnect()
         .build();
+
+    let retryDelay = 2000; // 2 giây
+
+    async function startSignalR() {
+        try {
+            if (connection.state === signalR.HubConnectionState.Disconnected) {
+                await connection.start();
+                console.log("✅ Kết nối SignalR thành công");
+            }
+        } catch (err) {
+            console.error("❌ SignalR connect failed. Retry in 2s...", err);
+            setTimeout(startSignalR, retryDelay);
+        }
+    }
+
+    // 👉 Gọi lần đầu
+    startSignalR();
     const AllCode = [
         { Description: "Blank", CodeValue: "1" },
         { Description: "Đã vào cân", CodeValue: "0" },
@@ -347,9 +366,7 @@
         tbody.innerHTML = "";
         rows.forEach(r => tbody.appendChild(r));
     }
-    connection.start()
-        .then(() => console.log("✅ Kết nối SignalR thành công"))
-        .catch(err => console.error("❌ Lỗi kết nối:", err));
+
     // Nhận data mới từ server
     connection.on("ListCallTheScale_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-1");

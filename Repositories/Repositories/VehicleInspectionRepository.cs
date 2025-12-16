@@ -350,5 +350,17 @@ namespace Repositories.Repositories
             }
             return null;
         }
+        public async Task<int> UpdateVehicleInspectionByVehicleNumber(string VehicleNumber)
+        {
+            try
+            {
+                return await _VehicleInspectionDAL.UpdateVehicleInspectionByVehicleNumber(VehicleNumber);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("SaveVehicleInspection - VehicleInspectionRepository: " + ex);
+            }
+            return 0;
+        }
     }
 }

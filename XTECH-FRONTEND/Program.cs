@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using XTECH_FRONTEND.IRepositories;
 using XTECH_FRONTEND.Repositories;
 using XTECH_FRONTEND.Services;
+using XTECH_FRONTEND.Services.BackgroundQueue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,10 @@ builder.Services.AddSingleton<IValidationService, ValidationService>();
 builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 builder.Services.AddSingleton<IZaloService, ZaloOfficialAccountService>();
 builder.Services.AddSingleton<IMongoService, MongoService>();
+builder.Services.AddSingleton<IMongoService, MongoService>();
+builder.Services.AddSingleton<IInsertQueue, InsertQueue>();
+builder.Services.AddHostedService<InsertWorker>();
+builder.Services.AddHttpClient("InsertClient");
 // Add SignalR với cấu hình KeepAlive
 builder.Services.AddSignalR(options =>
 {

@@ -448,7 +448,7 @@ namespace WEB.CMS.Controllers
                                     return Ok(new
                                     {
                                         status = (int)ResponseType.ERROR,
-                                        msg = "Quy trình sửa lý đang không đúng"
+                                        msg = "Quy trình sử lý đang không đúng"
                                     });
                                 }
                             }
@@ -472,7 +472,7 @@ namespace WEB.CMS.Controllers
                                     return Ok(new
                                     {
                                         status = (int)ResponseType.ERROR,
-                                        msg = "Quy trình sửa lý đang không đúng"
+                                        msg = "Quy trình sử lý đang không đúng"
                                     });
                                 }
 

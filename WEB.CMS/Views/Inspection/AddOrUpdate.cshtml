@@ -5,7 +5,11 @@
 @using Entities.Models
 @using Entities.ViewModels
 @model InspectionModel
-
+<style>
+    .error{
+        color:red;
+    }
+</style>
 <form id="form_inspection" onsubmit="return false">
     @if (Model == null)
     {
@@ -76,3 +80,18 @@
 
 </form>
 
+<script>
+    $('#VehicleNumber').on('input', function () {
+        let raw = this.value;
+
+        // Chỉ giữ chữ + số, viết hoa
+        let value = raw.replace(/[^0-9A-Za-z]/g, '').toUpperCase();
+
+        // Tự thêm "-" sau 3 ký tự
+        if (value.length > 3) {
+            value = value.slice(0, 3) + '-' + value.slice(3);
+        }
+
+        this.value = value;
+    });
+</script>

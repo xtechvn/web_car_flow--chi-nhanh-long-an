@@ -200,9 +200,28 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 10000, 30000]) // retry sau 0s, 2s, 10s, 30s
+        .withUrl("/CarHub", {
+            transport: signalR.HttpTransportType.WebSockets
+        })
+        .withAutomaticReconnect()
         .build();
+
+    let retryDelay = 2000; // 2 giây
+
+    async function startSignalR() {
+        try {
+            if (connection.state === signalR.HubConnectionState.Disconnected) {
+                await connection.start();
+                console.log("✅ Kết nối SignalR thành công");
+            }
+        } catch (err) {
+            console.error("❌ SignalR connect failed. Retry in 2s...", err);
+            setTimeout(startSignalR, retryDelay);
+        }
+    }
+
+    // 👉 Gọi lần đầu
+    startSignalR();
     const AllCode = [
         { Description: "Thường", CodeValue: "1" },
         { Description: "Xanh", CodeValue: "0" },
@@ -228,11 +247,17 @@
         var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
                                         <i class="icon-edit"></i>
                                     </a>`
+ 
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
-            <td>${item.customerName}</td>
+            <td>
+            ${item.customerName} <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+
+            </td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
             <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
@@ -317,9 +342,7 @@
         tbody.innerHTML = "";
         rows.forEach(r => tbody.appendChild(r));
     }
-    connection.start()
-        .then(() => console.log("✅ Kết nối SignalR thành công"))
-        .catch(err => console.error("❌ Lỗi kết nối:", err));
+
     // Nhận data mới từ server
     connection.on("ListProcessingIsLoading_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-1");

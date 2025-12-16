@@ -399,7 +399,7 @@ namespace XTECH_FRONTEND.Repositories
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public async Task<int> GetDailyQueueCountRedis()
+        public async Task<int> GetDailyQueueCountRedis(DateTime? time)
         {
             try
             {
@@ -408,14 +408,15 @@ namespace XTECH_FRONTEND.Repositories
                 // Tính effective date dựa trên giờ địa phương (UTC+7)
                 DateTime now = DateTime.Now; // Sử dụng giờ hệ thống (giả định đã cấu hình đúng timezone)
                 string key = $"counter:daily_car_count_Pro_Long_An";
-
+             
                 long nextNumber = db.StringIncrement(key);
-
+                var datetime_5p= time?.AddMinutes(-5);
                 // Đặt TTL nếu là lần đầu tăng
+                // 🔹 1. Nếu có time truyền vào → xử lý reset theo time
                 if (nextNumber == 1)
                 {
                     // Mục tiêu: 18 hôm nay
-                    DateTime expireAt = new DateTime(now.Year, now.Month, now.Day, 17, 59, 00);
+                    DateTime expireAt = new DateTime(now.Year, now.Month, now.Day, datetime_5p.Value.Hour, datetime_5p.Value.Minute, 00);
 
                     // Nếu đã quá 18 hôm nay → chuyển sang 18 ngày mai
                     if (now > expireAt)

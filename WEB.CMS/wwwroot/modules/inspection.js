@@ -1,15 +1,6 @@
 ﻿$(document).ready(function () {
     $('input').attr('autocomplete', 'off');
-    $('#VehicleNumber').on('input', function () {
-        let value = $(this).val().replace(/[^0-9A-Za-z\-]/g, '').toUpperCase();
 
-        // Thêm dấu "-" sau 3 ký tự nếu chưa có
-        if (value.length > 3 && value[3] !== '-' && !value.includes('-')) {
-            value = value.substring(0, 3) + '-' + value.substring(3);
-        }
-
-        $(this).val(value);
-    });
     _inspection.Init();
 
 });

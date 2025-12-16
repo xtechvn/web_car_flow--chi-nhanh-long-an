@@ -48,5 +48,13 @@ namespace Entities.ViewModels.Car
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     
+    }  
+    public class CamModel
+    {
+        public string bien_so { get; set; }             
+        public DateTime? thoi_gian_chup { get; set; }            
+        public string anh_chup_xe { get; set; }           
+      
+    
     }
 }

@@ -569,5 +569,23 @@ namespace DAL
             }
             return null;
         }
+        public async Task<int> UpdateVehicleInspectionByVehicleNumber(string VehicleNumber)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@bien_so", VehicleNumber),
+
+                };
+                var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_UpdateVehicleInspectionByVehicleNumber, objParam);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetAudioPathByVehicleNumber - VehicleInspectionDAL: " + ex);
+            }
+            return 0;
+        }
     }
 }
