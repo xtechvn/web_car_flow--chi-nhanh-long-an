@@ -120,6 +120,7 @@ namespace DAL
                     new SqlParameter("@Note", (object?)model.Note ?? DBNull.Value),
                     new SqlParameter("@VehicleArrivalDate", (object?)model.VehicleArrivalDate ?? DBNull.Value),
                     new SqlParameter("@LoadingType", (object?)model.LoadingType ?? DBNull.Value),
+                    new SqlParameter("@ProcessingIsLoadingDate", (object?)model.ProcessingIsLoadingDate ?? DBNull.Value),
 
                 };
 

@@ -237,8 +237,16 @@
             String(date.getHours()).padStart(2, '0') + ":" +
             String(date.getMinutes()).padStart(2, '0') + ":" +
             String(date.getSeconds()).padStart(2, '0');
+        var date2 = new Date(item.vehicleWeighingTimeComeIn);
+        let formatted2 =
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear() + " " +
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + ":" +
+            String(date2.getSeconds()).padStart(2, '0');
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" data-LoadType="${item.loadType}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted2}" data-LoadType="${item.loadType}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
             <td>${item.customerName}</td>
@@ -264,9 +272,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";
@@ -277,9 +286,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-LoadType") || 0);
-            const qb = parseInt(b.getAttribute("data-LoadType") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";

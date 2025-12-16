@@ -104,7 +104,7 @@ else
             <tbody id="dataBody-@ViewBag.type-@ViewBag.LoadType">
                 @foreach (var item in Model)
                 {
-                    <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
+                    <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.ProcessingIsLoadingDate).ToString("HH:mm dd/MM/yyyy"))">
                         <td>@item.RecordNumber</td>
                         <td class="td-audio">
                             @item.VehicleNumber

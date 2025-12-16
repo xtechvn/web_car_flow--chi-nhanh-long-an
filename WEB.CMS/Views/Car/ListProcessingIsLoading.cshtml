@@ -32,7 +32,7 @@
                 {
                     case 1:
                         {
-                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" style="background: orange;">
+                            <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))" style="background: orange;">
                                 <td>
                                     @item.RecordNumber 
                                 </td>
@@ -117,7 +117,7 @@
                         break;
                     case 2:
                         {
-                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber"  style="background: red;">
+                            <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))"  style="background: red;">
                                 <td>
                                     @item.RecordNumber
                                 </td>
@@ -204,7 +204,7 @@
                     case 4:
                     case 3:
                         {
-                            <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber">
+                            <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))">
                                 <td>@item.RecordNumber</td>
                                 <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
                                 <td>

@@ -288,9 +288,15 @@
     const jsonString = JSON.stringify(options);
     // Hàm render row
     function renderRow_Da_SL(item) {
-
+        var date = new Date(item.processingIsLoadingDate);
+        let formatted =
+            String(date.getHours()).padStart(2, '0') + ":" +
+            String(date.getMinutes()).padStart(2, '0') + " " +
+            String(date.getDate()).padStart(2, '0') + "/" +
+            String(date.getMonth() + 1).padStart(2, '0') + "/" +
+            date.getFullYear();
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
             <td>${item.customerName}</td>
@@ -315,9 +321,15 @@
         </tr>`;
     }
     function renderRow(item) {
-
+        var date = new Date(item.processingIsLoadingDate);
+        let formatted =
+            String(date.getHours()).padStart(2, '0') + ":" +
+            String(date.getMinutes()).padStart(2, '0') + " " +
+            String(date.getDate()).padStart(2, '0') + "/" +
+            String(date.getMonth() + 1).padStart(2, '0') + "/" +
+            date.getFullYear();
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
            <td>${item.vehicleNumber}</td>
             <td>${item.phoneNumber}</td>
@@ -345,9 +357,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";
@@ -358,9 +371,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";

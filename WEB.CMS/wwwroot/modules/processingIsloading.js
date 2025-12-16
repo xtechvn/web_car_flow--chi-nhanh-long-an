@@ -244,12 +244,19 @@
     const jsonString2 = JSON.stringify(options2);
     // Hàm render row
     function renderRow(item) {
+        var date = new Date(item.vehicleArrivalDate);
+        let formatted =
+            String(date.getHours()).padStart(2, '0') + ":" +
+            String(date.getMinutes()).padStart(2, '0') + " " +
+            String(date.getDate()).padStart(2, '0') + "/" +
+            String(date.getMonth() + 1).padStart(2, '0') + "/" +
+            date.getFullYear();
         var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
                                         <i class="icon-edit"></i>
                                     </a>`
  
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
             <td>
@@ -284,9 +291,15 @@
         </tr>`;
     }
     function renderRow_DA_SL(item) {
-
+        var date = new Date(item.vehicleArrivalDate);
+        let formatted =
+            String(date.getHours()).padStart(2, '0') + ":" +
+            String(date.getMinutes()).padStart(2, '0') + " " +
+            String(date.getDate()).padStart(2, '0') + "/" +
+            String(date.getMonth() + 1).padStart(2, '0') + "/" +
+            date.getFullYear();
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${item.registerDateOnline}</td>
             <td>${item.customerName}</td>
@@ -321,9 +334,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";
@@ -334,9 +348,10 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = new Date(a.getAttribute("data-queue")).getTime();
+            const timeB = new Date(b.getAttribute("data-queue")).getTime();
+
+            return timeA - timeB; // tăng dần
         });
 
         tbody.innerHTML = "";

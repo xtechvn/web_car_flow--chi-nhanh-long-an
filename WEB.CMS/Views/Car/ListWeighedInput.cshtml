@@ -23,7 +23,7 @@
         <tbody id="dataBody-@ViewBag.type">
             @foreach (var item in Model)
             {
-                <tr class="CartoFactory_@item.Id" data-queue="@item.RecordNumber" data-LoadType="@item.LoadType">
+                <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleWeighingTimeComeIn).ToString("HH:mm dd/MM/yyyy"))" data-LoadType="@item.LoadType">
                     <td>@item.RecordNumber</td>
                     <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
                     <td>@item.CustomerName</td>
