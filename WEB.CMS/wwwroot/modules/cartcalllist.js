@@ -374,9 +374,7 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-            transport: signalR.HttpTransportType.WebSockets
-        })
+        .withUrl("/CarHub")
         .withAutomaticReconnect()
         .build();
 
