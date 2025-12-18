@@ -126,7 +126,16 @@ namespace Repositories.Repositories
         {
             try
             {
-
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                ToDate = expireAt;
                 return await _VehicleInspectionDAL.GetListVehicleInspectionSynthetic(FromDate, ToDate, LoadType);
             }
             catch (Exception ex)
@@ -139,7 +148,16 @@ namespace Repositories.Repositories
         {
             try
             {
-
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                ToDate = expireAt;
                 return await _VehicleInspectionDAL.CountTotalVehicleInspectionSynthetic(FromDate, ToDate);
             }
             catch (Exception ex)
@@ -152,7 +170,16 @@ namespace Repositories.Repositories
         {
             try
             {
-
+                var TIME_RESET = await _AllCodeDAL.GetListSortByName(AllCodeType.TIME_RESET);
+                var hours = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                            ? TIME_RESET[0].UpdateTime.Value.Hour
+                            : 17;
+                var minutes = TIME_RESET != null && TIME_RESET.Count > 0 && TIME_RESET[0].UpdateTime.HasValue
+                              ? TIME_RESET[0].UpdateTime.Value.Minute
+                              : 55;
+                var now = DateTime.Now;
+                var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
+                RegistrationTime = expireAt;
                 return await _VehicleInspectionDAL.GetTotalWeightByHour(RegistrationTime);
             }
             catch (Exception ex)
