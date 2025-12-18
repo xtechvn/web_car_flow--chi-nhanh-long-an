@@ -120,6 +120,7 @@ namespace DAL
                     new SqlParameter("@Note", (object?)model.Note ?? DBNull.Value),
                     new SqlParameter("@VehicleArrivalDate", (object?)model.VehicleArrivalDate ?? DBNull.Value),
                     new SqlParameter("@LoadingType", (object?)model.LoadingType ?? DBNull.Value),
+                    new SqlParameter("@ProcessingIsLoadingDate", (object?)model.ProcessingIsLoadingDate ?? DBNull.Value),
 
                 };
 
@@ -568,6 +569,24 @@ namespace DAL
                 LogHelper.InsertLogTelegram("GetDetailTroughWeightById - VehicleInspectionDAL: " + ex);
             }
             return null;
+        }
+        public async Task<int> UpdateVehicleInspectionByVehicleNumber(string VehicleNumber)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+                    new SqlParameter("@bien_so", VehicleNumber),
+
+                };
+                var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_UpdateVehicleInspectionByVehicleNumber, objParam);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("GetAudioPathByVehicleNumber - VehicleInspectionDAL: " + ex);
+            }
+            return 0;
         }
     }
 }

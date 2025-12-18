@@ -196,9 +196,28 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 10000, 30000]) // retry sau 0s, 2s, 10s, 30s
+        .withUrl("/CarHub", {
+            
+        })
+        .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
+
+    let retryDelay = 2000; // 2 giây
+
+    async function startSignalR() {
+        try {
+            if (connection.state === signalR.HubConnectionState.Disconnected) {
+                await connection.start();
+                console.log("✅ Kết nối SignalR thành công");
+            }
+        } catch (err) {
+            console.error("❌ SignalR connect failed. Retry in 2s...", err);
+            setTimeout(startSignalR, retryDelay);
+        }
+    }
+
+    // 👉 Gọi lần đầu
+    startSignalR();
     const AllCode = [
         { Description: "Blank", CodeValue: "1" },
         { Description: "Đã đến nhà máy", CodeValue: "0" },
@@ -273,6 +292,14 @@
             <td>${item.camp}</td>
             <td>
                 <div class="status-dropdown">
+                    <button class="dropdown-toggle "data-type="1" data-options='${jsonString2}'>
+                        
+                    </button>
+                </div>
+
+            </td>
+            <td>
+                <div class="status-dropdown">
                     <button class="dropdown-toggle " data-options='${jsonString}'>
                        Blank
                     </button>
@@ -338,9 +365,7 @@
         tbody.innerHTML = "";
         rows.forEach(r => tbody.appendChild(r));
     }
-    connection.start()
-        .then(() => console.log("✅ Kết nối SignalR thành công"))
-        .catch(err => console.error("❌ Lỗi kết nối:", err));
+
     // Nhận data mới từ server
     connection.on("ListCartoFactory_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-1");

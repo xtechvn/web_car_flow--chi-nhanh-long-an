@@ -24,28 +24,7 @@ namespace XTECH_FRONTEND.Utilities
                 botToken = _appconfig.BotSetting.bot_token;
                 group_Id = _appconfig.BotSetting.bot_group_id;
                 string company_type = _appconfig.CompanyType;
-                if (company_type != null && company_type.Trim() != "")
-                {
-                    CompanyTypeInt = Convert.ToInt32(company_type);
-                    switch (CompanyTypeInt)
-                    {
-                        case 0:
-                            {
-                                CompanyType = " Travel ";
-                            }
-                            break;
-                        case 1:
-                            {
-                                CompanyType = " Phu Quoc ";
-                            }
-                            break;
-                        case 2:
-                            {
-                                CompanyType = " Dai Viet ";
-                            }
-                            break;
-                    }
-                }
+                
             }
         }
         public static int InsertLogTelegram(string message)

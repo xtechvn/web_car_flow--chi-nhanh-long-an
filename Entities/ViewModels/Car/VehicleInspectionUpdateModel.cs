@@ -39,6 +39,7 @@ namespace Entities.ViewModels.Car
         public string? Note { get; set; }
         public int? LoadingType { get; set; }
         public int? CreatedBy { get; set; }
+        public DateTime? ProcessingIsLoadingDate { get; set; }
     }
 
 }

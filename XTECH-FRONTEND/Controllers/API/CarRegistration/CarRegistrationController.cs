@@ -10,6 +10,7 @@ using XTECH_FRONTEND.IRepositories;
 using XTECH_FRONTEND.Model;
 using XTECH_FRONTEND.Repositories;
 using XTECH_FRONTEND.Services;
+using XTECH_FRONTEND.Services.BackgroundQueue;
 using XTECH_FRONTEND.Services.RedisWorker;
 using XTECH_FRONTEND.Utilities;
 
@@ -30,6 +31,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
         private readonly RedisConn redisService;
         private readonly IConfiguration _configuration;
         private readonly IHubContext<RegistrationHub> _hubContext;
+        private readonly IInsertQueue _insertQueue;
         public CarRegistrationController(
             IValidationService validationService,
             IGoogleSheetsService googleSheetsService,
@@ -37,7 +39,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
             IZaloService zaloService,
             ILogger<CarRegistrationController> logger,
             IConfiguration configuration,
-            IMongoService mongoService, IHubContext<RegistrationHub> hubContext)
+            IMongoService mongoService, IHubContext<RegistrationHub> hubContext, IInsertQueue insertQueue)
         {
             _validationService = validationService;
             _googleSheetsService = googleSheetsService;
@@ -50,6 +52,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
             redisService.Connect();
             _configuration = configuration;
             _hubContext = hubContext;
+            _insertQueue = insertQueue;
         }
         [HttpPost("register-V1")]
         public async Task<ActionResult<CarRegistrationResponse>> RegisterCar([FromBody] CarRegistrationRequest request)
@@ -254,7 +257,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 string cache_name = "PlateNumber_" + request.PlateNumber.Replace("-", "_")+DateTime.Now.ToString("dd_MM_yyyy");
 
                 redisService.Set(cache_name, JsonConvert.SerializeObject(request), Convert.ToInt32(_configuration["Redis:Database:db_common"]));
-                var queueNumber = await _googleSheetsService.GetDailyQueueCountRedis();
+                var queueNumber = await _googleSheetsService.GetDailyQueueCountRedis(DateUtil.StringToDateTime( request.Timedow));
 
 
                 // Step 4: Create registration record with initial Zalo status
@@ -297,7 +300,21 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                         writer.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {logMessage}");
                     }
                 }
-          
+                await _insertQueue.EnqueueAsync(new InsertJob
+                {
+                    Data = new CarRegistrationResponse
+                    {
+                        Camp = registrationRecord.Camp,
+                        GPLX = registrationRecord.GPLX,
+                        Name = registrationRecord.Name,
+                        PlateNumber = registrationRecord.PlateNumber,
+                        PhoneNumber = registrationRecord.PhoneNumber,
+                        QueueNumber = registrationRecord.QueueNumber,
+                        Referee = registrationRecord.Referee,
+                        RegistrationTime = registrationRecord.RegistrationTime,
+                        ZaloStatus = registrationRecord.ZaloStatus
+                    }
+                });
                 // Return success response
                 return Ok(new CarRegistrationResponse
                 {
@@ -341,9 +358,9 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 $"• Theo dõi cập nhật qua Zalo\n\n" +
                 $"🔔 Chúng tôi sẽ thông báo khi đến lượt bạn!\n\n" +
                 $"📞 Hotline hỗ trợ: 1900-1234\n" +
-                $"🌐 Website: https://cargillhanam.com\n\n" +
+                $"🌐 Website: https://cargilllongan.com\n\n" +
                 $"Cảm ơn bạn đã sử dụng dịch vụ! ";
-                string url = "https://api-cargillhanam.adavigo.com/api/vehicleInspection/get-time-countdown";
+                string url = "http://qc-api.cargillhanam.com/api/vehicleInspection/Insert";
                 var client = new HttpClient();
                 var request_api = new HttpRequestMessage(HttpMethod.Post, url);
                 request_api.Content = new StringContent(JsonConvert.SerializeObject(request), null, "application/json");

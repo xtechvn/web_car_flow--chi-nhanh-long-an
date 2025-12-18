@@ -31,5 +31,6 @@ namespace Repositories.IRepositories
         Task<int> InsertTroughWeight(TroughWeight model);
         Task<int> UpdateTroughWeight(TroughWeight model);
         Task<TroughWeight> GetDetailTroughWeightById(int id);
+        Task<int> UpdateVehicleInspectionByVehicleNumber(string VehicleNumber);
     }
 }

@@ -60,5 +60,7 @@ namespace Utilities.Contants
         public static string SP_InsertInspection = "SP_InsertInspection";
         public static string SP_UpdateInspection = "SP_UpdateInspection";
         public static string SP_GetDetailInspectionById = "SP_GetDetailInspectionById";
+
+        public static string SP_UpdateVehicleInspectionByVehicleNumber = "SP_UpdateVehicleInspectionByVehicleNumber";
     }
 }
