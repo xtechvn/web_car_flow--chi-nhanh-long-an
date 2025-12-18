@@ -50,6 +50,7 @@
                 <th>Tên lái xe</th>
                 <th>Biển số xe</th>
                 <th>Giờ cân xong đầu vào</th>
+                <th>Trọng lượng thực tế (kg)</th>
                 <th>Máng xuất</th>
                 <th>Trọng lượng (kg)</th>
                 <th>Trạng thái</th>
@@ -74,7 +75,7 @@
                             <td>
                                 @(((DateTime)item.VehicleWeighingTimeComeOut).ToString("HH:mm dd/MM/yyyy"))
                             </td>
-
+                            <td>@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")</td>
                             <td>
                                 <div class="status-dropdown">
                                     @if (TroughWeight.VehicleTroughWeight == null || TroughWeight.VehicleTroughWeight <= 0)
@@ -157,6 +158,7 @@ else
                 <th>Tên lái xe</th>
                 <th>Biển số xe</th>
                 <th>Giờ cân xong đầu vào</th>
+                <th>Trọng lượng thực tế (kg)</th>
                 <th>Máng xuất</th>
                 <th>Trọng lượng (kg)</th>
                 <th>Trạng thái</th>
@@ -171,7 +173,7 @@ else
 <script>
 
  // Gộp cột 0,1,2 nếu cột 0-4 giống nhau
-    _cartcalllist.autoRowspanWithCondition("ListCarCall-" +@ViewBag.type, [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+    _cartcalllist.autoRowspanWithCondition("ListCarCall-" +@ViewBag.type, [0, 1, 2, 3, 4,5, 8], [0, 1, 2, 3, 4,5]);
 </script>
 
 

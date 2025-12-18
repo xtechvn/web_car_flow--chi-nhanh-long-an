@@ -164,7 +164,7 @@
                             status_type = result.status;
                             if (result.status == 0) {
                                 _msgalert.success(result.msg);
-
+                                _cartcalllist.initMangStatus();
                                 // ✅ chỉ remove row nếu cập nhật thành công
                                 if (type == 6) {
                                     if (parseInt(status) == 0) {
@@ -174,12 +174,12 @@
                                     }
                                 }
                                 if ($currentBtn != null)
-                                $currentBtn
-                                    .text(text)
-                                    .removeClass(function (_, old) {
-                                        return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
-                                    })
-                                    .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
+                                    $currentBtn
+                                        .text(text)
+                                        .removeClass(function (_, old) {
+                                            return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                        })
+                                        .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
 
                             } else {
                                 _msgalert.error(result.msg);
@@ -199,14 +199,14 @@
                     //        })
                     //        .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
                     //}
-                   
+
                 } else {
                     var weight = $('.CartoFactory_' + id_row).find('input.weight').val() || 0;
                     var note = null;
-                    var text_type = $('.CartoFactory_' + id_row +'_troughWeight').text().trim();
+                    var text_type = $('.CartoFactory_' + id_row + '_troughWeight').text().trim();
 
                     // 👉 Nếu chọn Hoàn thành mà chưa nhập trọng lượng → hiển thị input phụ
-                    if ((val_TT == 0 || val_TT == 5)  && (weight == 0 || weight === "")) {
+                    if ((val_TT == 0 || val_TT == 5) && (weight == 0 || weight === "")) {
                         if ($menu.find(".extra-weight").length === 0) {
                             let $extra = $('<div class="extra-weight" style="margin:10px 0;">' +
                                 '<input type="number" class="weight-input" ' +
@@ -255,7 +255,7 @@
                     $.ajax({
                         url: "/Car/UpdateStatus",
                         type: "post",
-                        data: { id: id_row, status: val_TT, type: 6, weight: weight, Note: note },
+                        data: { id: id_row, status: val_TT, type: 6, weight: weight.replaceAll(",", ""), Note: note },
                         success: function (result) {
                             status_type = result.status;
                             if (result.status == 0) {
@@ -270,13 +270,13 @@
                                     }
                                 }
                                 if ($currentBtn != null)
-                                $currentBtn
-                                    .text(text)
-                                    .removeClass(function (_, old) {
-                                        return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
-                                    })
-                                    .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
-                                
+                                    $currentBtn
+                                        .text(text)
+                                        .removeClass(function (_, old) {
+                                            return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                        })
+                                        .addClass($active.attr('class').split(/\s+/).filter(c => c !== 'active')[0] || '');
+
 
                             } else {
                                 _msgalert.error(result.msg);
@@ -375,8 +375,8 @@
     }
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/CarHub", {
-             
-            
+
+
         })
         .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
@@ -398,6 +398,8 @@
     // 👉 Gọi lần đầu
     startSignalR();
     const AllCode = [
+        { Description: "Máng 1", CodeValue: "1" },
+        { Description: "Máng 2", CodeValue: "2" },
         { Description: "Máng 3", CodeValue: "3" },
         { Description: "Máng 4", CodeValue: "4" },
         { Description: "Máng 5", CodeValue: "5" },
@@ -463,13 +465,14 @@
         <td><a class="btn-detail"
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
+        <td>${item.vehicleLoadTaken.toLocaleString('en-US')}</td>
         <td>
            ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? html_div : html_input}
         </td>
       <td>
         <input class="TroughWeightId" id="TroughWeightId_${item.id}.Id" value="${item.listTroughWeight[itemTroughWeight].id}" style="display:none;" />
         <input type="text"
-               class="input-form  ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? " CartoFactory_" + item.id + "_weight" : "weight"}"
+               class="input-form currency  ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? " CartoFactory_" + item.id + "_weight" : "weight"}"
                value="${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? item.listTroughWeight[itemTroughWeight].vehicleTroughWeight : ""}"
                placeholder="Vui lòng nhập"
                ${isProcessed ? "disabled" : ""} />
@@ -548,6 +551,7 @@
         <td><a class="btn-detail"
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
+        <td>${item.vehicleLoadTaken.toLocaleString('en-US')}</td>
         <td>
             <div class="status-dropdown">
                 <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}"
@@ -560,7 +564,7 @@
         </td>
       <td>
         <input type="text"
-               class="input-form weight"
+               class="input-form weight currency"
                value="${item.vehicleTroughWeight > 0 ? item.vehicleTroughWeight : ""}"
                placeholder="Vui lòng nhập"
                ${isProcessed ? "disabled" : ""} />
@@ -660,7 +664,7 @@
     // Hàm cập nhật trạng thái máng (client-side)
 
 
- 
+
     // Nhận data mới từ server
     connection.on("ListCarCall_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
@@ -691,11 +695,11 @@
                 return $(tr).find("button[data-type='1']").text().trim() === "Máng " + (parseInt(oldMangId));
             });
 
-            if (!hasOtherCars) {
-                $("#input" + (parseInt(oldMangId))).val("Trống")
 
-                    .removeClass("processing").addClass("empty");
-            }
+            $("#input" + (parseInt(oldMangId))).val("Trống")
+
+                .removeClass("processing").addClass("empty");
+
         }
 
         // ✅ Update luôn dropdown text trong bảng cho xe đó
@@ -713,7 +717,7 @@
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
         _cartcalllist.initMangStatus();
     });
 
@@ -722,7 +726,7 @@
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable();
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
     });
     connection.on("ListWeighedInput", function (item) {
         $('#dataBody-0').find('.CartoFactory_' + item.id).remove();
@@ -772,7 +776,7 @@ var _cartcalllist = {
     // ✅ Đồng bộ trạng thái máng khi load trang hoặc reload data
     initMangStatus: function () {
         // Giả sử có 5 máng, bạn thay bằng số máng thực tế
-        for (let mangIndex = 3; mangIndex <= 8; mangIndex++) {
+        for (let mangIndex = 1; mangIndex <= 8; mangIndex++) {
             let mangName = "Máng " + mangIndex;
 
             // 🔎 Kiểm tra xem có xe nào trong máng này chưa hoàn thành không
@@ -949,7 +953,7 @@ var _cartcalllist = {
         });
     },
     UpdateTroughWeight: function (id, weight_TroughWeightId) {
-       
+
         $.ajax({
             url: "/Car/UpdateTroughWeight",
             type: "post",
@@ -971,7 +975,7 @@ var _cartcalllist = {
         $.ajax({
             url: "/Car/CancelTroughWeight",
             type: "post",
-            data: { id: id},
+            data: { id: id },
             success: function (result) {
                 if (result.status == 0) {
                     element.closest('td').find('input.weight').val(result.data);
