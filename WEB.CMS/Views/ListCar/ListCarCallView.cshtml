@@ -105,10 +105,10 @@
                             <td>
                                 <input class="TroughWeightId" id="TroughWeightId_@item.Id" value="@TroughWeight.Id" style="display:none;" />
                                 <input type="text"
-                                       class="input-form CartoFactory_TroughWeight @(ViewBag.type == 1 ? "disabled" : "") @(TroughWeight.VehicleTroughWeight==null||TroughWeight.VehicleTroughWeight <= 0 ? "weight CartoFactory_"+item.Id+"_weight" : "")"
+                                       class="input-form currency CartoFactory_TroughWeight @(ViewBag.type == 1 ? "disabled" : "") @(TroughWeight.VehicleTroughWeight==null||TroughWeight.VehicleTroughWeight <= 0 ? "weight CartoFactory_"+item.Id+"_weight" : "")"
                                        maxlength="8"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
-                                       value="@(TroughWeight.VehicleTroughWeight > 0 ? TroughWeight.VehicleTroughWeight.ToString() : "")"
+                                       value="@(TroughWeight.VehicleTroughWeight > 0 ? ((decimal)TroughWeight.VehicleTroughWeight).ToString("N0") : "")"
                                        placeholder="Vui lòng nhập" @(ViewBag.type == 1 ? "disabled" : "") />
                                 @if ((TroughWeight.VehicleTroughWeight != null || TroughWeight.VehicleTroughWeight > 0 )&& ViewBag.type == 0)
                                 {

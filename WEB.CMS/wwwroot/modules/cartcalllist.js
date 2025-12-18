@@ -255,7 +255,7 @@
                     $.ajax({
                         url: "/Car/UpdateStatus",
                         type: "post",
-                        data: { id: id_row, status: val_TT, type: 6, weight: weight.replaceAll(",", ""), Note: note },
+                        data: { id: id_row, status: val_TT, type: 6, weight: weight > 0 ? weight.replaceAll(",", "") : weight, Note: note },
                         success: function (result) {
                             status_type = result.status;
                             if (result.status == 0) {
@@ -465,7 +465,7 @@
         <td><a class="btn-detail"
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
-        <td>${item.vehicleLoadTaken.toLocaleString('en-US')}</td>
+        <td>${item.vehicleLoadTaken > 0? item.vehicleLoadTaken.toLocaleString('en-US'):0}</td>
         <td>
            ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? html_div : html_input}
         </td>
@@ -551,7 +551,7 @@
         <td><a class="btn-detail"
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
-        <td>${item.vehicleLoadTaken.toLocaleString('en-US')}</td>
+        <td>${item.vehicleLoadTaken > 0 ? item.vehicleLoadTaken.toLocaleString('en-US') : 0}</td>
         <td>
             <div class="status-dropdown">
                 <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}"
@@ -671,14 +671,14 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4,5, 8], [0, 1, 2, 3, 4,5]);
     });
     connection.on("ListCarCall_Bo_LUOT", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow_Bo_luot(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4,5]);
     });
     // Nhận data từ server (SignalR)
     connection.on("UpdateMangStatus", function (oldMangId, newMangId, carId) {
@@ -739,7 +739,7 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 7], [0, 1, 2, 3, 4]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
     });
 
     connection.onreconnecting(error => {
