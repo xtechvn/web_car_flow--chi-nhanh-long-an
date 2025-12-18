@@ -76,6 +76,7 @@ namespace DAL
                         new SqlParameter("@ExpirationDate", model.ExpirationDate),
                         new SqlParameter("@VehicleWeight", model.VehicleWeight),
                         new SqlParameter("@InspectionDate", model.InspectionDate),
+                        new SqlParameter("@VehicleWeightMax", model.VehicleWeightMax),
 
                  };
                 var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_InsertInspection, objParam);
@@ -99,6 +100,7 @@ namespace DAL
                     new SqlParameter("@ExpirationDate", model.ExpirationDate),
                     new SqlParameter("@VehicleWeight", model.VehicleWeight),
                     new SqlParameter("@InspectionDate", model.InspectionDate),
+                    new SqlParameter("@VehicleWeightMax", model.VehicleWeightMax),
                 };
                 var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_UpdateInspection, objParam);
                 return dt;

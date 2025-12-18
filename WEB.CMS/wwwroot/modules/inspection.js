@@ -2,7 +2,17 @@
     $('input').attr('autocomplete', 'off');
 
     _inspection.Init();
-
+    var input_vehicle_number = document.getElementById("input_vehicle_number");
+    if (input_vehicle_number != null)
+    input_vehicle_number.addEventListener("keyup", function (event) {
+        _inspection.getlisst();
+    });
+    var input_type = document.getElementById("input_type");
+    if (input_type != null)
+    input_type.addEventListener('change', function () {
+         
+        _inspection.getlisst();
+      });
 });
 var _inspection = {
     Init: function () {
@@ -40,6 +50,7 @@ var _inspection = {
             VehicleWeight: $('#VehicleWeight').val(),
             InspectionDate: $('#InspectionDate').val(),
             ExpirationDate: $('#ExpirationDate').val(),
+            VehicleWeightMax: $('#VehicleWeightMax').val(),
         };
 
         let url = "/Inspection/SetUp";

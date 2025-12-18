@@ -10,5 +10,6 @@ namespace Entities.Models
         public DateTime? ExpirationDate { get; set; }
         public decimal? VehicleWeight { get; set; }
         public DateTime? InspectionDate { get; set; }
+        public decimal? VehicleWeightMax { get; set; }
     }
 }

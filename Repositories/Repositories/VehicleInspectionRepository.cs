@@ -361,6 +361,18 @@ namespace Repositories.Repositories
                 LogHelper.InsertLogTelegram("SaveVehicleInspection - VehicleInspectionRepository: " + ex);
             }
             return 0;
+        } 
+        public async Task<int> UpdateVehicleLoadTaken(int Id, int VehicleLoadTaken)
+        {
+            try
+            {
+                return await _VehicleInspectionDAL.UpdateVehicleLoadTaken(Id, VehicleLoadTaken);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("UpdateVehicleLoadTaken - VehicleInspectionRepository: " + ex);
+            }
+            return 0;
         }
     }
 }

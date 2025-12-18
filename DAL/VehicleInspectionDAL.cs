@@ -516,6 +516,7 @@ namespace DAL
                         new SqlParameter("@StartDate", (object)model.StartDate ?? DBNull.Value),
                         new SqlParameter("@EndDate", (object)model.EndDate ?? DBNull.Value)
                  };
+
                 var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_InsertTroughWeight, objParam);
                 return dt;
             }
@@ -587,6 +588,26 @@ namespace DAL
                 LogHelper.InsertLogTelegram("GetAudioPathByVehicleNumber - VehicleInspectionDAL: " + ex);
             }
             return 0;
+        }
+        public async Task<int> UpdateVehicleLoadTaken(int Id, int VehicleLoadTaken)
+        {
+            try
+            {
+                SqlParameter[] objParam = new SqlParameter[]
+                {
+
+                    new SqlParameter("@ID", Id),
+                    new SqlParameter("@VehicleLoadTaken",VehicleLoadTaken),
+                    
+                };
+                var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.SP_UpdateVehicleLoadTaken, objParam);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("UpdateVehicleLoadTaken - VehicleInspectionDAL: " + ex);
+            }
+            return -1;
         }
     }
 }

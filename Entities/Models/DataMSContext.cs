@@ -97,6 +97,8 @@ namespace Entities.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.VehicleWeight).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.VehicleWeightMax).HasColumnType("decimal(10, 2)");
             });
 
             modelBuilder.Entity<Menu>(entity =>
@@ -320,6 +322,8 @@ namespace Entities.Models
                 entity.Property(e => e.VehicleArrivalDate).HasColumnType("datetime");
 
                 entity.Property(e => e.VehicleLoad).HasMaxLength(50);
+
+                entity.Property(e => e.VehicleLoadTaken).HasColumnType("decimal(8, 0)");
 
                 entity.Property(e => e.VehicleNumber)
                     .HasMaxLength(50)

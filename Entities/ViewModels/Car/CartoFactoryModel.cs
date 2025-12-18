@@ -24,6 +24,7 @@ namespace Entities.ViewModels.Car
         public int TrangThai { get; set; }
         public int InspectionId { get; set; } 
         public List<TroughWeight> ListTroughWeight { get; set; }
+        public decimal VehicleWeightMax { get; set; }
 
     }
 }

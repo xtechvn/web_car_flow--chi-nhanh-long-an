@@ -410,7 +410,7 @@
         { Description: "Ngắt máng", CodeValue: "5" },
         { Description: "Bỏ lượt", CodeValue: "4" },
         { Description: "Blank", CodeValue: "3" },
-        { Description: "Đang xếp hàng", CodeValue: "2" },
+        { Description: "Đang xuất hàng", CodeValue: "2" },
         { Description: "Đã gọi", CodeValue: "1" },
         { Description: "Hoàn thành", CodeValue: "0" },
         // Add more objects as needed

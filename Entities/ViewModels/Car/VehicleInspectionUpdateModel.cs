@@ -40,6 +40,8 @@ namespace Entities.ViewModels.Car
         public int? LoadingType { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ProcessingIsLoadingDate { get; set; }
+        public decimal? VehicleWeightMax { get; set; }
+        public decimal? VehicleLoadTaken { get; set; }
     }
 
 }
