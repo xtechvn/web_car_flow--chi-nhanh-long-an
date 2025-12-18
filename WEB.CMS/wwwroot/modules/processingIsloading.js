@@ -201,8 +201,8 @@
     }
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/CarHub", {
-             
-            
+
+
         })
         .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
@@ -240,7 +240,7 @@
         text: allcode2.Description,
         value: allcode2.CodeValue
     }));
- 
+
     const jsonString = JSON.stringify(options);
     const jsonString2 = JSON.stringify(options2);
     // Hàm render row
@@ -252,14 +252,36 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var date2 = new Date(item.registerDateOnline);
+        let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear();
         var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
                                         <i class="icon-edit"></i>
                                     </a>`
- 
+        var html_input = `<div class="">
+                                            <p class="">
+                                                <input type="text"
+                                                       class="input-form VehicleLoadTaken"
+                                                       maxlength="8"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
+                                                       placeholder="Vui lòng nhập trọng lượng thực tế"value="${item.vehicleLoadTaken == null ? 0 : item.vehicleLoadTaken.toLocaleString('en-US') }" />
+
+
+                                                <a class="cursor-pointer check-VehicleLoadTaken" title="Lưu" style="margin-left: 6px;">
+                                                    <i class="icon-check"></i>
+                                                </a>
+
+                                            </p>
+                                        </div>`
+
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
-            <td>${item.registerDateOnline}</td>
+            <td>${formatted2}</td>
             <td>
             ${item.customerName} <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa">
                                                     <i class="icon-edit"></i>
@@ -269,9 +291,11 @@
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
             <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
-            <td>${item.vehicleLoad}</td>
+          
             <td>${item.licenseNumber}</td>
             <td>${item.vehicleStatusName}</td>
+            <td>${item.vehicleWeightMax.toLocaleString('en-US') }</td>
+            <td>${html_input} </td>
             <td>
                 <div class="status-dropdown">
                     <button class="dropdown-toggle "  data-type="1" data-options='${jsonString}'>
@@ -299,17 +323,26 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var date2 = new Date(item.registerDateOnline);
+        let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear();
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
-            <td>${item.registerDateOnline}</td>
+            <td>${formatted2}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
             <td>${item.vehicleNumber}</td>
-            <td>${item.vehicleLoad}</td>
+         
             <td>${item.licenseNumber}</td>
             <td>${item.vehicleStatusName}</td>
+            <td>${item.vehicleWeightMax.toLocaleString('en-US')}</td>
+            <td>${item.vehicleLoadTaken == null ? 0: item.vehicleLoadTaken.toLocaleString('en-US') }</td>
             <td>
                 <div class="">
                     <p class=" " >
@@ -335,9 +368,8 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -349,9 +381,8 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -406,6 +437,28 @@
     connection.onclose(error => {
         console.error("❌ Kết nối bị đóng.", error);
     });
+    $(document).on('click', '.check-VehicleLoadTaken', function (e) {
+        var element_btn = $(this);
+        var class_tr = element_btn.closest('tr').attr('class');
+        var id = 0;
+        var match_tr = class_tr.match(/CartoFactory_(\d+)/);
+        if (match_tr && match_tr[1]) {
+            id = match_tr[1];
+        }
+        var vehicleloadtaken = element_btn.closest('td').find('.VehicleLoadTaken').val();
+        if (vehicleloadtaken != "") {
+            vehicleloadtaken = vehicleloadtaken.replaceAll(",","")
+        }
+        _processing_is_loading.UpdateVehicleLoad(id, vehicleloadtaken)
+    });
+    function parseDateTime(str) {
+        // "11:33 17/12/2025"
+        const [time, date] = str.split(" ");
+        const [hour, minute] = time.split(":").map(Number);
+        const [day, month, year] = date.split("/").map(Number);
+
+        return new Date(year, month - 1, day, hour, minute).getTime();
+    }
 });
 var _processing_is_loading = {
     init: function () {
@@ -499,12 +552,12 @@ var _processing_is_loading = {
                     setTimeout(
                         window.location.reload()
                         , 1000);
-                    
+
                 } else {
                     _msgalert.error(result.msg)
                 }
             },
- 
+
         });
         return status_type;
     },
@@ -513,5 +566,26 @@ var _processing_is_loading = {
         let url = '/Car/AddOrUpdateNamePopup';
         let param = { id: id };
         _magnific.OpenSmallPopup(title, url, param);
+    },
+    UpdateVehicleLoad: function (id, vehicleloadtaken) {
+        var status_type = 0
+        $.ajax({
+            url: "/Car/UpdateVehicleLoadTaken",
+            type: "post",
+            data: { id: id, vehicleloadtaken: vehicleloadtaken },
+            success: function (result) {
+                status_type = result.status;
+                if (result.status == 0) {
+                    _msgalert.success(result.msg)
+                    $.magnificPopup.close();
+                } else {
+                    _msgalert.error(result.msg)
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+            }
+        });
+        return status_type;
     },
 }

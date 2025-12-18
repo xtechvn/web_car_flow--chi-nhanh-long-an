@@ -33,6 +33,7 @@
             <th>Ngày đăng kiểm</th>
             <th>Ngày hết hạn đăng kiểm</th>
             <th>Trọng lượng xe theo đăng kiểm</th>
+            <th>Trọng lượng xe tối đa</th>
             <th>Trạng thái</th>
             <th>Tác vụ</th>
         </tr>
@@ -48,6 +49,7 @@
                     <td>@item.InspectionDate?.ToString("dd/MM/yyyy")</td>
                     <td>@item.ExpirationDate?.ToString("dd/MM/yyyy")</td>
                     <td>@(((decimal)item.VehicleWeight).ToString("N0"))</td>
+                    <td>@(((decimal)item.VehicleWeightMax).ToString("N0"))</td>
                     <td>
                     @{
                         switch(item.TrangThai)

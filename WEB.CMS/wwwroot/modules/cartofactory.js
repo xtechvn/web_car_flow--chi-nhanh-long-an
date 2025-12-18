@@ -249,7 +249,7 @@
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
             <td>${item.customerName}</td>
@@ -281,7 +281,7 @@
     function renderRow2(item) {
 
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.queueNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${createTime}" >
             <td>${item.queueNumber}</td>
             <td>${item.createTime}</td>
             <td>${item.name}</td>
@@ -318,7 +318,7 @@
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
             <td>${item.customerName}</td>
@@ -344,9 +344,9 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
+            return timeA - timeB;
         });
 
         tbody.innerHTML = "";
@@ -357,9 +357,9 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const qa = parseInt(a.getAttribute("data-queue") || 0);
-            const qb = parseInt(b.getAttribute("data-queue") || 0);
-            return qa - qb;
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
+            return timeA - timeB;
         });
 
         tbody.innerHTML = "";
@@ -410,7 +410,14 @@
     connection.onclose(error => {
         console.error("❌ Kết nối bị đóng.", error);
     });
+    function parseDateTime(str) {
+        // "11:33 17/12/2025"
+        const [time, date] = str.split(" ");
+        const [hour, minute] = time.split(":").map(Number);
+        const [day, month, year] = date.split("/").map(Number);
 
+        return new Date(year, month - 1, day, hour, minute).getTime();
+    }
 });
 var _cartofactory = {
 

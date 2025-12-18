@@ -251,7 +251,8 @@ namespace WEB.CMS.Controllers
                 model.LoadingType = detail.LoadingType;
                 model.VehicleArrivalDate = detail.VehicleArrivalDate;
                 model.ProcessingIsLoadingDate = detail.ProcessingIsLoadingDate;
-
+                model.VehicleWeightMax = detail.VehicleWeightMax;
+                model.VehicleLoadTaken = detail.VehicleLoadTaken;
                 model.CreatedBy = _UserId;
                 switch (type)
                 {
@@ -838,6 +839,32 @@ namespace WEB.CMS.Controllers
             {
                 status = (int)ResponseType.FAILED,
                 msg = "Cập nhật không thành công"
+            });
+        }
+        public async Task<IActionResult> UpdateVehicleLoadTaken(int id, int vehicleloadtaken)
+        {
+            try
+            {
+
+                var update = await _vehicleInspectionRepository.UpdateVehicleLoadTaken(id, vehicleloadtaken);
+                if (update > 0)
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.SUCCESS,
+                        msg = "cập nhật thành công"
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("WeighedInput - CarController: " + ex);
+            }
+            return Ok(new
+            {
+                status = (int)ResponseType.ERROR,
+                msg = "cập nhật không thành công"
             });
         }
     }
