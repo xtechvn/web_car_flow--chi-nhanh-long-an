@@ -284,9 +284,8 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -297,9 +296,8 @@
         const tbody = document.getElementById("dataBody-0");
         const rows = Array.from(tbody.querySelectorAll("tr"));
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -343,6 +341,14 @@
     connection.onclose(error => {
         console.error("❌ Kết nối bị đóng.", error);
     });
+    function parseDateTime(str) {
+        // "11:33 17/12/2025"
+        const [time, date] = str.split(" ");
+        const [hour, minute] = time.split(":").map(Number);
+        const [day, month, year] = date.split("/").map(Number);
+
+        return new Date(year, month - 1, day, hour, minute).getTime();
+    }
 });
 var _listVehicles = {
     init: function () {

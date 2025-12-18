@@ -252,6 +252,13 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var date2 = new Date(item.registerDateOnline);
+        let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear();
         var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
                                         <i class="icon-edit"></i>
                                     </a>`
@@ -274,7 +281,7 @@
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
-            <td>${item.registerDateOnline}</td>
+            <td>${formatted2}</td>
             <td>
             ${item.customerName} <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa">
                                                     <i class="icon-edit"></i>
@@ -316,10 +323,17 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var date2 = new Date(item.registerDateOnline);
+        let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear();
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
-            <td>${item.registerDateOnline}</td>
+            <td>${formatted2}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
@@ -354,9 +368,8 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -368,9 +381,8 @@
         const rows = Array.from(tbody.querySelectorAll("tr"));
 
         rows.sort((a, b) => {
-            const timeA = new Date(a.getAttribute("data-queue")).getTime();
-            const timeB = new Date(b.getAttribute("data-queue")).getTime();
-
+            const timeA = parseDateTime(a.dataset.queue);
+            const timeB = parseDateTime(b.dataset.queue);
             return timeA - timeB; // tăng dần
         });
 
@@ -439,6 +451,14 @@
         }
         _processing_is_loading.UpdateVehicleLoad(id, vehicleloadtaken)
     });
+    function parseDateTime(str) {
+        // "11:33 17/12/2025"
+        const [time, date] = str.split(" ");
+        const [hour, minute] = time.split(":").map(Number);
+        const [day, month, year] = date.split("/").map(Number);
+
+        return new Date(year, month - 1, day, hour, minute).getTime();
+    }
 });
 var _processing_is_loading = {
     init: function () {

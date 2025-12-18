@@ -24,11 +24,11 @@
             <!-- Ngày sinh -->
             <div class="form-group">
                 <label>Trọng lượng(Kg)<span>*</span></label>
-                <input type="text" id="VehicleWeight" name="VehicleWeight" />
+                <input type="text" id="VehicleWeight"  class="currency" name="VehicleWeight" />
             </div>
             <div class="form-group">
                 <label>Trọng lượng tối đa(Kg)<span>*</span></label>
-                <input type="text" id="VehicleWeightMax" name="VehicleWeightMax" style="background: #d0d5dd;" disabled />
+                <input type="text" id="VehicleWeightMax" class="currency" name="VehicleWeightMax" style="background: #d0d5dd;" disabled />
             </div>
             <!-- Số điện thoại -->
             <div class="form-group">
@@ -60,11 +60,11 @@
 
             <div class="form-group">
                 <label>Trọng lượng(Kg)<span>*</span></label>
-                <input type="text" id="VehicleWeight" name="VehicleWeight" value="@(Model.VehicleWeight==null?0:((decimal)Model.VehicleWeight).ToString("N0"))" />
+                <input class="currency" type="text" id="VehicleWeight" name="VehicleWeight" value="@(Model.VehicleWeight==null?0:((decimal)Model.VehicleWeight).ToString("N0"))" />
             </div> 
             <div class="form-group">
                 <label>Trọng lượng tối đa(Kg)<span>*</span></label>
-                <input type="text" id="VehicleWeightMax" name="VehicleWeightMax" value="@(Model.VehicleWeightMax==null?(((double)Model.VehicleWeight)*1.1).ToString("N0"): ((decimal)Model.VehicleWeightMax).ToString("N0"))" style="background: #d0d5dd;" disabled />
+                <input class="currency" type="text" id="VehicleWeightMax" name="VehicleWeightMax" value="@(Model.VehicleWeightMax==null?(((double)Model.VehicleWeight)*1.1).ToString("N0"): ((decimal)Model.VehicleWeightMax).ToString("N0"))" style="background: #d0d5dd;" disabled />
             </div>
 
             <div class="form-group">
@@ -102,9 +102,15 @@
         this.value = value;
     });
     $('#VehicleWeight').on('input', function () {
-        var vehicleWeight = parseFloat(this.value) || 0;
-        var max =  vehicleWeight * 1.1;
+        var vehicleWeight = this.value
+        if (vehicleWeight != undefined && vehicleWeight != "") {
+            vehicleWeight = parseFloat(vehicleWeight.replaceAll(",","")) || 0;
+            var max = vehicleWeight * 1.1;
 
-        $('#VehicleWeightMax').val(max);
+            $('#VehicleWeightMax').val(max.toLocaleString('en-US'));
+        } else {
+            $('#VehicleWeightMax').val(0);
+        }
+      
     });
 </script>
