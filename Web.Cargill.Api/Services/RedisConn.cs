@@ -102,6 +102,12 @@ namespace Web.Cargill.Api.Services
             var sub = _redis.GetSubscriber();
             var json = JsonSerializer.Serialize(record);
             await sub.PublishAsync(channel, json);
+        } 
+        public async Task Publish_CamAsync(string channel, CartoFactoryModel record)
+        {
+            var sub = _redis.GetSubscriber();
+            var json = JsonSerializer.Serialize(record);
+            await sub.PublishAsync(channel, json);
         }
 
 

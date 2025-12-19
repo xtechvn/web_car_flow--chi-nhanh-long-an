@@ -38,6 +38,25 @@ namespace WEB.CMS.Services
                 }
             });
         }
+        public async Task Subscribed_Cam_Async(string channel, Action<CartoFactoryModel> onMessage)
+        {
+            var sub = _redis.GetSubscriber();
+            await sub.SubscribeAsync(channel, (ch, msg) =>
+            {
+                try
+                {
+                    var record = JsonSerializer.Deserialize<CartoFactoryModel>(msg!);
+                    if (record != null)
+                    {
+                        onMessage?.Invoke(record);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.InsertLogTelegram("Redis Subscribe Deserialize Error: " + ex.Message);
+                }
+            });
+        }
         public void Connect()
         {
             try
