@@ -52,7 +52,7 @@ namespace Entities.ViewModels.Car
     public class CamModel
     {
         public string bien_so { get; set; }             
-        public DateTime? thoi_gian_chup { get; set; }            
+        public string thoi_gian_chup { get; set; }            
         public string anh_chup_xe { get; set; }           
       
     

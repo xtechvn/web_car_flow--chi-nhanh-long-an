@@ -151,7 +151,7 @@ namespace Web.Cargill.Api.Controllers
                 });
             }
         }
-        [HttpGet("update-by-plateNumber")]
+        [HttpPost("update-by-plateNumber")]
         public async Task<IActionResult> UpdateByPlateNumber([FromBody] CamModel request)
         {
             try
@@ -159,6 +159,8 @@ namespace Web.Cargill.Api.Controllers
                 var update = await _vehicleInspectionRepository.UpdateVehicleInspectionByVehicleNumber(request.bien_so);
                 if ( update > 0)
                 {
+                    var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(update);
+                    await redisService.Publish_CamAsync("ListCartoFactory_Cam", detail);
                     return Ok(new
                     {
                         status = (int)ResponseType.SUCCESS,

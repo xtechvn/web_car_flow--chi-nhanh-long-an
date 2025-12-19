@@ -32,7 +32,12 @@ namespace WEB.CMS.Services
                 await _hubContext.Clients.All.SendAsync("ReceiveRegistration", record);
 
             });
+            await _redisService.Subscribed_Cam_Async("ListCartoFactory_Cam", async (CartoFactoryModel detail) =>
+            {
 
+                await _hubContext.Clients.All.SendAsync("ListCartoFactory_Da_SL", detail);
+
+            });
             await Task.CompletedTask;
         }
     }
