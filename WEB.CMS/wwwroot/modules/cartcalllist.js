@@ -201,7 +201,7 @@
                     //}
 
                 } else {
-                    var weight = $('.CartoFactory_' + id_row).find('input.weight').val() || 0;
+                    var weight = $('.CartoFactory_' + id_row).find('input.weight').val().replaceAll(",", "") || 0;
                     var note = null;
                     var text_type = $('.CartoFactory_' + id_row + '_troughWeight').text().trim();
 
@@ -222,7 +222,7 @@
                             $extra.find("input").focus();
                             return; // dừng, chờ user nhập
                         } else {
-                            weight = $menu.find(".extra-weight .weight-input").val();
+                            weight = $menu.find(".extra-weight .weight-input").val().replaceAll(",", "");
                             if (!weight || weight == 0) {
                                 alert("Vui lòng nhập trọng lượng!");
                                 return;
