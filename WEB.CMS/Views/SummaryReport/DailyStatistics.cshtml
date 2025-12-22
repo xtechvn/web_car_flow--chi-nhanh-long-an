@@ -36,7 +36,6 @@
         {
             foreach (var item in Model)
             {
-                var totalMinutes = item.VehicleWeighingTimeComplete.HasValue && item.VehicleWeighingTimeComeIn.HasValue ? (item.VehicleWeighingTimeComplete.Value - item.VehicleWeighingTimeComeIn.Value).TotalMinutes : 0;
                 <tr>
                     <td>@item.RecordNumber</td>
                     <td>@(item.RegisterDateOnline != null ? item.RegisterDateOnline.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>
@@ -51,7 +50,7 @@
                     <td>@(item.VehicleTroughTimeComeIn != null ? item.VehicleTroughTimeComeIn.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*bước 5 bốc hành*@
                     <td>@(item.VehicleTroughTimeComeOut != null ? item.VehicleTroughTimeComeOut.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*bước 5 hoàn thành*@
                     <td>@(item.VehicleWeighingTimeComplete != null ? item.VehicleWeighingTimeComplete.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*Bước 6*@
-                    <td>@((int)Math.Round(totalMinutes))</td>
+                    <td>@(item.totalMinutes)</td>
                     <td>
                         @* Ưu tiên kiểm tra từ Bước 6 xuống Bước 1 *@
                         @if ((item.VehicleTroughStatus == (int)VehicleTroughStatus.Hoan_thanh) &&
@@ -59,7 +58,7 @@
                         {
                             <div>Bước 6</div>
                         }
-                        else if ((item.VehicleWeighedstatus == (int)VehicleWeighedstatus.Da_Can_Xong_Dau_Cao) && item.TroughType !=null &&
+                        else if ((item.VehicleWeighedstatus == (int)VehicleWeighedstatus.Da_Can_Xong_Dau_Cao) && item.TroughTypes !=null &&
                         (item.VehicleTroughStatus != null || item.VehicleTroughStatus == (int)VehicleTroughStatus.Blank))
                         {
                             <div>Bước 5</div>
@@ -85,7 +84,7 @@
                         }
 
                     </td>
-                    <td>@item.VehicleTroughWeight</td>
+                    <td>@item.TotalVehicleTroughWeight</td>
                     <td>@item.FullName</td>
 
                 </tr>
