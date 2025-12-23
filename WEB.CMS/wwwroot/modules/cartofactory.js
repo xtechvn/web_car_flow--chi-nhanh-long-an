@@ -199,7 +199,7 @@
         .withUrl("/CarHub", {
             
         })
-        .withAutomaticReconnect([0, 2000, 5000, 10000])
+        
         .build();
 
     let retryDelay = 2000; // 2 giây
@@ -281,7 +281,7 @@
     function renderRow2(item) {
 
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${createTime}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${item.createTime}" >
             <td>${item.queueNumber}</td>
             <td>${item.createTime}</td>
             <td>${item.name}</td>
