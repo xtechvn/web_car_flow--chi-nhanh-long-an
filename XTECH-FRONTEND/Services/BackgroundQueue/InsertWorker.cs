@@ -45,7 +45,7 @@ namespace XTECH_FRONTEND.Services.BackgroundQueue
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync(
-                    "http://api.longancargill.com/api/vehicleInspection/insert",
+                    "https://api-cargillhanam.adavigo.com/api/vehicleInspection/insert",
                     content,
                     token
                 );
