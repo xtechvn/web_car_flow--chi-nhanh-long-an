@@ -934,7 +934,7 @@ var _cartcalllist = {
                     return compareText === prevRowCompareText[c];
                 });
 
-                if (text === prevText && sameAll) {
+                if (text === prevText && sameAll && prevCell != null) {
                     span++;
                     prevCell.rowSpan = span;
                     cell.style.display = "none"; // ẩn ô trùng
