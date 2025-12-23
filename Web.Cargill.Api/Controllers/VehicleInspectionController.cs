@@ -56,7 +56,8 @@ namespace Web.Cargill.Api.Controllers
                     var expireAt = new DateTime(now.Year, now.Month, now.Day, ((DateTime)TIME_RESET[0].UpdateTime).Hour, ((DateTime)TIME_RESET[0].UpdateTime).Minute, 0);
                     if (now < expireAt)
                     {
-                        await redisService.PublishAsync("Add_ReceiveRegistration" + _configuration["CompanyType"], request);
+                        await redisService.PublishAsync("Add_ReceiveRegistration_LA" , request);
+                      
                     }
                     
                     

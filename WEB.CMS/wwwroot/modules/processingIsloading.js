@@ -204,7 +204,7 @@
 
 
         })
-        .withAutomaticReconnect([0, 2000, 5000, 10000])
+        
         .build();
 
     let retryDelay = 2000; // 2 giây

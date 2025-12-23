@@ -312,7 +312,8 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                         QueueNumber = registrationRecord.QueueNumber,
                         Referee = registrationRecord.Referee,
                         RegistrationTime = registrationRecord.RegistrationTime,
-                        ZaloStatus = registrationRecord.ZaloStatus
+                        ZaloStatus = registrationRecord.ZaloStatus,
+                        LocationType=2,
                     }
                 });
                 // Return success response
@@ -360,7 +361,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 $"📞 Hotline hỗ trợ: 1900-1234\n" +
                 $"🌐 Website: https://cargilllongan.com\n\n" +
                 $"Cảm ơn bạn đã sử dụng dịch vụ! ";
-                string url = "http://qc-api.cargillhanam.com/api/vehicleInspection/Insert";
+                string url = "http://api.longancargill.com/api/vehicleInspection/Insert";
                 var client = new HttpClient();
                 var request_api = new HttpRequestMessage(HttpMethod.Post, url);
                 request_api.Content = new StringContent(JsonConvert.SerializeObject(request), null, "application/json");

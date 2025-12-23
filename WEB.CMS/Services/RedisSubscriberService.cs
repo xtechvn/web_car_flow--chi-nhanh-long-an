@@ -24,8 +24,8 @@ namespace WEB.CMS.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _redisService.Connect();
-
-            await _redisService.SubscribeAsync("Add_ReceiveRegistration"+_configuration["CompanyType"], async (RegistrationRecord record) =>
+            LogHelper.InsertLogTelegram("RedisSubscriberService - ExecuteAsync: đã kết nối" );
+            await _redisService.SubscribeAsync("Add_ReceiveRegistration_LA", async (RegistrationRecord record) =>
             {
 
                 record.CreateTime = record.RegistrationTime.ToString("HH:mm dd/MM/yyyy");
