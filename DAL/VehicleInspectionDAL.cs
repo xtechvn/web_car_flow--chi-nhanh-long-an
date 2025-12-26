@@ -13,6 +13,7 @@ using Entities.ViewModels.Car;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.Diagnostics;
 
 
 namespace DAL
@@ -88,6 +89,7 @@ namespace DAL
         {
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 SqlParameter[] objParam = new SqlParameter[]
                 {
                     new SqlParameter("@Id", model.Id),
@@ -126,7 +128,8 @@ namespace DAL
 
                 // Gọi SP
                 var dt = _DbWorker.ExecuteNonQuery(StoreProcedureConstant.sp_UpdateVehicleInspection, objParam);
-
+                stopwatch.Stop();
+                LogHelper.InsertLogTelegram("UpdateVehicleInspection - VehicleInspectionDAL time: " + stopwatch.ElapsedMilliseconds);
                 return dt;
             }
             catch (Exception ex)

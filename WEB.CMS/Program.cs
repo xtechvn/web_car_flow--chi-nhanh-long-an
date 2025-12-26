@@ -80,6 +80,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // Map Hub
+app.UseWebSockets();
 app.MapHub<CarHub>("/CarHub");
 
 app.Run();
