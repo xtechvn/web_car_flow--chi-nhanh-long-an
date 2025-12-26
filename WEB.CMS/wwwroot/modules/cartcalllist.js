@@ -374,29 +374,12 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-
-
-        })
-        
+        .withUrl("/CarHub")
+        .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
-
-    let retryDelay = 2000; // 2 giây
-
-    async function startSignalR() {
-        try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
-                console.log("✅ Kết nối SignalR thành công");
-            }
-        } catch (err) {
-            console.error("❌ SignalR connect failed. Retry in 2s...", err);
-            setTimeout(startSignalR, retryDelay);
-        }
-    }
-
-    // 👉 Gọi lần đầu
-    startSignalR();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
     const AllCode = [
         { Description: "Máng 1", CodeValue: "1" },
         { Description: "Máng 2", CodeValue: "2" },
@@ -666,6 +649,7 @@
 
 
     // Nhận data mới từ server
+    connection.off("ListCarCall_Da_SL");
     connection.on("ListCarCall_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
@@ -673,6 +657,7 @@
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
         _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4,5, 8], [0, 1, 2, 3, 4,5]);
     });
+    connection.off("ListCarCall_Bo_LUOT");
     connection.on("ListCarCall_Bo_LUOT", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
@@ -681,6 +666,7 @@
         _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4,5]);
     });
     // Nhận data từ server (SignalR)
+    connection.off("UpdateMangStatus");
     connection.on("UpdateMangStatus", function (oldMangId, newMangId, carId) {
         // ✅ Update máng mới thành "Đang xử lý"
         if (newMangId !== null && newMangId !== undefined) {
@@ -711,7 +697,7 @@
 
 
 
-
+    connection.off("ListCarCall");
     connection.on("ListCarCall", function (item) {
         const tbody = document.getElementById("dataBody-0");
         $('.CartoFactory_' + item.id).remove();
@@ -722,19 +708,23 @@
     });
 
     // Nhận data mới từ gọi xe cân đầu vào
+    connection.off("ListWeighedInput_Da_SL");
     connection.on("ListWeighedInput_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable();
         _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
     });
+    connection.off("ListWeighedInput");
     connection.on("ListWeighedInput", function (item) {
         $('#dataBody-0').find('.CartoFactory_' + item.id).remove();
 
     });
+    connection.off("ListVehicles_Da_SL");
     connection.on("ListVehicles_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
     });
+    connection.off("ListVehicles");
     connection.on("ListVehicles", function (item) {
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));

@@ -181,29 +181,12 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-             
-            
-        })
-        
+        .withUrl("/CarHub")
+        .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
-
-    let retryDelay = 2000; // 2 giây
-
-    async function startSignalR() {
-        try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
-                console.log("✅ Kết nối SignalR thành công");
-            }
-        } catch (err) {
-            console.error("❌ SignalR connect failed. Retry in 2s...", err);
-            setTimeout(startSignalR, retryDelay);
-        }
-    }
-
-    // 👉 Gọi lần đầu
-    startSignalR();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
 
     const AllCode = [
         { Description: "Blank", CodeValue: "2" },
@@ -306,13 +289,14 @@
     }
  
     // Nhận data mới từ server
+    connection.off("ListVehicles_Da_SL");
     connection.on("ListVehicles_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
     });
-
+    connection.off("ListVehicles");
     connection.on("ListVehicles", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-0");
@@ -320,12 +304,14 @@
         sortTable(); // sắp xếp lại ngay khi thêm
     });
     // Nhận data mới từ gọi xe cân đầu vào
+    connection.off("ListCarCall_Da_SL");
     connection.on("ListCarCall_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow2(item));
         sortTable();
     });
+    connection.off("ListCarCall");
     connection.on("ListCarCall", function (item) {
         $('#dataBody-0').find('.CartoFactory_' + item.id).remove();
 

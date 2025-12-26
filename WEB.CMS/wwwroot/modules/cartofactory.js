@@ -196,28 +196,12 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-            
-        })
-        
+        .withUrl("/CarHub")
+        .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
-
-    let retryDelay = 2000; // 2 giây
-
-    async function startSignalR() {
-        try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
-                console.log("✅ Kết nối SignalR thành công");
-            }
-        } catch (err) {
-            console.error("❌ SignalR connect failed. Retry in 2s...", err);
-            setTimeout(startSignalR, retryDelay);
-        }
-    }
-
-    // 👉 Gọi lần đầu
-    startSignalR();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
     const AllCode = [
         { Description: "Blank", CodeValue: "1" },
         { Description: "Đã đến nhà máy", CodeValue: "0" },
@@ -367,32 +351,37 @@
     }
 
     // Nhận data mới từ server
+    connection.off("ListCartoFactory_Da_SL");
     connection.on("ListCartoFactory_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-1");
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow3(item));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
     });
-
+    connection.off("ListCartoFactory");
     connection.on("ListCartoFactory", function (item) {
         const tbody = document.getElementById("dataBody-0");
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow(item));
         sortTable(); // sắp xếp lại ngay khi thêm
     });
+    connection.off("ReceiveRegistration");
     connection.on("ReceiveRegistration", function (item) {
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow2(item));
         sortTable(); // sắp xếp lại ngay khi thêm
     });
+    connection.off("ListProcessingIsLoading_Da_SL");
     connection.on("ListProcessingIsLoading_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
     });
+    connection.off("ListProcessingIsLoading");
     connection.on("ListProcessingIsLoading", function (item) {
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow3(item));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
     });
+    connection.off("ProcessingIsLoading_khoa");
     connection.on("ProcessingIsLoading_khoa", function (item) {
         const tbody = document.getElementById("dataBody-0");
         $('.CartoFactory_' + item.id).remove();
