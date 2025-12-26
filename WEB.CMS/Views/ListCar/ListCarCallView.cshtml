@@ -73,7 +73,7 @@
                                    data-id="@item.Id" style="cursor:pointer">@item.VehicleNumber</a>
                             </td>
                             <td>
-                                @(((DateTime)item.VehicleWeighingTimeComeOut).ToString("HH:mm dd/MM/yyyy"))
+                                @(item.VehicleWeighingTimeComeOut!=null?((DateTime)item.VehicleWeighingTimeComeOut).ToString("HH:mm dd/MM/yyyy"):"")
                             </td>
                             <td>@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")</td>
                             <td>

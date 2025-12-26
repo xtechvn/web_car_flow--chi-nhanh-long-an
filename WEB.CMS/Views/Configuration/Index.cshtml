@@ -194,7 +194,7 @@
     </div>
 
 
-    <div class="table-wrapper" >
+    <div class="table-wrapper">
         <table class="data-table">
             <thead>
                 <tr>
@@ -208,27 +208,30 @@
                 {
                     <input id="Id" style="display:none;" value="@LOAD_TYPE[0].Id">
                     <tr>
-                        <td>@item.Description</td>
-                        <td>
-                            @foreach (var item in LOAD_TYPE)
-                            {
+                        @foreach (var item in LOAD_TYPE)
+                        {
+                            <td>@item.Description</td>
+                            <td>
+
                                 @item.UpdateTime.Value.ToString("HH:mm:ss")
 
-                            }
-                        </td>
-                        <td>
 
-                            <div class="capnhat_time" style="display:none;">
-                                <input class="form-control" id="ExpireDate" value="@LOAD_TYPE[0].UpdateTime.Value.ToString("HH:mm")">
-                                <a class="cursor-pointer check-time" title="Lưu">
-                                    <i class="icon-check"></i>
+                            </td>
+
+                            <td>
+
+                                <div class="capnhat_time" style="display:none;">
+                                    <input class="form-control" id="ExpireDate" value="@LOAD_TYPE[0].UpdateTime.Value.ToString("HH:mm")">
+                                    <a class="cursor-pointer check-time" title="Lưu">
+                                        <i class="icon-check"></i>
+                                    </a>
+                                </div>
+
+                                <a class="cursor-pointer edit-time" title="Chỉnh sửa">
+                                    <i class="icon-edit"></i>
                                 </a>
-                            </div>
-
-                            <a class="cursor-pointer edit-time" title="Chỉnh sửa">
-                                <i class="icon-edit"></i>
-                            </a>
-                        </td>
+                            </td>
+                        }
                     </tr>
                 }
 
@@ -257,6 +260,6 @@
 
 </script>
 @section scripts {
-  
+
     <script src="/modules/configuration.js" asp-append-version="true"></script>
 }  
