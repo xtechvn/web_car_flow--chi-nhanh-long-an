@@ -194,7 +194,7 @@
     </div>
 
 
-    <div class="table-wrapper" style=" min-height:350px!important;height: 100%!important;">
+    <div class="table-wrapper" >
         <table class="data-table">
             <thead>
                 <tr>
@@ -206,9 +206,9 @@
             <tbody>
                 @if (LOAD_TYPE != null && LOAD_TYPE.Count > 0)
                 {
-                    <input  id="Id" style="display:none;" value="@LOAD_TYPE[0].Id">
+                    <input id="Id" style="display:none;" value="@LOAD_TYPE[0].Id">
                     <tr>
-                        <td>Thời gian Loading</td>
+                        <td>@item.Description</td>
                         <td>
                             @foreach (var item in LOAD_TYPE)
                             {
@@ -236,7 +236,15 @@
         </table>
 
     </div>
-
+    <div>
+        📌 Mô tả  nghiệp vụ :
+    </div>
+    <div>
+        - Các yêu cầu phát sinh sau cut-off time sẽ được xử lý vào ngày làm việc tiếp theo.
+    </div>
+    <div>
+        - Dữ liệu trước cut-off time được tính cho ngày hiện tại.
+    </div>
 </main>
 <script src="~/js/jquery-2.1.4.min.js"></script>
 <script src="~/js/zebra_datepicker.min.js"></script>
