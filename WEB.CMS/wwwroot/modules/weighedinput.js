@@ -194,8 +194,8 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 5000, 10000])
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([ 2000, 5000, 10000])
         .build();
     connection.start()
         .then(() => console.log("✅ SignalR connected"))
@@ -213,22 +213,14 @@
     const jsonString = JSON.stringify(options);
     // Hàm render row
     function renderRow(item) {
-        var date = new Date(item.registerDateOnline);
-        let formatted =
-            String(date.getDate()).padStart(2, '0') + "/" +
-            String(date.getMonth() + 1).padStart(2, '0') + "/" +
-            date.getFullYear() + " " +
-            String(date.getHours()).padStart(2, '0') + ":" +
-            String(date.getMinutes()).padStart(2, '0') + ":" +
-            String(date.getSeconds()).padStart(2, '0');
+
         var date2 = new Date(item.vehicleWeighingTimeComeIn);
         let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
             String(date2.getDate()).padStart(2, '0') + "/" +
             String(date2.getMonth() + 1).padStart(2, '0') + "/" +
-            date2.getFullYear() + " " +
-            String(date2.getHours()).padStart(2, '0') + ":" +
-            String(date2.getMinutes()).padStart(2, '0') + ":" +
-            String(date2.getSeconds()).padStart(2, '0');
+            date2.getFullYear();
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted2}" data-LoadType="${item.loadType}" >
             <td>${item.recordNumber}</td>

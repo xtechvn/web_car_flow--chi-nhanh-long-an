@@ -83,13 +83,13 @@
                                         <button class="dropdown-toggle  @(ViewBag.type == 1 ? "disabled" : "") @(TroughWeight.VehicleTroughWeight==null||TroughWeight.VehicleTroughWeight <= 0 ? "CartoFactory_"+item.Id+"_troughWeight" : "")"
                                                 data-type="1"
                                                 data-options='[
-                            @foreach (var allcode in AllCode2)
-                            {
-                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
-                            }
-                ]'
+                                                                            @foreach (var allcode in AllCode2)
+                                                                            {
+                                                                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+                                                                            }
+                                                                ]'
                                                 @(ViewBag.type == 1 ? "disabled" : "")>
-                                            @TroughWeight.TroughType
+                                            @item.TroughTypeName 
                                         </button>
                                     }
                                     else

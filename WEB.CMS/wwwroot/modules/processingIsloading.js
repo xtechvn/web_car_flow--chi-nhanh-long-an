@@ -159,8 +159,15 @@
                         }) // xoá các class status- cũ
                         .addClass(cls); // gắn class mới (status-arrived, status-blank…)
                 } else {
-
-                    var Status_type = _processing_is_loading.UpdateStatus(id_row, val_TT, 8);
+                    var vehicleloadtaken = $currentBtn.closest('tr').find('.VehicleLoadTaken').val();
+                    if (vehicleloadtaken != undefined && vehicleloadtaken != "") {
+                        vehicleloadtaken = vehicleloadtaken.replaceAll(",", "")
+                        
+                    } else {
+                        vehicleloadtaken = 0;
+                    }
+                   
+                    var Status_type = _processing_is_loading.UpdateStatus(id_row, val_TT, 8, vehicleloadtaken);
                     if (Status_type == 0) {
                         $currentBtn
                             .text(text)
@@ -200,8 +207,8 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 5000, 10000])
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([ 2000, 5000, 10000])
         .build();
     connection.start()
         .then(() => console.log("✅ SignalR connected"))
@@ -507,12 +514,12 @@ var _processing_is_loading = {
             }
         });
     },
-    UpdateStatus: function (id, status, type) {
+    UpdateStatus: function (id, status, type, vehicleloadtaken) {
         var status_type = 0
         $.ajax({
             url: "/Car/UpdateStatus",
             type: "post",
-            data: { id: id, status: status, type: type },
+            data: { id: id, status: status, type: type, weight:vehicleloadtaken },
             success: function (result) {
                 status_type = result.status;
                 if (result.status == 0) {

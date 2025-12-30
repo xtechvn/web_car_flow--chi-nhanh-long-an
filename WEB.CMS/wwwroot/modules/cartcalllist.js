@@ -374,8 +374,8 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub")
-        .withAutomaticReconnect([0, 2000, 5000, 10000])
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([ 2000, 5000, 10000])
         .build();
     connection.start()
         .then(() => console.log("✅ SignalR connected"))

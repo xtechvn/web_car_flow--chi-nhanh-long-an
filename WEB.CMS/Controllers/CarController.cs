@@ -336,6 +336,7 @@ namespace WEB.CMS.Controllers
                                 detail.VehicleWeighingTypeName = allcode_detail.Description;
                                 if (status == (int)VehicleWeighingType.DA_Vao_Can)
                                 {
+                                    detail.VehicleWeighingTimeComeIn = DateTime.Now;
                                     await _hubContext.Clients.All.SendAsync("ListCallTheScale_Da_SL", detail);
                                 }
                                 else
@@ -583,6 +584,10 @@ namespace WEB.CMS.Controllers
                                     msg = "Cập nhật không thành công.Tình trạng xe không thay đổi"
                                 });
                             }
+                            if(weight > 0)
+                            {
+                                var update = await _vehicleInspectionRepository.UpdateVehicleLoadTaken(id, weight);
+                            }
                             model.LoadingStatus = status;
                             model.UpdatedBy = _UserId;
                             model.ProcessingIsLoadingDate = DateTime.Now;
@@ -596,6 +601,7 @@ namespace WEB.CMS.Controllers
                                 var allcode2 = await _allCodeRepository.GetListSortByName(AllCodeType.LOADINGSTATUS);
                                 var allcode_detail2 = allcode2.FirstOrDefault(s => s.CodeValue == model.LoadingStatus);
                                 detail.LoadingStatusName = allcode_detail2 == null ? "" : allcode_detail2.Description;
+                                detail.VehicleLoadTaken = weight;
                                 if (status == (int)LoadingStatus.Da_HTTC)
                                 {
                                     await _hubContext.Clients.All.SendAsync("ListProcessingIsLoading_Da_SL", detail);

@@ -286,7 +286,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 
                 if (stopwatch.ElapsedMilliseconds > 1000)
                 {
-                    LogHelper.InsertLogTelegram("TG sử lý " + request.PlateNumber + ": " + stopwatch.ElapsedMilliseconds);
+                    LogHelper.InsertLogTelegram("TG sử lý " + request.PlateNumber + ": " + stopwatch.ElapsedMilliseconds    );
                     var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
                     if (!Directory.Exists(logDirectory))
                     {

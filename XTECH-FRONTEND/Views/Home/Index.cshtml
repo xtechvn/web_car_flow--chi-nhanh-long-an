@@ -442,14 +442,31 @@
             // Format input as user types
             document.getElementById('plateNumber').addEventListener('input', function () {
                 // Auto format plate number: 30a12345 -> 30A-12345
-                let value = this.value.replace(/[^0-9A-Za-z\-]/g, '').toUpperCase(); // <-- Đã thêm '\-' vào regex
+                // Chỉ cho phép số, chữ, dấu -
+                let value = this.value
+                    .replace(/[^0-9A-Za-z]/g, '')
+                    .toUpperCase();
 
-                // Logic định dạng tự động
-                if (value.length > 3 && value[3] !== '-' && value.includes('-') == false) {
-                    // Tự động thêm '-' nếu nó chưa có ở vị trí thứ 3 và độ dài lớn hơn 3
-                    value = value.substring(0, 3) + '-' + value.substring(3);
+                // 2 số đầu
+                let province = value.match(/^\d{0,2}/)?.[0] || '';
+                let rest = value.slice(province.length);
+
+                // 1 hoặc 2 chữ cái
+                let letters = rest.match(/^[A-Z]{0,2}/)?.[0] || '';
+                rest = rest.slice(letters.length);
+
+                // 5 số
+                let numbers = rest.match(/^\d{0,5}/)?.[0] || '';
+
+                let result = province + letters;
+
+                if (province.length === 2 && letters.length >= 1) {
+                    result += '-';
                 }
-                this.value = value;
+
+                result += numbers;
+
+                this.value = result;
             });
 
             document.getElementById('phoneNumber').addEventListener('input', function () {
