@@ -286,7 +286,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 
                 if (stopwatch.ElapsedMilliseconds > 1000)
                 {
-                    LogHelper.InsertLogTelegram("TG sử lý " + request.PlateNumber + ": " + stopwatch.ElapsedMilliseconds);
+                    LogHelper.InsertLogTelegram("TG sử lý " + request.PlateNumber + ": " + stopwatch.ElapsedMilliseconds    );
                     var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
                     if (!Directory.Exists(logDirectory))
                     {
@@ -361,7 +361,7 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 $"📞 Hotline hỗ trợ: 1900-1234\n" +
                 $"🌐 Website: https://cargilllongan.com\n\n" +
                 $"Cảm ơn bạn đã sử dụng dịch vụ! ";
-                string url = "http://api.longancargill.com/api/vehicleInspection/Insert";
+                string url = "https://api-cargillhanam.adavigo.com/api/vehicleInspection/Insert";
                 var client = new HttpClient();
                 var request_api = new HttpRequestMessage(HttpMethod.Post, url);
                 request_api.Content = new StringContent(JsonConvert.SerializeObject(request), null, "application/json");

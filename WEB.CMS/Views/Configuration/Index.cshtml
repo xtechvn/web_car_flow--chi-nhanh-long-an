@@ -194,7 +194,7 @@
     </div>
 
 
-    <div class="table-wrapper" style=" min-height:350px!important;height: 100%!important;">
+    <div class="table-wrapper">
         <table class="data-table">
             <thead>
                 <tr>
@@ -206,29 +206,32 @@
             <tbody>
                 @if (LOAD_TYPE != null && LOAD_TYPE.Count > 0)
                 {
-                    <input  id="Id" style="display:none;" value="@LOAD_TYPE[0].Id">
+                    <input id="Id" style="display:none;" value="@LOAD_TYPE[0].Id">
                     <tr>
-                        <td>Thời gian Loading</td>
-                        <td>
-                            @foreach (var item in LOAD_TYPE)
-                            {
+                        @foreach (var item in LOAD_TYPE)
+                        {
+                            <td>@item.Description</td>
+                            <td>
+
                                 @item.UpdateTime.Value.ToString("HH:mm:ss")
 
-                            }
-                        </td>
-                        <td>
 
-                            <div class="capnhat_time" style="display:none;">
-                                <input class="form-control" id="ExpireDate" value="@LOAD_TYPE[0].UpdateTime.Value.ToString("HH:mm")">
-                                <a class="cursor-pointer check-time" title="Lưu">
-                                    <i class="icon-check"></i>
+                            </td>
+
+                            <td>
+
+                                <div class="capnhat_time" style="display:none;">
+                                    <input class="form-control" id="ExpireDate" value="@LOAD_TYPE[0].UpdateTime.Value.ToString("HH:mm")">
+                                    <a class="cursor-pointer check-time" title="Lưu">
+                                        <i class="icon-check"></i>
+                                    </a>
+                                </div>
+
+                                <a class="cursor-pointer edit-time" title="Chỉnh sửa">
+                                    <i class="icon-edit"></i>
                                 </a>
-                            </div>
-
-                            <a class="cursor-pointer edit-time" title="Chỉnh sửa">
-                                <i class="icon-edit"></i>
-                            </a>
-                        </td>
+                            </td>
+                        }
                     </tr>
                 }
 
@@ -236,7 +239,15 @@
         </table>
 
     </div>
-
+    <div>
+        📌 Mô tả  nghiệp vụ :
+    </div>
+    <div>
+        - Các yêu cầu phát sinh sau cut-off time sẽ được xử lý vào ngày làm việc tiếp theo.
+    </div>
+    <div>
+        - Dữ liệu trước cut-off time được tính cho ngày hiện tại.
+    </div>
 </main>
 <script src="~/js/jquery-2.1.4.min.js"></script>
 <script src="~/js/zebra_datepicker.min.js"></script>
@@ -249,6 +260,6 @@
 
 </script>
 @section scripts {
-  
-    <script src="/modules/configuration.js" asp-append-version="true"></script>
+
+    <script src="~/modules/configuration.js" asp-append-version="true"></script>
 }  

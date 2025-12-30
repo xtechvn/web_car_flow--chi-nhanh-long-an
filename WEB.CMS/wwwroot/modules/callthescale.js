@@ -204,6 +204,25 @@
                     success: function (result) {
                         status_type = result.status;
                         if (result.status == 0) {
+                            $currentBtn
+                                .text(text)
+                                .removeClass(function (_, old) {
+                                    return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                }) // xoá các class status- cũ
+                                .addClass(cls); // gắn class mới (status-arrived, status-blank…)
+
+
+                            if (val_TT == 1) {
+                                $('#dataBody-1').find('.CartoFactory_' + id_row).remove();
+
+
+                            } else {
+                                $('#dataBody-0-0').find('.CartoFactory_' + id_row).remove();
+                                $('#dataBody-0-1').find('.CartoFactory_' + id_row).remove();
+
+                            }
+                        }
+                        if (result.status == 0) {
                             _msgalert.success(result.msg)
                             $.magnificPopup.close();
                         } else {
@@ -214,25 +233,7 @@
                         console.log("Status: " + textStatus);
                     }
                 });
-                if (Status_type == 0) {
-                    $currentBtn
-                        .text(text)
-                        .removeClass(function (_, old) {
-                            return (old.match(/(^|\s)status-\S+/g) || []).join(' ');
-                        }) // xoá các class status- cũ
-                        .addClass(cls); // gắn class mới (status-arrived, status-blank…)
-
-
-                    if (val_TT == 1) {
-                        $('#dataBody-1').find('.CartoFactory_' + id_row).remove();
-                       
-
-                    } else {
-                        $('#dataBody-0-0').find('.CartoFactory_' + id_row).remove();
-                        $('#dataBody-0-1').find('.CartoFactory_' + id_row).remove();
-
-                    }
-                }
+                
                 
             }
         }
@@ -253,29 +254,13 @@
     }
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-             
-            
-        })
-        
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([ 2000, 5000, 10000])
         .build();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
 
-    let retryDelay = 2000; // 2 giây
-
-    async function startSignalR() {
-        try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
-                console.log("✅ Kết nối SignalR thành công");
-            }
-        } catch (err) {
-            console.error("❌ SignalR connect failed. Retry in 2s...", err);
-            setTimeout(startSignalR, retryDelay);
-        }
-    }
-
-    // 👉 Gọi lần đầu
-    startSignalR();
     const AllCode = [
         { Description: "Blank", CodeValue: "1" },
         { Description: "Đã vào cân", CodeValue: "0" },
@@ -381,19 +366,21 @@
     }
 
     // Nhận data mới từ server
+    connection.off("ListCallTheScale_Da_SL");
     connection.on("ListCallTheScale_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-1");
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow_Da_SL(item));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
     });
-
+    connection.off("ListCallTheScale_0");
     connection.on("ListCallTheScale_0", function (item) {
         const tbody = document.getElementById("dataBody-0-0");
         $('.CartoFactory_' + item.id).remove();
         tbody.insertAdjacentHTML("beforeend", renderRow(item));
         sortTable(); // sắp xếp lại ngay khi thêm
     });
+    connection.off("ListCallTheScale_1");
     connection.on("ListCallTheScale_1", function (item) {
         const tbody = document.getElementById("dataBody-0-1");
         $('.CartoFactory_' + item.id).remove();
@@ -401,6 +388,7 @@
         sortTable(); // sắp xếp lại ngay khi thêm
     });
     //sử lý đăng tải
+    connection.off("ListProcessingIsLoading_Da_SL");
     connection.on("ListProcessingIsLoading_Da_SL", function (item) {
         if (item.loadType == 0) {
             const tbody = document.getElementById("dataBody-0-0");
@@ -412,13 +400,16 @@
             sortTable(); 
         }     
     });
+    connection.off("ListProcessingIsLoading");
     connection.on("ListProcessingIsLoading", function (item) {
         $('#dataBody-0-0').find('.CartoFactory_' + item.id).remove();
         $('#dataBody-0-1').find('.CartoFactory_' + item.id).remove();
     });
+    connection.off("ListWeighedInput_Da_SL");
     connection.on("ListWeighedInput_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
     });
+    connection.off("ListWeighedInput");
     connection.on("ListWeighedInput", function (item) {
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow_Da_SL(item));

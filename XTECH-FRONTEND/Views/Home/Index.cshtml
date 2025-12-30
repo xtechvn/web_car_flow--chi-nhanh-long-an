@@ -36,9 +36,9 @@
                     <input type="text" id="GPLX" name="GPLX"
                            placeholder="Nhập câu trả lời của bạn" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="display:none">
                     <label for="referee">Khối lượng hàng chuyên chở cho phép(CCD: 6500 Kg) <span style="color:red">*</span></label>
-                    <input type="text" id="referee" name="referee"
+                    <input type="text" id="referee" name="referee" value="0"
                            placeholder="Nhập câu trả lời của bạn" required>
                 </div>
                 <div class="form-group">
@@ -49,7 +49,7 @@
                            required>
                 </div>
                 <div class="form-group">
-                    <label for="phoneNumber">Hoàn hảo/Trại </label>
+                    <label for="phoneNumber">Ghi chú </label>
                     <input type="text" id="Camp" name="Camp"
                            placeholder="Nhập câu trả lời của bạn">
                 </div>
@@ -109,7 +109,7 @@
     <script type="text/javascript" src="~/libs/jquery/jquery-3.6.0.min.js"></script>
     <script>
         // API Configuration
-        const API_BASE_URL = 'http://longancargill.com/api'; // Change to your API URL
+        const API_BASE_URL = 'https://cargilllongan.com/api'; // Change to your API URL
         const ENDPOINTS = {
             REGISTER: '/carregistration/registerV2',
             QUEUE_STATUS: '/carregistration/queue-status',
@@ -442,14 +442,31 @@
             // Format input as user types
             document.getElementById('plateNumber').addEventListener('input', function () {
                 // Auto format plate number: 30a12345 -> 30A-12345
-                let value = this.value.replace(/[^0-9A-Za-z\-]/g, '').toUpperCase(); // <-- Đã thêm '\-' vào regex
+                // Chỉ cho phép số, chữ, dấu -
+                let value = this.value
+                    .replace(/[^0-9A-Za-z]/g, '')
+                    .toUpperCase();
 
-                // Logic định dạng tự động
-                if (value.length > 3 && value[3] !== '-' && value.includes('-') == false) {
-                    // Tự động thêm '-' nếu nó chưa có ở vị trí thứ 3 và độ dài lớn hơn 3
-                    value = value.substring(0, 3) + '-' + value.substring(3);
+                // 2 số đầu
+                let province = value.match(/^\d{0,2}/)?.[0] || '';
+                let rest = value.slice(province.length);
+
+                // 1 hoặc 2 chữ cái
+                let letters = rest.match(/^[A-Z]{0,2}/)?.[0] || '';
+                rest = rest.slice(letters.length);
+
+                // 5 số
+                let numbers = rest.match(/^\d{0,5}/)?.[0] || '';
+
+                let result = province + letters;
+
+                if (province.length === 2 && letters.length >= 1) {
+                    result += '-';
                 }
-                this.value = value;
+
+                result += numbers;
+
+                this.value = result;
             });
 
             document.getElementById('phoneNumber').addEventListener('input', function () {

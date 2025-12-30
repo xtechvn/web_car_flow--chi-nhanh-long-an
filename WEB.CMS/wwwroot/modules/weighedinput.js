@@ -194,29 +194,12 @@
         }
     }
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/CarHub", {
-             
-            
-        })
-        
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([ 2000, 5000, 10000])
         .build();
-
-    let retryDelay = 2000; // 2 giây
-
-    async function startSignalR() {
-        try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
-                console.log("✅ Kết nối SignalR thành công");
-            }
-        } catch (err) {
-            console.error("❌ SignalR connect failed. Retry in 2s...", err);
-            setTimeout(startSignalR, retryDelay);
-        }
-    }
-
-    // 👉 Gọi lần đầu
-    startSignalR();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
     const AllCode = [
         { Description: "Blank", CodeValue: "1" },
         { Description: "Đã cân xong đầu vào", CodeValue: "0" },
@@ -230,22 +213,14 @@
     const jsonString = JSON.stringify(options);
     // Hàm render row
     function renderRow(item) {
-        var date = new Date(item.registerDateOnline);
-        let formatted =
-            String(date.getDate()).padStart(2, '0') + "/" +
-            String(date.getMonth() + 1).padStart(2, '0') + "/" +
-            date.getFullYear() + " " +
-            String(date.getHours()).padStart(2, '0') + ":" +
-            String(date.getMinutes()).padStart(2, '0') + ":" +
-            String(date.getSeconds()).padStart(2, '0');
+
         var date2 = new Date(item.vehicleWeighingTimeComeIn);
         let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
             String(date2.getDate()).padStart(2, '0') + "/" +
             String(date2.getMonth() + 1).padStart(2, '0') + "/" +
-            date2.getFullYear() + " " +
-            String(date2.getHours()).padStart(2, '0') + ":" +
-            String(date2.getMinutes()).padStart(2, '0') + ":" +
-            String(date2.getSeconds()).padStart(2, '0');
+            date2.getFullYear();
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted2}" data-LoadType="${item.loadType}" >
             <td>${item.recordNumber}</td>
@@ -322,6 +297,7 @@
     }
 
     // Nhận data mới từ server
+    connection.off("ListWeighedInput_Da_SL");
     connection.on("ListWeighedInput_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-1");
@@ -329,7 +305,7 @@
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
         sortTable_Da_SL2(); // sắp xếp lại ngay khi thêm
     });
-
+    connection.off("ListWeighedInput");
     connection.on("ListWeighedInput", function (item) {
         $('.CartoFactory_' + item.id).remove();
         const tbody = document.getElementById("dataBody-0");
@@ -338,23 +314,28 @@
         sortTable2(); // sắp xếp lại ngay khi thêm
     });
     // Nhận data mới từ gọi xe cân đầu vào
+    connection.off("ListCallTheScale_Da_SL");
     connection.on("ListCallTheScale_Da_SL", function (item) {
         const tbody = document.getElementById("dataBody-0");
         tbody.insertAdjacentHTML("beforeend", renderRow(item));
         sortTable();
     });
+    connection.off("ListCallTheScale_0");
     connection.on("ListCallTheScale_0", function (item) {
         $('.CartoFactory_' + item.id).remove();
 
     });
+    connection.off("ListCallTheScale_1");
     connection.on("ListCallTheScale_1", function (item) {
         $('.CartoFactory_' + item.id).remove();
 
     });
+    connection.off("ListCarCall_Da_SL");
     connection.on("ListCarCall_Da_SL", function (item) {
         $('.CartoFactory_' + item.id).remove();
 
     });
+    connection.off("ListCarCall");
     connection.on("ListCarCall", function (item) {
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item));

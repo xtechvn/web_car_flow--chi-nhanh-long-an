@@ -23,7 +23,7 @@ namespace XTECH_FRONTEND.Controllers
         public async Task<IActionResult> Index()
         {
             var request = new CarRegistrationResponse();
-            string url = "http://api.longancargill.com/api/vehicleInspection/get-time-countdown";
+            string url = "https://api-cargillhanam.adavigo.com/api/vehicleInspection/get-time-countdown";
             var client = new HttpClient();
             var request_api = new HttpRequestMessage(HttpMethod.Get, url);
             var response = await client.SendAsync(request_api);

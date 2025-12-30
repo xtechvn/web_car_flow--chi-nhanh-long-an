@@ -76,7 +76,7 @@ namespace XTECH_FRONTEND.Repositories
         private bool IsValidPlateNumber(string plateNumber)
         {
             // Vietnamese plate format: 30A-12345 or 30A-1234
-            var pattern = @"^[0-9]{2}[A-Z]{1}-[0-9]{4,5}$";
+            var pattern = @"^[0-9]{2}[A-Z]{1,3}-[0-9]{4,5}$";
             return Regex.IsMatch(plateNumber.ToUpper(), pattern);
         }
 

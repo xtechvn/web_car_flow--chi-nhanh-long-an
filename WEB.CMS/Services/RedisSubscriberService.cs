@@ -25,7 +25,7 @@ namespace WEB.CMS.Services
         {
             _redisService.Connect();
             LogHelper.InsertLogTelegram("RedisSubscriberService - ExecuteAsync: đã kết nối" );
-            await _redisService.SubscribeAsync("Add_ReceiveRegistration_LA", async (RegistrationRecord record) =>
+            await _redisService.SubscribeAsync("Add_ReceiveRegistration_LongAn", async (RegistrationRecord record) =>
             {
 
                 record.CreateTime = record.RegistrationTime.ToString("HH:mm dd/MM/yyyy");
