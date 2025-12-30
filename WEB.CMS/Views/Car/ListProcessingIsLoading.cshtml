@@ -9,12 +9,12 @@
 <style>
 
     .icon-check {
-    cursor: pointer;
-    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M15.9422 1.06754L5.94223 11.0675C5.88418 11.1256 5.81525 11.1717 5.73938 11.2032C5.66351 11.2347 5.58218 11.2508 5.50004 11.2508C5.41791 11.2508 5.33658 11.2347 5.2607 11.2032C5.18483 11.1717 5.1159 11.1256 5.05785 11.0675L0.682855 6.69254C0.565579 6.57526 0.499695 6.4162 0.499695 6.25035C0.499695 6.0845 0.565579 5.92544 0.682855 5.80816C0.80013 5.69088 0.95919 5.625 1.12504 5.625C1.29089 5.625 1.44995 5.69088 1.56723 5.80816L5.50004 9.74175L15.0579 0.18316C15.1751 0.0658843 15.3342 -1.2357e-09 15.5 0C15.6659 1.2357e-09 15.825 0.0658843 15.9422 0.18316C16.0595 0.300435 16.1254 0.459495 16.1254 0.625347C16.1254 0.7912 16.0595 0.95026 15.9422 1.06754Z" fill="%233A8245"/></svg>')
+        cursor: pointer;
+        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M15.9422 1.06754L5.94223 11.0675C5.88418 11.1256 5.81525 11.1717 5.73938 11.2032C5.66351 11.2347 5.58218 11.2508 5.50004 11.2508C5.41791 11.2508 5.33658 11.2347 5.2607 11.2032C5.18483 11.1717 5.1159 11.1256 5.05785 11.0675L0.682855 6.69254C0.565579 6.57526 0.499695 6.4162 0.499695 6.25035C0.499695 6.0845 0.565579 5.92544 0.682855 5.80816C0.80013 5.69088 0.95919 5.625 1.12504 5.625C1.29089 5.625 1.44995 5.69088 1.56723 5.80816L5.50004 9.74175L15.0579 0.18316C15.1751 0.0658843 15.3342 -1.2357e-09 15.5 0C15.6659 1.2357e-09 15.825 0.0658843 15.9422 0.18316C16.0595 0.300435 16.1254 0.459495 16.1254 0.625347C16.1254 0.7912 16.0595 0.95026 15.9422 1.06754Z" fill="%233A8245"/></svg>')
     }
 
     .data-table input {
-    width: 60% !important;
+        width: 60% !important;
     }
 </style>
 @if (Model != null && Model.Count > 0)
@@ -23,15 +23,15 @@
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Giờ đăng ký online</th>
+                <th>Giờ xe đến</th>
+                <th>Biển số xe</th>
                 <th>Tên khách hàng (Trại, đại lý)</th>
                 <th>Tên lái xe</th>
                 <th>Số điện thoại</th>
-                <th>Biển số xe</th>
                 <th>Ghi chú</th>
                 <th>TT xe có mặt</th>
                 <th>Tải trọng xe (kg)</th>
-                <th>Trọng lượng thực tế (kg)</th>
+                <th style="max-width:150px;">Trọng lượng thực tế (kg)</th>
                 <th>Nhóm tài</th>
                 <th>Tình trạng</th>
             </tr>
@@ -47,7 +47,17 @@
                                 <td>
                                     @item.RecordNumber
                                 </td>
-                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@(item.VehicleArrivalDate != null ? ((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"):"")</td>
+                                <td>
+                                    @item.VehicleNumber
+                                    @if (ViewBag.type == 0)
+                                    {
+                                        <a class="cursor-pointer" style="margin-left:10px;" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
+                                            <i class="icon-edit"></i>
+                                        </a>
+                                    }
+
+                                </td>
                                 <td>
                                     <div style="display: flex; align-items: center">
                                         <div style="white-space: pre-line;">
@@ -66,16 +76,7 @@
                                 </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
-                                <td>
-                                    @item.VehicleNumber
-                                    @if (ViewBag.type == 0)
-                                    {
-                                        <a class="cursor-pointer" style="margin-left:10px;" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
-                                            <i class="icon-edit"></i>
-                                        </a>
-                                    }
-                                    
-                                </td>
+
 
                                 <td>@item.LicenseNumber</td>
                                 <td>@item.VehicleStatusName</td>
@@ -94,16 +95,10 @@
                                         <div class="">
                                             <p class="">
                                                 <input type="text"
-                                                class="input-form VehicleLoadTaken currency"
-                                                maxlength="8"
-                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
-                                                placeholder="Vui lòng nhập trọng lượng thực tế"value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
-
-
-                                                <a class="cursor-pointer check-VehicleLoadTaken" title="Lưu" style="margin-left: 6px;">
-                                                    <i class="icon-check"></i>
-                                                </a>
-
+                                                       class="input-form VehicleLoadTaken currency"
+                                                       maxlength="8"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
+                                                       placeholder="Vui lòng nhập trọng lượng thực tế" value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
                                             </p>
                                         </div>
                                     }
@@ -165,7 +160,17 @@
                                 <td>
                                     @item.RecordNumber
                                 </td>
-                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>
+                                    @item.VehicleNumber
+                                    @if (ViewBag.type == 0)
+                                    {
+                                        <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
+                                            <i class="icon-edit"></i>
+                                        </a>
+                                    }
+
+                                </td>
                                 <td>
                                     <div style="display: flex; align-items: center">
                                         <div style="white-space: pre-line;">
@@ -184,17 +189,6 @@
                                 </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
-                                <td>
-                                    @item.VehicleNumber
-                                    @if (ViewBag.type == 0)
-                                    {
-                                        <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa">
-                                            <i class="icon-edit"></i>
-                                        </a>
-                                    }
-                                    
-                                </td>
-
                                 <td>@item.LicenseNumber</td>
                                 <td>@item.VehicleStatusName</td>
                                 <td>@(((decimal)item.VehicleWeightMax).ToString("N0"))</td>
@@ -216,11 +210,6 @@
                                                        maxlength="8"
                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
                                                        placeholder="Vui lòng nhập trọng lượng thực tế" value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
-                                                
-
-                                                <a class="cursor-pointer check-VehicleLoadTaken" title="Lưu" style="margin-left: 6px;">
-                                                    <i class="icon-check"></i>
-                                                </a>
 
                                             </p>
                                         </div>
@@ -283,7 +272,10 @@
                         {
                             <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))">
                                 <td>@item.RecordNumber</td>
-                                <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))</td>
+                                <td>
+                                    @item.VehicleNumber
+                                </td>
                                 <td>
                                     <div style="display: flex; align-items: center">
                                         <div style="white-space: pre-line;">
@@ -302,9 +294,7 @@
                                 </td>
                                 <td>@item.DriverName</td>
                                 <td>@item.PhoneNumber</td>
-                                <td>
-                                    @item.VehicleNumber
-                                </td>
+
 
                                 <td>@item.LicenseNumber</td>
                                 <td>@item.VehicleStatusName</td>
@@ -326,12 +316,7 @@
                                                        class="input-form VehicleLoadTaken currency"
                                                        maxlength="8"
                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
-                                                       placeholder="Vui lòng nhập trọng lượng thực tế"value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
-
-
-                                                <a class="cursor-pointer check-VehicleLoadTaken" title="Lưu" style="margin-left: 6px;">
-                                                    <i class="icon-check"></i>
-                                                </a>
+                                                       placeholder="Vui lòng nhập trọng lượng thực tế" value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
 
                                             </p>
                                         </div>
@@ -401,11 +386,11 @@ else
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Giờ đăng ký online</th>
+                <th>Giờ xe đến</th>
+                <th>Biển số xe</th>
                 <th>Tên khách hàng (Trại, đại lý)</th>
                 <th>Tên lái xe</th>
                 <th>Số điện thoại</th>
-                <th>Biển số xe</th>
                 <th>Ghi chú</th>
                 <th>TT xe có mặt</th>
                 <th>Tải trọng xe (kg)</th>

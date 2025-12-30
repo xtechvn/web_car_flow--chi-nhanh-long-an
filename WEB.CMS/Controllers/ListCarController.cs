@@ -59,8 +59,7 @@ namespace WEB.CMS.Controllers
                 var AllCode2 = await _allCodeRepository.GetListSortByName(AllCodeType.TROUGH_TYPE);
                 ViewBag.AllCode2 = AllCode2;
                 var data = await _vehicleInspectionRepository.GetListVehicleCarCallList(SearchModel);
-                if (data != null && data.Count > 0)
-                    data = data.OrderBy(x => x.VehicleWeighingTimeComeOut).ToList();
+               
                 if (data != null && data.Count > 0)
                 {
                     foreach (var item in data)

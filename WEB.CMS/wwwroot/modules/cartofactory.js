@@ -294,7 +294,7 @@
         </tr>`;
     }
     function renderRow3(item) {
-        var date = new Date(item.registerDateOnline);
+        var date = new Date(item.vehicleArrivalDate);
         let formatted =
             String(date.getHours()).padStart(2, '0') + ":" +
             String(date.getMinutes()).padStart(2, '0') + " " +

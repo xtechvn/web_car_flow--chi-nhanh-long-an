@@ -62,6 +62,10 @@ namespace WEB.CMS.Controllers
                 ViewBag.AllCode = AllCode;
                 ViewBag.LoadingType = LoadingType;
                 var data = await _vehicleInspectionRepository.GetListCartoFactory(SearchModel);
+                if(data!=null && data.Count > 0 && SearchModel.type == 1)
+                {
+                    data = data.OrderBy(s => s.VehicleArrivalDate).ToList();
+                }
                 return PartialView(data);
             }
             catch (Exception ex)
@@ -197,10 +201,6 @@ namespace WEB.CMS.Controllers
                 var AllCode = await _allCodeRepository.GetListSortByName(AllCodeType.VEHICLEWEIGHEDSTATUS);
                 ViewBag.AllCode = AllCode;
                 var data = await _vehicleInspectionRepository.GetListVehicleWeighedInput(SearchModel);
-                if (data != null)
-                {
-                    data = data.OrderBy(s => s.LoadType).ToList();
-                }
                 return PartialView(data);
             }
             catch (Exception ex)
@@ -296,11 +296,16 @@ namespace WEB.CMS.Controllers
                         break;
                     case 2:
                         {
+                            if (weight > 0)
+                            {
+                                var update = await _vehicleInspectionRepository.UpdateVehicleLoadTaken(id, weight);
+                            }
                             model.LoadType = status;
                             UpdateCar = await _vehicleInspectionRepository.UpdateCar(model);
                             var allcode = await _allCodeRepository.GetListSortByName(AllCodeType.LOAD_TYPE);
                             var allcode_detail = allcode.FirstOrDefault(s => s.CodeValue == status);
                             detail.LoadTypeName = allcode_detail.Description;
+                            detail.VehicleLoadTaken = weight;
                             await _hubContext.Clients.All.SendAsync("ListProcessingIsLoading", detail);
 
                         }
@@ -437,6 +442,7 @@ namespace WEB.CMS.Controllers
                             if (status == (int)VehicleTroughStatus.Hoan_thanh)
                             {
                                 model.VehicleTroughTimeComeOut = DateTime.Now;
+                                detail.VehicleTroughTimeComeOut = DateTime.Now;
                                 if (detail.VehicleTroughStatus == (int)VehicleTroughStatus.Boc_Hang)
                                 {
                                     var model_TroughWeight = new TroughWeight();

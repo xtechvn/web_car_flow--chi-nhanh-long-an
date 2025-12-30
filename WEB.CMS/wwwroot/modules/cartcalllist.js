@@ -448,7 +448,7 @@
         <td><a class="btn-detail"
                            data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
         <td>${formatted || ""}</td>
-        <td>${item.vehicleLoadTaken > 0? item.vehicleLoadTaken.toLocaleString('en-US'):0}</td>
+        <td>${item.vehicleLoadTaken > 0 ? item.vehicleLoadTaken.toLocaleString('en-US') : 0}</td>
         <td>
            ${item.listTroughWeight[itemTroughWeight].vehicleTroughWeight > 0 ? html_div : html_input}
         </td>
@@ -472,7 +472,54 @@
     </tr>`
             }
         }
-
+        else {
+            var html_input = ` <div class="status-dropdown">
+           
+                <button class="dropdown-toggle ${isProcessed ? "disabled" : ""}  "CartoFactory_" +${ item.id} + "_troughWeight" : ""}"
+                        data-type="1"
+                        data-options='${jsonString}'
+                        ${isProcessed ? "disabled" : ""}>
+                  Máng  ${item.troughType || ""}
+                </button>
+            </div>`
+            var html_div = ` <div class="status-dropdown"> <p style="font-size:13px!important">Máng ${item.troughType || ""}</p></div>`
+            var html_icon = `  <a class="cursor-pointer check-troughWeight" title="Lưu" style="margin-left: 6px;">
+                                        <i class="icon-check"></i>
+                                    </a>
+                                    <a class="cursor-pointer cancel-troughWeight" title="Hủy thao tác">
+                                        <i class="icon-cancel"></i>
+                                    </a>`
+            html += `
+    <tr class="CartoFactory_${item.id}" data-queue="${item.recordNumber}">
+        <td>${item.recordNumber}</td>
+        <td>${item.customerName}</td>
+        <td>${item.driverName}</td>
+        <td><a class="btn-detail"
+                           data-id="${item.id}" style="cursor:pointer">${item.vehicleNumber}</a></td>
+        <td>${formatted || ""}</td>
+        <td>${item.vehicleLoadTaken > 0 ? item.vehicleLoadTaken.toLocaleString('en-US') : 0}</td>
+        <td>
+           ${item.vehicleTroughWeight > 0 ? html_div : html_input}
+        </td>
+      <td>
+        <input class="TroughWeightId" id="TroughWeightId_${item.id}.Id" value="0" style="display:none;" />
+        <input type="text"
+               class="input-form currency  ${item.vehicleTroughWeight > 0 ? " CartoFactory_" + item.id + "_weight" : "weight"}"
+               value="${item.vehicleTroughWeight > 0 ? item.vehicleTroughWeight : ""}"
+               placeholder="Vui lòng nhập"
+               ${isProcessed ? "disabled" : ""} />
+                ${item.vehicleTroughWeight > 0 && isProcessed == false ? html_icon : ""}
+    </td>
+        <td>
+            <div class="status-dropdown">
+                <button class="dropdown-toggle"
+                        data-options='${jsonString2}'>
+                    ${item.vehicleTroughStatusName || ""}
+                </button>
+            </div>
+        </td>
+    </tr>`
+        }
         return html;
     }
     //function renderRow(item, isProcessed) {
@@ -655,7 +702,10 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4,5, 8], [0, 1, 2, 3, 4,5]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
+        requestAnimationFrame(() => {
+            _cartcalllist.initMangStatus();
+        });
     });
     connection.off("ListCarCall_Bo_LUOT");
     connection.on("ListCarCall_Bo_LUOT", function (item) {
@@ -663,7 +713,10 @@
         const tbody = document.getElementById("dataBody-1");
         tbody.insertAdjacentHTML("beforeend", renderRow_Bo_luot(item, true));
         sortTable_Da_SL(); // sắp xếp lại ngay khi thêm
-        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4,5]);
+        _cartcalllist.autoRowspanWithCondition("ListCarCall-1", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
+        requestAnimationFrame(() => {
+            _cartcalllist.initMangStatus();
+        });
     });
     // Nhận data từ server (SignalR)
     connection.off("UpdateMangStatus");
@@ -704,7 +757,9 @@
         tbody.insertAdjacentHTML("beforeend", renderRow(item, false));
         sortTable(); // sắp xếp lại ngay khi thêm
         _cartcalllist.autoRowspanWithCondition("ListCarCall-0", [0, 1, 2, 3, 4, 5, 8], [0, 1, 2, 3, 4, 5]);
-        _cartcalllist.initMangStatus();
+        requestAnimationFrame(() => {
+            _cartcalllist.initMangStatus();
+        });
     });
 
     // Nhận data mới từ gọi xe cân đầu vào
@@ -770,8 +825,9 @@ var _cartcalllist = {
             let mangName = "Máng " + mangIndex;
 
             // 🔎 Kiểm tra xem có xe nào trong máng này chưa hoàn thành không
-            let stillHasCar = $("#dataBody-0 tr, #dataBody-1 tr").toArray().some(tr => {
-                let btnText = $(tr).find("button[data-type='1']").text().trim();
+            let stillHasCar = $("#dataBody-0 tr").toArray().some(tr => {
+                let btnText = $(tr).find("button[data-type='1']").text().replace(/\s+/g, ' ').trim();  // 👈 gộp nhiều space thành 1
+                    
                 let trangThai = $(tr).find("td:last .dropdown-toggle").text().trim();
                 return btnText === mangName && trangThai !== "Hoàn thành" && trangThai !== "Bỏ lượt";
             });

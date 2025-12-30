@@ -151,7 +151,15 @@
 
                 var type = $currentBtn.attr('data-type');
                 if (type == '1') {
-                    _processing_is_loading.UpdateStatus(id_row, val_TT, 2);
+                    var vehicleloadtaken = $currentBtn.closest('tr').find('.VehicleLoadTaken').val();
+                    if (vehicleloadtaken != undefined && vehicleloadtaken != "") {
+                        vehicleloadtaken = vehicleloadtaken.replaceAll(",", "")
+
+                    } else {
+                        vehicleloadtaken = 0;
+                    }
+
+                    _processing_is_loading.UpdateStatus(id_row, val_TT, 2, vehicleloadtaken);
                     $currentBtn
                         .text(text)
                         .removeClass(function (_, old) {
@@ -260,18 +268,14 @@
                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
                                                        placeholder="Vui lòng nhập trọng lượng thực tế"value="${item.vehicleLoadTaken == null ? 0 : item.vehicleLoadTaken.toLocaleString('en-US') }" />
 
-
-                                                <a class="cursor-pointer check-VehicleLoadTaken" title="Lưu" style="margin-left: 6px;">
-                                                    <i class="icon-check"></i>
-                                                </a>
-
                                             </p>
                                         </div>`
 
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
             <td>${item.recordNumber}</td>
-            <td>${formatted2}</td>
+            <td>${formatted}</td>
+            <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
             <td>
             ${item.customerName} <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa">
                                                     <i class="icon-edit"></i>
@@ -280,7 +284,7 @@
             </td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
-            <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
+           
           
             <td>${item.licenseNumber}</td>
             <td>${item.vehicleStatusName}</td>
@@ -323,11 +327,12 @@
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
-            <td>${formatted2}</td>
+            <td>${formatted}</td>
+            <td>${item.vehicleNumber}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
-            <td>${item.vehicleNumber}</td>
+        
          
             <td>${item.licenseNumber}</td>
             <td>${item.vehicleStatusName}</td>

@@ -12,7 +12,14 @@
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Giờ đăng ký online</th>
+                @if (ViewBag.type == 1)
+                {
+                    <th>Giờ xe đến</th>
+                }
+                else
+                {
+                    <th>Giờ đăng ký online</th>
+                }
                 <th>Tên khách hàng (Trại, đại lý)</th>
                 <th>Tên lái xe</th>
                 <th>Số điện thoại</th>
@@ -33,9 +40,17 @@
         <tbody id="dataBody-@ViewBag.type">
             @foreach (var item in Model)
             {
-                <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))">
+                <tr class="CartoFactory_@item.Id" data-queue=" @(ViewBag.type == 1?item.VehicleArrivalDate!=null?((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"):"":item.RegisterDateOnline!=null?((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"):"")">
                     <td>@item.RecordNumber</td>
-                    <td>@(((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"))</td>
+                    @if (ViewBag.type == 1)
+                    {
+                        <td>@(item.VehicleArrivalDate!=null?((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"):"")</td>
+                    }
+                    else
+                    {
+                        <td>@(item.RegisterDateOnline != null ? ((DateTime)item.RegisterDateOnline).ToString("HH:mm dd/MM/yyyy"):"")</td>
+                    }
+
                     <td>@item.CustomerName</td>
                     <td>@item.DriverName</td>
                     <td>@item.PhoneNumber</td>
@@ -94,7 +109,14 @@ else
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Giờ đăng ký online</th>
+                @if (ViewBag.type == 1)
+                {
+                    <th>Giờ xe đến</th>
+                }
+                else
+                {
+                    <th>Giờ đăng ký online</th>
+                }
                 <th>Tên khách hàng (Trại, đại lý)</th>
                 <th>Tên lái xe</th>
                 <th>Số điện thoại</th>
