@@ -219,9 +219,9 @@
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted2}" >
             <td>${item.recordNumber}</td>
-            <td>${item.customerName}</td>
-            <td>${item.driverName}</td>
             <td>${item.vehicleNumber}</td>
+            <td>${item.customerName}</td>
+            <td>${item.driverName}</td>    
             <td>${formatted}</td>
             <td>
                 <div class="status-dropdown">
@@ -245,9 +245,9 @@
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
+            <td>${item.vehicleNumber}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
-            <td>${item.vehicleNumber}</td>
             <td></td>
             <td>
                 <div class="status-dropdown">

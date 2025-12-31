@@ -231,10 +231,10 @@
         <tr class="CartoFactory_${item.id}" data-queue="${formatted2}" data-LoadType="${item.loadType}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
+            <td>${item.vehicleNumber}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
-            <td>${item.vehicleNumber}</td>
             <td>${item.loadTypeName}</td>
             <td>
                 <div class="status-dropdown">
