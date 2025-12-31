@@ -281,10 +281,17 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var date2 = new Date(item.registerDateOnline);
+        let formatted2 =
+            String(date2.getHours()).padStart(2, '0') + ":" +
+            String(date2.getMinutes()).padStart(2, '0') + " " +
+            String(date2.getDate()).padStart(2, '0') + "/" +
+            String(date2.getMonth() + 1).padStart(2, '0') + "/" +
+            date2.getFullYear();
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
-            <td>${item.registerDateOnline}</td>
+            <td>${formatted2}</td>
             <td>${item.customerName}</td>
             <td>${item.driverName}</td>
             <td>${item.phoneNumber}</td>
