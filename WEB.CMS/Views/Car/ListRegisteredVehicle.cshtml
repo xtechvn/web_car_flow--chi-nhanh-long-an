@@ -19,6 +19,8 @@
                 <th>Biển số xe</th>
                 <th>Tải trọng xe (kg)</th>
                 <th>Ghi chú</th>
+                <th>Giờ xe đến</th>
+                <th>Tình trạng xe</th>
             </tr>
         </thead>
         <tbody id="dataBody-@ViewBag.type">
@@ -35,7 +37,21 @@
                     </td>
                     <td>@item.VehicleLoad</td>
                     <td>@item.LicenseNumber</td>
+                    <td>@(item.VehicleArrivalDate != null ? ((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy") : "")</td>
+                    <td>
+                        <div class="status-dropdown">
+                            <button class="dropdown-toggle" data-options='[
+                                    @foreach (var allcode in AllCode)
+                                    {
 
+                                            @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
+
+                                    }
+                                                                ]'>
+                                @item.VehicleStatusName
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             }
 

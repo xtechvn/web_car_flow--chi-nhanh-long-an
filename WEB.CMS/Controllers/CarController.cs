@@ -879,5 +879,73 @@ namespace WEB.CMS.Controllers
                 msg = "cập nhật không thành công"
             });
         }
+        public async Task<IActionResult> UpdateRegisteredVehicle(int id, int status)
+        {
+            try
+            {
+                var _UserId = 0;
+                if (HttpContext.User.FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    _UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+                var UpdateCar = 0;
+                ViewBag.Id = id;
+                ViewBag.StatusCar = 0;
+                var model = new VehicleInspectionUpdateModel();
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(id);
+                model.Id = detail.Id;
+                model.RecordNumber = detail.RecordNumber;
+                model.CustomerName = detail.CustomerName;
+                model.VehicleNumber = detail.VehicleNumber;
+                model.RegisterDateOnline = detail.RegisterDateOnline;
+                model.DriverName = detail.DriverName;
+                model.LicenseNumber = detail.LicenseNumber;
+                model.PhoneNumber = detail.PhoneNumber;
+                model.VehicleLoad = detail.VehicleLoad;
+                model.VehicleStatus = detail.VehicleStatus;
+                model.LoadType = detail.LoadType;
+                model.IssueCreateDate = detail.IssueCreateDate;
+                model.IssueUpdatedDate = detail.IssueUpdatedDate;
+                model.VehicleWeighingType = detail.VehicleWeighingType;
+                model.VehicleWeighingTimeComeIn = detail.VehicleWeighingTimeComeIn;
+                model.VehicleWeighingTimeComeOut = detail.VehicleWeighingTimeComeOut;
+                model.VehicleWeighingTimeComplete = detail.VehicleWeighingTimeComplete;
+                model.TroughType = detail.TroughType;
+                model.VehicleTroughTimeComeIn = detail.VehicleTroughTimeComeIn;
+                model.VehicleTroughTimeComeOut = detail.VehicleTroughTimeComeOut;
+                model.VehicleTroughWeight = detail.VehicleTroughWeight;
+                model.VehicleTroughStatus = detail.VehicleTroughStatus;
+                model.LoadingStatus = detail.LoadingStatus;
+                model.VehicleWeighedstatus = detail.VehicleWeighedstatus;
+                model.TimeCallVehicleTroughTimeComeIn = detail.TimeCallVehicleTroughTimeComeIn;
+                model.LoadingType = detail.LoadingType;
+                model.VehicleArrivalDate = detail.VehicleArrivalDate;
+                model.ProcessingIsLoadingDate = detail.ProcessingIsLoadingDate;
+                model.VehicleWeightMax = detail.VehicleWeightMax;
+                model.VehicleLoadTaken = detail.VehicleLoadTaken;
+                model.CreatedBy = _UserId;
+                model.VehicleStatus = status;
+                model.VehicleArrivalDate = DateTime.Now;
+               var update = await _vehicleInspectionRepository.UpdateCar(model);
+                if (update > 0)
+                {
+                    return Ok(new
+                    {
+                        status = (int)ResponseType.SUCCESS,
+                        msg = "cập nhật thành công"
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("WeighedInput - CarController: " + ex);
+            }
+            return Ok(new
+            {
+                status = (int)ResponseType.ERROR,
+                msg = "cập nhật không thành công"
+            });
+        }
     }
 }
