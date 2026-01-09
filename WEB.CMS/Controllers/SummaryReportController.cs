@@ -44,8 +44,11 @@ namespace WEB.CMS.Controllers
         {
             try
             {
-                var data = await _vehicleInspectionRepository.GetListVehicleInspectionSynthetic(SearchModel.FromDate, SearchModel.ToDate, SearchModel.LoadType);
-                var Total = await _vehicleInspectionRepository.CountTotalVehicleInspectionSynthetic(SearchModel.FromDate, SearchModel.ToDate);
+                var FromDate = SearchModel.FromDate != null && SearchModel.FromDate != "" ? DateUtil.StringToDate(SearchModel.FromDate) : null;
+                var ToDate = SearchModel.ToDate != null && SearchModel.ToDate != "" ? DateUtil.StringToDate(SearchModel.ToDate) : null;
+
+                var data = await _vehicleInspectionRepository.GetListVehicleInspectionSynthetic(FromDate, ToDate, SearchModel.LoadType);
+                var Total = await _vehicleInspectionRepository.CountTotalVehicleInspectionSynthetic(FromDate, ToDate);
                 ViewBag.TotalData = Total;
                 
                 return PartialView(data);
