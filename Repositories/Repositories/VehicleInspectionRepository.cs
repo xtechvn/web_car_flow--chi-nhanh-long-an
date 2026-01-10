@@ -166,7 +166,14 @@ namespace Repositories.Repositories
                               : 55;
                 var now = DateTime.Now;
                 var expireAt = new DateTime(now.Year, now.Month, now.Day, hours, minutes, 0);
-                ToDate = expireAt;
+                if (ToDate != null)
+                {
+                    ToDate = ((DateTime)ToDate).Date.AddHours(hours).AddMinutes(minutes).AddSeconds(0);
+                }
+                else
+                {
+                    ToDate = expireAt;
+                }
                 return await _VehicleInspectionDAL.CountTotalVehicleInspectionSynthetic(FromDate, ToDate);
             }
             catch (Exception ex)
