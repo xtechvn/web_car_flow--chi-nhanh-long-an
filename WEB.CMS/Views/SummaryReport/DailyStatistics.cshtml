@@ -21,6 +21,7 @@
             <th>Giờ xe có mặt</th>
             <th>Giờ vào cân</th>
             <th>Giờ cân xong đầu vào</th>
+            <th>Máng</th>
             <th>Giờ vào máng</th>
             <th>Giờ ra máng</th>
             <th>Giờ cân xong đầu ra</th>
@@ -47,6 +48,7 @@
                     <td>@(item.VehicleArrivalDate != null ? item.VehicleArrivalDate.Value.ToString("HH:mm dd/MM/yyyy") : "")</td> @*bước 1*@
                     <td>@(item.VehicleWeighingTimeComeIn != null ? item.VehicleWeighingTimeComeIn.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*Bước 3*@
                     <td>@(item.VehicleWeighingTimeComeOut != null ? item.VehicleWeighingTimeComeOut.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*Bước 4*@
+                    <td>@item.TroughTypes</td>
                     <td>@(item.VehicleTroughTimeComeIn != null ? item.VehicleTroughTimeComeIn.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*bước 5 bốc hành*@
                     <td>@(item.VehicleTroughTimeComeOut != null ? item.VehicleTroughTimeComeOut.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*bước 5 hoàn thành*@
                     <td>@(item.VehicleWeighingTimeComplete != null ? item.VehicleWeighingTimeComplete.Value.ToString("HH:mm dd/MM/yyyy") : "")</td>@*Bước 6*@
