@@ -41,5 +41,6 @@ namespace Entities.Models
         public int? LoadingType { get; set; }
         public DateTime? ProcessingIsLoadingDate { get; set; }
         public decimal? VehicleLoadTaken { get; set; }
+        public string ProtectNotes { get; set; }
     }
 }

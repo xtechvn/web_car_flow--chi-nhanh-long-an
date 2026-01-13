@@ -13,10 +13,10 @@ namespace Entities.ViewModels.Car
         public string? CustomerName { get; set; }
         public string? VehicleNumber { get; set; }
         public DateTime? RegisterDateOnline { get; set; }
-        public string? DriverName { get; set; }
-        public string? LicenseNumber { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? VehicleLoad { get; set; }
+        public string DriverName { get; set; }
+        public string LicenseNumber { get; set; }
+        public string PhoneNumber { get; set; }
+        public string VehicleLoad { get; set; }
         public int? VehicleStatus { get; set; }
         public int? LoadType { get; set; }
         public DateTime? IssueCreateDate { get; set; }
@@ -42,6 +42,9 @@ namespace Entities.ViewModels.Car
         public DateTime? ProcessingIsLoadingDate { get; set; }
         public decimal? VehicleWeightMax { get; set; }
         public decimal? VehicleLoadTaken { get; set; }
+        public string? ProtectNotes { get; set; }
+        public int TrangThai { get; set; }
+        public string? AudioPath { get; set; }
     }
 
 }

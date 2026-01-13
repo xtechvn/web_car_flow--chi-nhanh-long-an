@@ -1,5 +1,6 @@
 ﻿using Entities.ViewModels.Car;
 using Microsoft.AspNetCore.SignalR;
+using Nest;
 using Repositories.IRepositories;
 using Repositories.Repositories;
 using Utilities;
@@ -24,11 +25,12 @@ namespace WEB.CMS.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _redisService.Connect();
-            LogHelper.InsertLogTelegram("RedisSubscriberService - ExecuteAsync: đã kết nối" );
+            LogHelper.InsertLogTelegram("RedisSubscriberService - ExecuteAsync: đã kết nối");
             await _redisService.SubscribeAsync("Add_ReceiveRegistration_LongAn", async (RegistrationRecord record) =>
             {
-
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(record.Id);
                 record.CreateTime = record.RegistrationTime.ToString("HH:mm dd/MM/yyyy");
+                record.TrangThai = detail != null ? detail.TrangThai : 1;
                 await _hubContext.Clients.All.SendAsync("ReceiveRegistration", record);
 
             });
@@ -36,6 +38,14 @@ namespace WEB.CMS.Services
             {
 
                 await _hubContext.Clients.All.SendAsync("ListCartoFactory_Da_SL", detail);
+
+            });
+            await _redisService.SubscribeAsync("Add_ReceiveRegistration_LongAn_DK", async (RegistrationRecord record) =>
+            {
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(record.Id);
+                record.CreateTime = record.RegistrationTime.ToString("HH:mm dd/MM/yyyy");
+                record.TrangThai = detail != null ? detail.TrangThai : 1;
+                await _hubContext.Clients.All.SendAsync("ReceiveRegistration_DK", record);
 
             });
             await Task.CompletedTask;

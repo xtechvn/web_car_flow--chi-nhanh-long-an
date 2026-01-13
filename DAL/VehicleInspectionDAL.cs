@@ -98,7 +98,7 @@ namespace DAL
                     new SqlParameter("@VehicleNumber", (object?)model.VehicleNumber ?? DBNull.Value),
                     new SqlParameter("@RegisterDateOnline", (object?)model.RegisterDateOnline ?? DBNull.Value),
                     new SqlParameter("@DriverName", (object?)model.DriverName ?? DBNull.Value),
-                    new SqlParameter("@LicenseNumber", (object?)model.LicenseNumber ?? DBNull.Value),
+                    new SqlParameter("@LicenseNumber", model.LicenseNumber != null && model.LicenseNumber != "" ?model.LicenseNumber.ToString(): DBNull.Value),
                     new SqlParameter("@PhoneNumber", (object?)model.PhoneNumber ?? DBNull.Value),
                     new SqlParameter("@VehicleLoad", (object?)model.VehicleLoad ?? DBNull.Value),
                     new SqlParameter("@VehicleStatus", (object?)model.VehicleStatus ?? DBNull.Value),
@@ -123,6 +123,8 @@ namespace DAL
                     new SqlParameter("@VehicleArrivalDate", (object?)model.VehicleArrivalDate ?? DBNull.Value),
                     new SqlParameter("@LoadingType", (object?)model.LoadingType ?? DBNull.Value),
                     new SqlParameter("@ProcessingIsLoadingDate", (object?)model.ProcessingIsLoadingDate ?? DBNull.Value),
+                    new SqlParameter("@ProtectNotes", (object?)model.ProtectNotes ?? DBNull.Value),
+                    new SqlParameter("@AudioPath", (object?)model.AudioPath ?? DBNull.Value),
 
                 };
 

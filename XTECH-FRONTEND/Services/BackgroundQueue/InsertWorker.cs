@@ -1,5 +1,10 @@
-﻿using System.Text;
+﻿using Google.Apis.Sheets.v4.Data;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System.Configuration;
+using System.Text;
 using XTECH_FRONTEND.Model;
+using XTECH_FRONTEND.Services.RedisWorker;
 using XTECH_FRONTEND.Utilities;
 
 namespace XTECH_FRONTEND.Services.BackgroundQueue
@@ -9,15 +14,20 @@ namespace XTECH_FRONTEND.Services.BackgroundQueue
         private readonly IInsertQueue _queue;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHttpClientFactory _factory;
+        private readonly RedisConn redisService;
+        private readonly IConfiguration _configuration;
 
         public InsertWorker(
             IInsertQueue queue,
             IServiceProvider serviceProvider,
-            IHttpClientFactory factory)
+            IHttpClientFactory factory, IConfiguration configuration)
         {
             _queue = queue;
             _serviceProvider = serviceProvider;
             _factory = factory;
+            _configuration = configuration;
+            redisService = new RedisConn(configuration);
+            redisService.Connect();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -57,6 +67,17 @@ namespace XTECH_FRONTEND.Services.BackgroundQueue
             }
             catch (Exception ex)
             {
+                string cache_name = "CARGLL_LongAn";
+                var data_list = new List<CarRegistrationResponse>();
+                var data = await redisService.GetAsync(cache_name, Convert.ToInt32(_configuration["Redis:Database:db_common"]));
+               
+                if (data != null && data.Trim() != "")
+                {
+                    data_list = JsonConvert.DeserializeObject<List<CarRegistrationResponse>>(data);
+                    data_list.Add(job.Data);
+                }
+                redisService.Set(cache_name, JsonConvert.SerializeObject(data_list), Convert.ToInt32(_configuration["Redis:Database:db_common"]));
+
                 LogHelper.InsertLogTelegram("InsertWorker error: " + ex.Message);
             }
         }

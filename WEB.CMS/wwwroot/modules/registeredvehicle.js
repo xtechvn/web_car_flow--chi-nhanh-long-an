@@ -120,7 +120,7 @@
                         id_row = match[1];
                     }
                 }
-
+                var bv_Note = $row.find(".BV_Note").val();
                 const cls = $active.attr('class').split(/\s+/)
                     .filter(c => c !== 'active')[0] || '';
 
@@ -129,7 +129,7 @@
                 $.ajax({
                     url: "/Car/UpdateRegisteredVehicle",
                     type: "post",
-                    data: { id: id_row, status: val_TT },
+                    data: { id: id_row, status: val_TT, note: bv_Note },
                     success: function (result) {
                         status_type = result.status;
                         if (result.status == 0) {
@@ -164,6 +164,97 @@
         }
     }
 
+    const AllCode = [
+        { Description: "Blank", CodeValue: "1" },
+        { Description: "Đã đến nhà máy", CodeValue: "0" },
+        // Add more objects as needed
+    ];
+
+    // Create a new array of objects in the desired format
+    const options = AllCode.map(allcode => ({
+        text: allcode.Description,
+        value: allcode.CodeValue
+    }));
+
+    const jsonString = JSON.stringify(options);
+    function renderRow(item) {
+        var date = new Date(item.registerDateOnline);
+        let formatted =
+            String(date.getHours()).padStart(2, '0') + ":" +
+            String(date.getMinutes()).padStart(2, '0') + " " +
+            String(date.getDate()).padStart(2, '0') + "/" +
+            String(date.getMonth() + 1).padStart(2, '0') + "/" +
+            date.getFullYear();
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt = '<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt = '<span class="badge badge-danger">Hết hạn</span>'
+                break;
+
+        }
+        return `
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
+            <td>${item.recordNumber}</td>
+            <td>${formatted}</td>
+            <td class="name-td">${item.customerName}</td>
+            <td>
+                <div>${item.driverName}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
+            <td>${item.vehicleNumber}</td>
+            <td>${item.vehicleLoad}</td>
+            <td>${item.licenseNumber}</td>
+            <td><textarea class="BV_Note" name="BV_Note" value="${item.protectNotes == null ? '' : item.protectNotes}">${item.protectNotes == null ? '' : item.protectNotes}</textarea></td>
+            <td>
+               ${html_tt}
+
+            </td>
+            <td>
+                <div class="status-dropdown">
+                    <button class="dropdown-toggle " data-options='${jsonString}'>
+                        ${item.vehicleStatusName}
+                    </button>
+                </div>
+
+            </td>
+
+        </tr>`;
+    }
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/CarHub", { transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true })
+        .withAutomaticReconnect([2000, 5000, 10000])
+        .build();
+    connection.start()
+        .then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err));
+    // Nhận data mới từ server
+    connection.off("ReceiveRegistration_DK");
+    connection.on("ReceiveRegistration_DK", function (item) {
+        const tbody = document.getElementById("dataBody-1");
+        tbody.insertAdjacentHTML("beforeend", renderRow(item));
+      
+    });
+    connection.onreconnecting(error => {
+        console.warn("🔄 Đang reconnect...", error);
+    });
+
+    connection.onreconnected(connectionId => {
+        console.log("✅ Đã reconnect. Connection ID:", connectionId);
+    });
+
+    connection.onclose(error => {
+        console.error("❌ Kết nối bị đóng.", error);
+    });
 });
 var _registeredvehicle = {
 

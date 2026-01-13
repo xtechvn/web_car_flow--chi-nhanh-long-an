@@ -143,7 +143,7 @@
                         id_row = match[1];
                     }
                 }
-
+                var bv_Note = $row.find(".BV_Note").val();
                 const cls = $active.attr('class').split(/\s+/)
                     .filter(c => c !== 'active')[0] || '';
 
@@ -157,7 +157,7 @@
                         }) // xoá các class status- cũ
                         .addClass(cls); // gắn class mới (status-arrived, status-blank…)
                 } else {
-                    var Status_type = _cartofactory.UpdateStatus(id_row, val_TT, 1);
+                    var Status_type = _cartofactory.UpdateStatus(id_row, val_TT, 1, bv_Note);
                     if (Status_type == 0) {
                         $currentBtn
                             .text(text)
@@ -232,22 +232,37 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt ='<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt ='<span class="badge badge-danger">Hết hạn</span>'
+                break;
+
+        }
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
-            <td>${item.customerName}</td>
-            <td>${item.driverName}</td>
-            <td>${item.phoneNumber}</td>
+            <td class="name-td">${item.customerName}</td>
+            <td>
+                <div>${item.driverName}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
             <td>${item.vehicleNumber}</td>
             <td>${item.vehicleLoad}</td>
             <td>${item.licenseNumber}</td>
-              <td>
-                <div class="status-dropdown">
-                    <button class="dropdown-toggle "data-type="1" data-options='${jsonString2}'>
-                        ${item.loadingTypeName}
-                    </button>
-                </div>
+            <td><textarea class="BV_Note" name="BV_Note" value="${item.protectNotes == null ? '' : item.protectNotes}">${item.protectNotes == null ? '' : item.protectNotes}</textarea></td>
+            <td>
+               ${html_tt}
 
             </td>
             <td>
@@ -263,23 +278,37 @@
     }
 
     function renderRow2(item) {
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt = '<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt = '<span class="badge badge-danger">Hết hạn</span>'
+                break;
 
+        }
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${item.createTime}" >
             <td>${item.queueNumber}</td>
             <td>${item.createTime}</td>
-            <td>${item.name}</td>
-            <td>${item.gplx}</td>
-            <td>${item.phoneNumber}</td>
+            <td class="name-td">${item.name}</td>
+             <td>
+                <div>${item.gplx}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
             <td>${item.plateNumber}</td>
             <td>${item.referee}</td>
             <td>${item.camp}</td>
+            <td><textarea class="BV_Note" name="BV_Note" ></textarea></td>
             <td>
-                <div class="status-dropdown">
-                    <button class="dropdown-toggle "data-type="1" data-options='${jsonString2}'>
-                        
-                    </button>
-                </div>
+                ${html_tt}
 
             </td>
             <td>
@@ -301,16 +330,36 @@
             String(date.getDate()).padStart(2, '0') + "/" +
             String(date.getMonth() + 1).padStart(2, '0') + "/" +
             date.getFullYear();
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt = '<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt = '<span class="badge badge-danger">Hết hạn</span>'
+                break;
+
+        }
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
-            <td>${item.customerName}</td>
-            <td>${item.driverName}</td>
-            <td>${item.phoneNumber}</td>
+            <td class="name-td">${item.customerName}</td>
+            <td>
+                <div>${item.driverName}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
             <td>${item.vehicleNumber}</td>
             <td>${item.vehicleLoad}</td>
             <td>${item.licenseNumber}</td>
+            <td>${item.protectNotes == null ? '' : item.protectNotes}</td>
+               <td>${html_tt}</td>
             <td>
                 <div class="status-dropdown">
                     <button class="dropdown-toggle " data-options='${jsonString}'>
@@ -475,12 +524,12 @@ var _cartofactory = {
         _magnific.OpenSmallPopup(title, url, param);
 
     },
-    UpdateStatus: function (id, status, type) {
+    UpdateStatus: function (id, status, type, Note) {
        var status_type=0
         $.ajax({
             url: "/Car/UpdateStatus",
             type: "post",
-            data: { id: id, status: status, type: type },
+            data: { id: id, status: status, type: type, weight: 0, Note: Note },
             success: function (result) {
                 status_type = result.status;
                 if (result.status == 0) {

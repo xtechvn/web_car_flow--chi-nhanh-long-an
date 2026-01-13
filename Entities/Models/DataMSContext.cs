@@ -313,6 +313,8 @@ namespace Entities.Models
 
                 entity.Property(e => e.ProcessingIsLoadingDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ProtectNotes).HasMaxLength(500);
+
                 entity.Property(e => e.RegisterDateOnline).HasColumnType("datetime");
 
                 entity.Property(e => e.TimeCallVehicleTroughTimeComeIn).HasColumnType("datetime");

@@ -257,7 +257,23 @@
             String(date2.getDate()).padStart(2, '0') + "/" +
             String(date2.getMonth() + 1).padStart(2, '0') + "/" +
             date2.getFullYear();
-        var html = `     <a class="cursor-pointer" onclick="_inspection.ShowAddOrUpdate(${item.inspectionId})" title="Chỉnh sửa">
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt = '<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt = '<span class="badge badge-danger">Hết hạn</span>'
+                break;
+
+        }
+        var html = `     <a class="cursor-pointer" onclick="_processing_is_loading.AddOrUpdateVehicleNumber(${item.id})" title="Chỉnh sửa biển số xe">
                                         <i class="icon-edit"></i>
                                     </a>`
         var html_input = `<div class="">
@@ -272,22 +288,29 @@
                                         </div>`
 
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  style="background: ${item.trangThai == 1 ? "orange;" : "" || item.trangThai == 2 ? "red;" : ""}" >
+        <tr class="CartoFactory_${item.id}" data-queue="${formatted}"  >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
             <td>${item.vehicleNumber} ${item.trangThai == 1 || item.trangThai == 2 ? html : ""}</td>
             <td>
-            ${item.customerName} <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa">
+            ${item.customerName} 
+            <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa biển số khách hàng">
                                                     <i class="icon-edit"></i>
                                                 </a>
-
             </td>
-            <td>${item.driverName}</td>
-            <td>${item.phoneNumber}</td>
+            <td>
+                <div>${item.driverName}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
+           
            
           
             <td>${item.licenseNumber}</td>
-            <td>${item.vehicleStatusName}</td>
+                <td>${item.protectNotes == null ? '' : item.protectNotes}</td>
+            <td>${html_tt}
+                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(${item.id})" title="Chỉnh sửa"><i class="icon-edit"></i>
+                </a>
+            </td>
             <td>${item.vehicleWeightMax.toLocaleString('en-US') }</td>
             <td>${html_input} </td>
             <td>
@@ -324,18 +347,37 @@
             String(date2.getDate()).padStart(2, '0') + "/" +
             String(date2.getMonth() + 1).padStart(2, '0') + "/" +
             date2.getFullYear();
+        var html_tt = ``;
+        switch (item.trangThai) {
+            case 1:
+                html_tt = '<span class="badge badge-warning">Chưa có</span>'
+                break;
+            case 2:
+                html_tt = `<span class="badge badge-success">Còn hạn</span>`
+                break;
+            case 3:
+                html_tt = `<span class="badge badge-warning">Sắp hết hạn</span>`
+                break;
+            case 4:
+                html_tt = '<span class="badge badge-danger">Hết hạn</span>'
+                break;
+
+        }
         return `
         <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
             <td>${item.recordNumber}</td>
             <td>${formatted}</td>
             <td>${item.vehicleNumber}</td>
             <td>${item.customerName}</td>
-            <td>${item.driverName}</td>
-            <td>${item.phoneNumber}</td>
+            <td>
+                  <div>${item.driverName}</div>
+                <div>${item.phoneNumber}</div>
+            </td>
         
          
             <td>${item.licenseNumber}</td>
-            <td>${item.vehicleStatusName}</td>
+            <td>${item.protectNotes == null ? '' : item.protectNotes}</td>
+            <td>${html_tt}</td>
             <td>${item.vehicleWeightMax.toLocaleString('en-US')}</td>
             <td>${item.vehicleLoadTaken == null ? 0: item.vehicleLoadTaken.toLocaleString('en-US') }</td>
             <td>
@@ -543,10 +585,11 @@ var _processing_is_loading = {
     AddOrUpdateName: function () {
         var id = $('#Id').val();
         var name = $('#CustomerName').val();
+        var VehicleNumber = $('#VehicleNumber').val();
         $.ajax({
             url: "/Car/UpdateName",
             type: "post",
-            data: { id: id, name: name },
+            data: { id: id, name: name, VehicleNumber: VehicleNumber },
             success: function (result) {
                 status_type = result.status;
                 if (result.status == 0) {
@@ -566,6 +609,12 @@ var _processing_is_loading = {
     AddOrUpdateNamePopup: function (id) {
         let title = `Cập nhật thông tin khách hàng`;
         let url = '/Car/AddOrUpdateNamePopup';
+        let param = { id: id };
+        _magnific.OpenSmallPopup(title, url, param);
+    },
+    AddOrUpdateVehicleNumber: function (id) {
+        let title = `Cập nhật biển số xe`;
+        let url = '/Car/AddOrUpdateVehicleNumber';
         let param = { id: id };
         _magnific.OpenSmallPopup(title, url, param);
     },

@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Nest;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using PuppeteerSharp;
 using Repositories.IRepositories;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Telegram.Bot.Requests.Abstractions;
 using Utilities;
 using Utilities.Contants;
 using WEB.CMS.Customize;
@@ -20,11 +22,13 @@ namespace WEB.CMS.Controllers
         private readonly IVehicleInspectionRepository _vehicleInspectionRepository;
         private readonly IAllCodeRepository _allCodeRepository;
         private readonly IHubContext<CarHub> _hubContext;
-        public CarController(IVehicleInspectionRepository vehicleInspectionRepository, IAllCodeRepository allCodeRepository, IHubContext<CarHub> hubContext)
+        private readonly WorkQueueClient _workQueueClient;
+        public CarController(IVehicleInspectionRepository vehicleInspectionRepository, IAllCodeRepository allCodeRepository, IHubContext<CarHub> hubContext, IConfiguration configuration)
         {
             _vehicleInspectionRepository = vehicleInspectionRepository;
             _allCodeRepository = allCodeRepository;
             _hubContext = hubContext;
+            _workQueueClient = new WorkQueueClient(configuration);
         }
         public IActionResult CartoFactory()
         {
@@ -62,7 +66,7 @@ namespace WEB.CMS.Controllers
                 ViewBag.AllCode = AllCode;
                 ViewBag.LoadingType = LoadingType;
                 var data = await _vehicleInspectionRepository.GetListCartoFactory(SearchModel);
-                if(data!=null && data.Count > 0 && SearchModel.type == 1)
+                if (data != null && data.Count > 0 && SearchModel.type == 1)
                 {
                     data = data.OrderBy(s => s.VehicleArrivalDate).ToList();
                 }
@@ -254,6 +258,8 @@ namespace WEB.CMS.Controllers
                 model.VehicleWeightMax = detail.VehicleWeightMax;
                 model.VehicleLoadTaken = detail.VehicleLoadTaken;
                 model.CreatedBy = _UserId;
+                model.ProtectNotes = detail.ProtectNotes;
+                model.TrangThai = detail.TrangThai;
                 switch (type)
                 {
                     case 1:
@@ -277,6 +283,8 @@ namespace WEB.CMS.Controllers
                             model.VehicleStatus = status;
                             model.VehicleArrivalDate = DateTime.Now;
                             detail.VehicleArrivalDate = DateTime.Now;
+                            model.ProtectNotes = Note;
+                            detail.ProtectNotes = Note;
                             UpdateCar = await _vehicleInspectionRepository.UpdateCar(model);
                             if (UpdateCar > 0)
                             {
@@ -590,7 +598,7 @@ namespace WEB.CMS.Controllers
                                     msg = "Cập nhật không thành công.Tình trạng xe không thay đổi"
                                 });
                             }
-                            if(weight > 0)
+                            if (weight > 0)
                             {
                                 var update = await _vehicleInspectionRepository.UpdateVehicleLoadTaken(id, weight);
                             }
@@ -678,7 +686,7 @@ namespace WEB.CMS.Controllers
                     case 10:
                         {
 
-                            model.LoadingType = status;
+                            model.LoadingType = status;                   
                             UpdateCar = await _vehicleInspectionRepository.UpdateCar(model);
 
                             if (UpdateCar > 0)
@@ -812,21 +820,44 @@ namespace WEB.CMS.Controllers
                 ViewBag.Id = id;
                 var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(id);
                 ViewBag.name = detail.CustomerName;
-              
+
                 return PartialView();
             }
             return PartialView();
         }
-        public async Task<IActionResult> UpdateName(int id, string name)
+        public async Task<IActionResult> UpdateName(int id, string name = null, string VehicleNumber = null)
         {
             try
             {
                 var model = new VehicleInspectionUpdateModel();
                 model.Id = id;
-                model.CustomerName = name;
+                if (name != null)
+                    model.CustomerName = name;
+                if (VehicleNumber != null)
+                {
+                    model.VehicleNumber = VehicleNumber;
+                    var audio = await _vehicleInspectionRepository.GetAudioPathByVehicleNumber(VehicleNumber);
+                    model.AudioPath = audio;
+                }
+             
                 var Update = await _vehicleInspectionRepository.UpdateCar(model);
                 if (Update > 0)
                 {
+                    if(VehicleNumber != null &&( model.AudioPath == null || model.AudioPath == ""))
+                    {
+                        var request = new RegistrationRecord();
+                        request.Id = id;
+                        request.Bookingid = id;
+                        request.Type = 2;
+                        request.PlateNumber = VehicleNumber;
+                        request.text_voice = "Mời biển số xe " + request.PlateNumber + " vào cân";
+                        var Queue = _workQueueClient.SyncQueue(request);
+                        if (!Queue)
+                        {
+                            Queue = _workQueueClient.SyncQueue(request);
+                        }
+                    }
+
                     return Ok(new
                     {
                         status = (int)ResponseType.SUCCESS,
@@ -841,7 +872,7 @@ namespace WEB.CMS.Controllers
                         msg = "Cập nhật không thành công"
                     });
                 }
-                   
+
             }
             catch (Exception ex)
             {
@@ -879,7 +910,7 @@ namespace WEB.CMS.Controllers
                 msg = "cập nhật không thành công"
             });
         }
-        public async Task<IActionResult> UpdateRegisteredVehicle(int id, int status)
+        public async Task<IActionResult> UpdateRegisteredVehicle(int id, int status,string note=null)
         {
             try
             {
@@ -926,7 +957,8 @@ namespace WEB.CMS.Controllers
                 model.CreatedBy = _UserId;
                 model.VehicleStatus = status;
                 model.VehicleArrivalDate = DateTime.Now;
-               var update = await _vehicleInspectionRepository.UpdateCar(model);
+                model.ProtectNotes = note;
+                var update = await _vehicleInspectionRepository.UpdateCar(model);
                 if (update > 0)
                 {
                     return Ok(new
@@ -946,6 +978,18 @@ namespace WEB.CMS.Controllers
                 status = (int)ResponseType.ERROR,
                 msg = "cập nhật không thành công"
             });
+        }
+        public async Task<IActionResult> AddOrUpdateVehicleNumber(int id)
+        {
+            if (id > 0)
+            {
+                ViewBag.Id = id;
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(id);
+                ViewBag.vehicleNumber = detail.VehicleNumber;
+
+                return PartialView();
+            }
+            return PartialView();
         }
     }
 }
