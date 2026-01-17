@@ -178,13 +178,7 @@
 
     const jsonString = JSON.stringify(options);
     function renderRow(item) {
-        var date = new Date(item.registerDateOnline);
-        let formatted =
-            String(date.getHours()).padStart(2, '0') + ":" +
-            String(date.getMinutes()).padStart(2, '0') + " " +
-            String(date.getDate()).padStart(2, '0') + "/" +
-            String(date.getMonth() + 1).padStart(2, '0') + "/" +
-            date.getFullYear();
+      
         var html_tt = ``;
         switch (item.trangThai) {
             case 1:
@@ -202,18 +196,18 @@
 
         }
         return `
-        <tr class="CartoFactory_${item.id}" data-queue="${formatted}" >
-            <td>${item.recordNumber}</td>
-            <td>${formatted}</td>
-            <td class="name-td">${item.customerName}</td>
+        <tr class="CartoFactory_${item.id}" data-queue="${item.createTime}" >
+            <td>${item.queueNumber}</td>
+            <td>${item.createTime}</td>
+            <td class="name-td">${item.name}</td>
             <td>
-                <div>${item.driverName}</div>
+                <div>${item.gplx}</div>
                 <div>${item.phoneNumber}</div>
             </td>
-            <td>${item.vehicleNumber}</td>
-            <td>${item.vehicleLoad}</td>
-            <td>${item.licenseNumber}</td>
-            <td><textarea class="BV_Note" name="BV_Note" value="${item.protectNotes == null ? '' : item.protectNotes}">${item.protectNotes == null ? '' : item.protectNotes}</textarea></td>
+            <td>${item.plateNumber}</td>
+            <td>${item.referee}</td>
+            <td>${item.camp}</td>
+            <td><textarea class="BV_Note" name="BV_Note" ></textarea></td>
             <td>
                ${html_tt}
 
@@ -221,7 +215,7 @@
             <td>
                 <div class="status-dropdown">
                     <button class="dropdown-toggle " data-options='${jsonString}'>
-                        ${item.vehicleStatusName}
+                        Blank
                     </button>
                 </div>
 
