@@ -310,6 +310,8 @@
             e.preventDefault();
 
             if (isSubmitting) return;
+            isSubmitting = true; // khóa ngay từ đầu
+            showLoading(true);
 
             const plateNumber = document.getElementById('plateNumber').value.trim();
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
@@ -407,7 +409,10 @@
 
                 showError(errorMessage);
             } finally {
-                showLoading(false);
+                if (!countdownTimer) {
+                    showLoading(false);
+                    isSubmitting = false;
+                }
             }
         }
 
