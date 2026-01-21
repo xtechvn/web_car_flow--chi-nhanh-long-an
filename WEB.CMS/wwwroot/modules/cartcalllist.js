@@ -201,7 +201,7 @@
                     //}
 
                 } else {
-                    var weight = $('.CartoFactory_' + id_row).find('input.weight').val().replaceAll(",", "") || 0;
+                    var weight = $('.CartoFactory_' + id_row).find('input.weight').val() != undefined ? $('.CartoFactory_' + id_row).find('input.weight').val().replaceAll(",", "") : 0;
                     var note = null;
                     var text_type = $('.CartoFactory_' + id_row + '_troughWeight').text().trim();
 
