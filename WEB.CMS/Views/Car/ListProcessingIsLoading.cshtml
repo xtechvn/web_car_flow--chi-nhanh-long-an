@@ -16,7 +16,8 @@
     .data-table input {
         width: 60% !important;
     }
-      .badge {
+
+    .badge {
         display: inline-block;
         padding: 5px 12px;
         border-radius: 6px;
@@ -48,7 +49,7 @@
                 <th>Biển số xe</th>
                 <th>Tên khách hàng (Trại, đại lý)</th>
                 <th>Tên lái xe</th>
-         
+
                 <th>Ghi chú</th>
                 <th>BV ghi chú</th>
                 <th>TT đăng kiểm</th>
@@ -61,143 +62,143 @@
         <tbody id="dataBody-@ViewBag.type">
             @foreach (var item in Model)
             {
-                <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))" >
-                                <td>
-                                    @item.RecordNumber
-                                </td>
-                                <td>@(item.VehicleArrivalDate != null ? ((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"):"")</td>
-                                <td>
-                                    @item.VehicleNumber
-                                       @if (ViewBag.type == 0)
-                                            {
-                                                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateVehicleNumber(@item.Id)" title="Chỉnh sửa biển số xe">
-                                                    <i class="icon-edit"></i>
-                                                </a>
-                                            }
+                <tr class="CartoFactory_@item.Id" data-queue="@(((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy"))">
+                    <td>
+                        @item.RecordNumber
+                    </td>
+                    <td>@(item.VehicleArrivalDate != null ? ((DateTime)item.VehicleArrivalDate).ToString("HH:mm dd/MM/yyyy") : "")</td>
+                    <td>
+                        @item.VehicleNumber
+                        @if (ViewBag.type == 0)
+                        {
+                            <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateVehicleNumber(@item.Id)" title="Chỉnh sửa biển số xe">
+                                <i class="icon-edit"></i>
+                            </a>
+                        }
 
-                                </td>
-                                <td>
-                                    <div style="display: flex; align-items: center">
-                                        <div style="white-space: pre-line;">
-                                            @item.CustomerName
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center">
+                            <div style="white-space: pre-line;">
+                                @item.CustomerName
 
-                                        </div>
-                                        <div>
-                                            @if (ViewBag.type == 0)
-                                            {
-                                                <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(@item.Id)" title="Chỉnh sửa khách hàng">
-                                                    <i class="icon-edit"></i>
-                                                </a>
-                                            }
-                                        </div>
-                                    </div>
-                                </td>
+                            </div>
+                            <div>
+                                @if (ViewBag.type == 0)
+                                {
+                                    <a class="cursor-pointer" style="margin-left:10px;" onclick="_processing_is_loading.AddOrUpdateNamePopup(@item.Id)" title="Chỉnh sửa khách hàng">
+                                        <i class="icon-edit"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </td>
                     <td>
                         <div>@item.DriverName</div>
                         <div>@item.PhoneNumber</div>
 
                     </td>
-                                <td>@item.LicenseNumber</td>
-                                <td>@item.ProtectNotes</td>
-                                <td> 
-                                    @{
-                                        switch (item.TrangThai)
-                                        {
-                                            case 1:
-                                                <span class="badge badge-warning">Chưa có</span>
-                                                break;
-                                            case 2:
-                                                <span class="badge badge-success">Còn hạn</span>
-                                                break;
-                                            case 3:
-                                                @:<span class="badge badge-warning">Sắp hết hạn</span>
-                                                break;
-                                            case 4:
-                                                @:<span class="badge badge-danger">Hết hạn</span>
-                                                break;
+                    <td>@item.LicenseNumber</td>
+                    <td>@item.ProtectNotes</td>
+                    <td>
+                        @{
+                            switch (item.TrangThai)
+                            {
+                                case 1:
+                                    <span class="badge badge-warning">Chưa có</span>
+                                    break;
+                                case 2:
+                                    <span class="badge badge-success">Còn hạn</span>
+                                    break;
+                                case 3:
+                                    @:<span class="badge badge-warning">Sắp hết hạn</span>
+                                    break;
+                                case 4:
+                                    @:<span class="badge badge-danger">Hết hạn</span>
+                                    break;
 
-                                        }
-                                    }
-                                       @if (ViewBag.type == 0)
+                            }
+                        }
+                        @if (ViewBag.type == 0)
+                        {
+                            <a class="cursor-pointer" style="margin-left:10px;" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa đăng kiểm">
+                                <i class="icon-edit"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>@(((decimal)item.VehicleWeightMax).ToString("N0"))</td>
+                    <td>
+                        @if (ViewBag.type == 1)
+                        {
+                            <div class="">
+                                <p class="  Vehicle-Status currency">
+                                    @(((decimal)item.VehicleLoadTaken).ToString("N0"))
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="">
+                                <p class="">
+                                    <input type="text"
+                                           class="input-form VehicleLoadTaken currency"
+                                           maxlength="8"
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
+                                           placeholder="Vui lòng nhập trọng lượng thực tế" value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
+                                </p>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (ViewBag.type == 1)
+                        {
+                            <div class="">
+                                <p class="  Vehicle-Status" data-type="1">
+                                    @item.LoadTypeName
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="status-dropdown">
+                                <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
+                                @foreach (var allcode in AllCode2)
+                                {
+                                    if (allcode.CodeValue == 0)
                                     {
-                                        <a class="cursor-pointer" style="margin-left:10px;" onclick="_inspection.ShowAddOrUpdate(@item.InspectionId)" title="Chỉnh sửa đăng kiểm">
-                                            <i class="icon-edit"></i>
-                                        </a>
-                                    }
-                                </td>
-                                <td>@(((decimal)item.VehicleWeightMax).ToString("N0"))</td>
-                                <td>
-                                    @if (ViewBag.type == 1)
-                                    {
-                                        <div class="">
-                                            <p class="  Vehicle-Status currency">
-                                                @(((decimal)item.VehicleLoadTaken).ToString("N0"))
-                                            </p>
-                                        </div>
+                                        @:{"text":"@allcode.Description","class":"status-green","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
                                     }
                                     else
                                     {
-                                        <div class="">
-                                            <p class="">
-                                                <input type="text"
-                                                       class="input-form VehicleLoadTaken currency"
-                                                       maxlength="8"
-                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,8);"
-                                                       placeholder="Vui lòng nhập trọng lượng thực tế" value="@(item.VehicleLoadTaken >0?((decimal)item.VehicleLoadTaken).ToString("N0"):"")" />
-                                            </p>
-                                        </div>
+                                        @:{"text":"@allcode.Description","class":"status-normal","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
+
                                     }
-                                </td>
-                                <td>
-                                    @if (ViewBag.type == 1)
-                                    {
-                                        <div class="">
-                                            <p class="  Vehicle-Status" data-type="1">
-                                                @item.LoadTypeName
-                                            </p>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="status-dropdown">
-                                            <button class="dropdown-toggle  Vehicle-Status" data-type="1" data-options='[
-                                            @foreach (var allcode in AllCode2)
-                                            {
-                                                if (allcode.CodeValue == 0)
-                                                {
-                                                    @:{"text":"@allcode.Description","class":"status-green","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
-
-                                                }
-                                                else
-                                                {
-                                                    @:{"text":"@allcode.Description","class":"status-normal","value":"@allcode.CodeValue"}@(allcode != AllCode2.Last() ? "," : "")
-
-                                                }
 
 
-                                            }
-                                            ]'>
-                                                @item.LoadTypeName
-                                            </button>
-                                        </div>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="status-dropdown">
-                                        <button class="dropdown-toggle " data-options='[
-                                        @foreach (var allcode in AllCode)
-                                        {
+                                }
+                                                        ]'>
+                                    @item.LoadTypeName
+                                </button>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <div class="status-dropdown">
+                            <button class="dropdown-toggle " data-options='[
+                            @foreach (var allcode in AllCode)
+                            {
 
-                                            @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
+                                @:{"text":"@allcode.Description","value":"@allcode.CodeValue"}@(allcode != AllCode.Last() ? "," : "")
 
-                                        }
-                                        ]'>
-                                            @item.LoadingStatusName
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                }
+                            }
+                                                ]'>
+                                @item.LoadingStatusName
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
             }
 
         </tbody>
