@@ -104,7 +104,12 @@ namespace XTECH_FRONTEND.Services.RedisWorker
             var json = JsonSerializer.Serialize(record);
             await sub.PublishAsync(channel, json);
         }
+        public void Set15P(string key, string value, int db_index)
+        {
+            var db = _redis.GetDatabase(db_index);
 
+            db.StringSet(key, value, TimeSpan.FromMinutes(15));
+        }
 
     }
 }

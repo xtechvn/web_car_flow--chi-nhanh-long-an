@@ -120,7 +120,7 @@
         // Global variables
         let countdownTimer = null;
         let isSubmitting = false;
-
+        let isLocked = false;
         // Utility functions
         function showLoading(show = true) {
             const submitBtn = document.getElementById('submitBtn');
@@ -283,6 +283,7 @@
             const updateCountdown = () => {
                 if (remaining <= 0) {
                     clearInterval(countdownTimer);
+                     isLocked = false;
                     timerSection.style.display = 'none';
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'GỬI ĐĂNG KÝ';
@@ -309,9 +310,8 @@
         async function handleFormSubmit(e) {
             e.preventDefault();
 
-            if (isSubmitting) return;
-            isSubmitting = true; // khóa ngay từ đầu
-            showLoading(true);
+            if (isSubmitting || isLocked) return;
+                isSubmitting = true;
 
             const plateNumber = document.getElementById('plateNumber').value.trim();
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
@@ -328,6 +328,7 @@
             }
 
             try {
+            isSubmitting = true;
 
 
                 showLoading(true);
@@ -410,7 +411,6 @@
                 showError(errorMessage);
             } finally {
                 if (!countdownTimer) {
-                    showLoading(false);
                     isSubmitting = false;
                 }
             }

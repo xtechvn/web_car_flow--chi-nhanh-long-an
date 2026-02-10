@@ -239,24 +239,19 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                 var hours = now.Hour;
                 var minutes = now.Minute;
 
-                // Kiểm tra khoảng 17:55 đến 18:00
-
-                _logger.LogInformation($"Car registration request received: {request.PhoneNumber} - {request.PlateNumber}");
-
-                // Step 1: Validate input data
-                var validationResult = _validationService.ValidateCarRegistration(request);
-                if (!validationResult.IsValid)
+                string cache_name = "Long_An_PlateNumber_" + request.PlateNumber.Replace("-", "_")+DateTime.Now.ToString("dd_MM_yyyy");
+                var data = await redisService.GetAsync(cache_name, Convert.ToInt32(_configuration["Redis:Database:db_common"]));
+                if (data != null && data.Trim() != "")
                 {
+
+                    var data_detail = JsonConvert.DeserializeObject<RegistrationRecord>(data);
                     return BadRequest(new CarRegistrationResponse
                     {
                         Success = false,
-                        Message = string.Join(", ", validationResult.Errors)
+                        Message = data_detail.PlateNumber + $" đã đăng ký số " + data_detail.QueueNumber + ", Vui lòng đợi 15 phút trước khi gửi lại",
+                        RemainingTimeMinutes = 15
                     });
                 }
-
-                string cache_name = "PlateNumber_" + request.PlateNumber.Replace("-", "_")+DateTime.Now.ToString("dd_MM_yyyy");
-
-                redisService.Set(cache_name, JsonConvert.SerializeObject(request), Convert.ToInt32(_configuration["Redis:Database:db_common"]));
                 var queueNumber = await _googleSheetsService.GetDailyQueueCountRedis(DateUtil.StringToDateTime( request.Timedow));
 
 
@@ -273,6 +268,8 @@ namespace XTECH_FRONTEND.Controllers.CarRegistration
                     ZaloStatus = "Đang xử lý...",
                     Camp = request.Camp,
                 };
+                redisService.Set15P(cache_name, JsonConvert.SerializeObject(registrationRecord), Convert.ToInt32(_configuration["Redis:Database:db_common"]));
+
                 var InsertMG = await _mongoService.Insert(registrationRecord);
                 if (InsertMG == 0)
                 {
