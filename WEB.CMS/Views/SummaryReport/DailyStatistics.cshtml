@@ -28,6 +28,7 @@
             <th>Thời gian xuất hàng(Phút)</th>
             <th>Tình trạng</th>
             <th>Tổng trọng lượng đã lấy(KG)</th>
+            <th>Tổng trọng lượng thực tế(KG)</th>
             <th>CSOS</th>
         </tr>
     </thead>
@@ -87,6 +88,11 @@
 
                     </td>
                     <td>@item.TotalVehicleTroughWeight</td>
+                    <td>@(item.VehicleLoadTaken==null? "": ((decimal)item.VehicleLoadTaken).ToString("N0"))
+                        <a class="cursor-pointer" style="margin-left:10px;" onclick="_detail_summary_report.OpenPopUpVehicleLoadTaken(@item.Id)" title="Chỉnh sửa">
+                            <i class="icon-edit"></i>
+                        </a>
+                    </td>
                     <td>@item.FullName</td>
 
                 </tr>
@@ -111,7 +117,9 @@
                 <th>Tổng thời gian xuất hàng/ngày</th>
                 <th>Trung bình thời gian xuất hàng/ xe</th>
                 <th>Tổng trọng lượng đã lấy(KG)</th>
+                <th>Tổng trọng lượng thực tế(KG)</th>
                 <th>CSOS</th>
+                <th></th>
             </tr>
             <tr>
                 <td>@TotalData.TotalCar</td>
@@ -131,6 +139,8 @@
                 <td>@TotalData.AvgTimePerCompletedCar_Hour</td>
                 <td>@TotalData.TotalWeightTroughType</td>
                 <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
@@ -149,8 +159,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
-				 <td></td>
-				 <td></td>
+				<td></td>
+				<td></td>
+                <td></td>
+                <td></td>
             </tr>
 
             <tr>
@@ -170,8 +182,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
-				 <td></td>
-				 <td></td>
+				<td></td>
+				<td></td>
+                <td></td>
+                <td></td>
             </tr>
 
         }

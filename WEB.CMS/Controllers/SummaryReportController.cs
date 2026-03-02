@@ -165,6 +165,21 @@ namespace WEB.CMS.Controllers
                 LogHelper.InsertLogTelegram("GetProductivityStatistics - SummaryReportController: " + ex);
             }
             return PartialView();
+        } 
+        public async Task<IActionResult> OpenPopUpVehicleLoadTaken(int id)
+        {
+            try
+            {
+                ViewBag.Id = id;
+                var detail = await _vehicleInspectionRepository.GetDetailtVehicleInspection(id);
+                ViewBag.VehicleLoadTaken = detail.VehicleLoadTaken==null?0: (decimal)detail.VehicleLoadTaken;
+                return PartialView();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("OpenPopUpVehicleLoadTaken - SummaryReportController: " + ex);
+            }
+            return PartialView();
         }
     }
 }

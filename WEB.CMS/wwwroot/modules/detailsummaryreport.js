@@ -101,6 +101,37 @@ var _detail_summary_report = {
         }
         _detail_summary_report.GetDailyStatistics(model)
         
-    }
+    },
+    OpenPopUpVehicleLoadTaken:function(id){
+        let title = `Cập nhật trọng lượng thực tế`;
+        let url = '/SummaryReport/OpenPopUpVehicleLoadTaken';
+        let param = { id: id };
+        _magnific.OpenSmallPopup(title, url, param);
+    },
+    UpdateVehicleLoad: function () {
+        var status_type = 0
+        var id = $('#id').val();
+        var vehicleloadtaken = $('#VehicleLoadTaken').val().replace(',','');
+        $.ajax({
+            url: "/Car/UpdateVehicleLoadTaken",
+            type: "post",
+            data: { id: id, vehicleloadtaken: vehicleloadtaken },
+            success: function (result) {
+                status_type = result.status;
+                if (result.status == 0) {
+                    _msgalert.success(result.msg)
+                    $.magnificPopup.close();
+                    setTimeout(location.reload() ,1000)
+                   
+                } else {
+                    _msgalert.error(result.msg)
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+            }
+        });
+
+    },
 
 }
