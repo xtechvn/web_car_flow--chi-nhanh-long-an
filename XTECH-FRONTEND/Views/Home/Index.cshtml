@@ -360,12 +360,12 @@
                 const targetHM = checkTime.getHours() * 60 + checkTime.getMinutes();
 
                 if (now.getHours() == checkTime.getHours() && nowHM <= targetHM) {
-                setTimeout(() => {
-                    startCountdown17_18();
-                }, 1000);
+                    // setTimeout(() => {
+                    //     startCountdown17_18();
+                    // }, 1000);
 
-                return;
-            }
+                    // return;
+                }
                 // Call API to register car
                 const response = await registerCar(plateNumber, phoneNumber, name, referee, GPLX, Camp, timedow);
 
