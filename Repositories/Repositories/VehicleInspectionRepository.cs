@@ -528,7 +528,7 @@ namespace Repositories.Repositories
                     numberStyle.HorizontalAlignment = TextAlignmentType.Right;
                     numberStyle.VerticalAlignment = TextAlignmentType.Center;
 
-                    int RowIndex = 1;
+                    int RowIndex = 2;
 
                     foreach (var item in data)
                     {
