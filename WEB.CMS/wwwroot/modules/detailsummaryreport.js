@@ -14,12 +14,15 @@ var _detail_summary_report = {
 
     },
     Seach: function () {
-        var text = $('#date_time_Car').val();
-        parse_value = text.split(' ')[0].split('-')
-        var datetime = parse_value[2] + '/' + parse_value[1] + '/' + parse_value[0];
+        var from_text = $('#date_from').val();
+        parse_value = from_text.split(' ')[0].split('-')
+        var from_datetime = parse_value[2] + '/' + parse_value[1] + '/' + parse_value[0];
+        var to_text = $('#date_to').val();
+        parse_value = to_text.split(' ')[0].split('-')
+        var to_datetime = parse_value[2] + '/' + parse_value[1] + '/' + parse_value[0];
         var model = {
-            FromDate: datetime,
-            ToDate: datetime,
+            FromDate: from_datetime,
+            ToDate: to_datetime,
             LoadType: $('#loadType').val(),
         }
         _detail_summary_report.GetDailyStatistics(model)
@@ -76,7 +79,7 @@ var _detail_summary_report = {
                 lastWeek.setDate(now.getDate() - lastWeekDay - 6);
                 fromDate = startOfDay(lastWeek);
                 const toLastWeek = new Date(fromDate);
-                toLastWeek.setDate(fromDate.getDate() + 6);
+                toLastWeek.setDate(now.getDate() - lastWeekDay - 6 + 6);
                 toDate = endOfDay(toLastWeek);
                 break;
             case "5": // Tháng này
@@ -94,15 +97,17 @@ var _detail_summary_report = {
                 fromDate = null;
                 toDate = null;
         }
+        $('#date_from').val(_detail_summary_report.formatDate(fromDate));
+        $('#date_to').val(_detail_summary_report.formatDate(toDate));
         var model = {
             FromDate: fromDate,
             ToDate: toDate,
             LoadType: $('#loadType').val(),
         }
         _detail_summary_report.GetDailyStatistics(model)
-        
+
     },
-    OpenPopUpVehicleLoadTaken:function(id){
+    OpenPopUpVehicleLoadTaken: function (id) {
         let title = `Cập nhật trọng lượng thực tế`;
         let url = '/SummaryReport/OpenPopUpVehicleLoadTaken';
         let param = { id: id };
@@ -111,7 +116,7 @@ var _detail_summary_report = {
     UpdateVehicleLoad: function () {
         var status_type = 0
         var id = $('#id').val();
-        var vehicleloadtaken = $('#VehicleLoadTaken').val().replace(',','');
+        var vehicleloadtaken = $('#VehicleLoadTaken').val().replace(',', '');
         $.ajax({
             url: "/Car/UpdateVehicleLoadTaken",
             type: "post",
@@ -121,8 +126,8 @@ var _detail_summary_report = {
                 if (result.status == 0) {
                     _msgalert.success(result.msg)
                     $.magnificPopup.close();
-                    setTimeout(location.reload() ,1000)
-                   
+                    setTimeout(location.reload(), 1000)
+
                 } else {
                     _msgalert.error(result.msg)
                 }
@@ -133,5 +138,41 @@ var _detail_summary_report = {
         });
 
     },
+    Export: function () {
+        var from_text = $('#date_from').val();
+        parse_value = from_text.split(' ')[0].split('-')
+        var from_datetime = parse_value[2] + '/' + parse_value[1] + '/' + parse_value[0];
+        var to_text = $('#date_to').val();
+        parse_value = to_text.split(' ')[0].split('-')
+        var to_datetime = parse_value[2] + '/' + parse_value[1] + '/' + parse_value[0];
+        var model = {
+            FromDate: from_datetime,
+            ToDate: to_datetime,
+            LoadType: $('#loadType').val(),
+        }
+        $('#btnExport').prop('disabled', true);
 
+        _global_function.AddLoading()
+        $.ajax({
+            url: "/SummaryReport/ExportExcel",
+            type: "Post",
+            data: { SearchModel: model },
+            success: function (result) {
+                _global_function.RemoveLoading()
+                $('#btnExport').prop('disabled', false);
+                if (result.isSuccess) {
+                    _msgalert.success(result.message);
+                    window.location.href = result.path;
+                } else {
+                    _msgalert.error(result.message);
+                }
+                $('#icon-export').removeClass('fa-spinner fa-pulse');
+                $('#icon-export').addClass('fa-file-excel-o');
+            }
+        });
+    },
+    formatDate: function (date) {
+        parse_value = date.split(' ')[0].split('/')
+        return parse_value[2] + '-' + parse_value[1] + '-' + parse_value[0];
+    },
 }

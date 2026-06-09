@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nest;
 using Repositories.IRepositories;
 using Repositories.Repositories;
+using System.Security.Claims;
 using Utilities;
 using Utilities.Contants;
 using WEB.CMS.Customize;
@@ -16,11 +17,13 @@ namespace WEB.CMS.Controllers
         private readonly IAllCodeRepository _allCodeRepository;
 
         private readonly IConfiguration _configuration;
-        public SummaryReportController(IVehicleInspectionRepository vehicleInspectionRepository, IConfiguration configuration, IAllCodeRepository allCodeRepository)
+        private readonly IWebHostEnvironment _WebHostEnvironment;
+        public SummaryReportController(IVehicleInspectionRepository vehicleInspectionRepository, IConfiguration configuration, IAllCodeRepository allCodeRepository, IWebHostEnvironment webHostEnvironment)
         {
             _vehicleInspectionRepository = vehicleInspectionRepository;
             _configuration = configuration;
             _allCodeRepository = allCodeRepository;
+            _WebHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index()
         { 
@@ -180,6 +183,74 @@ namespace WEB.CMS.Controllers
                 LogHelper.InsertLogTelegram("OpenPopUpVehicleLoadTaken - SummaryReportController: " + ex);
             }
             return PartialView();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ExportExcel(SummaryReportSearchModel SearchModel)
+        {
+            try
+            {
+                var FromDate = SearchModel.FromDate != null && SearchModel.FromDate != "" ? DateUtil.StringToDate(SearchModel.FromDate) : null;
+                var ToDate = SearchModel.ToDate != null && SearchModel.ToDate != "" ? DateUtil.StringToDate(SearchModel.ToDate) : null;
+
+                var data = await _vehicleInspectionRepository.GetListVehicleInspectionSynthetic(FromDate, ToDate, SearchModel.LoadType);
+
+
+                int _UserId = 0;
+                if (HttpContext.User.FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    _UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+                string _FileName = StringHelpers.GenFileName("Danh sách đơn hàng", _UserId, "xlsx");
+                string _UploadFolder = @"Template\Export";
+                string _UploadDirectory = Path.Combine(_WebHostEnvironment.WebRootPath, _UploadFolder);
+
+                if (!Directory.Exists(_UploadDirectory))
+                {
+                    Directory.CreateDirectory(_UploadDirectory);
+                }
+                //delete all file in folder before export
+                try
+                {
+                    System.IO.DirectoryInfo di = new DirectoryInfo(_UploadDirectory);
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                }
+                catch
+                {
+                }
+                string FilePath = Path.Combine(_UploadDirectory, _FileName);
+
+                var rsPath = await _vehicleInspectionRepository.ExportSummaryReport(data, FilePath);
+
+                if (!string.IsNullOrEmpty(rsPath))
+                {
+                    return new JsonResult(new
+                    {
+                        isSuccess = true,
+                        message = "Xuất dữ liệu thành công",
+                        path = "/" + _UploadFolder + "/" + _FileName
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new
+                    {
+                        isSuccess = false,
+                        message = "Xuất dữ liệu thất bại"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.InsertLogTelegram("ExportExcel - OrderController: " + ex);
+                return new JsonResult(new
+                {
+                    isSuccess = false,
+                    message = ex.Message.ToString()
+                });
+            }
         }
     }
 }

@@ -33,5 +33,6 @@ namespace Repositories.IRepositories
         Task<TroughWeight> GetDetailTroughWeightById(int id);
         Task<int> UpdateVehicleInspectionByVehicleNumber(string VehicleNumber);
         Task<int> UpdateVehicleLoadTaken(int Id, int VehicleLoadTaken);
+        Task<string> ExportSummaryReport(List<CartoFactoryModel> data, string FilePath);
     }
 }
