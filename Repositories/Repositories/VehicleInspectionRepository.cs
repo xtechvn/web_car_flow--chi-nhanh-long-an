@@ -582,9 +582,9 @@ namespace Repositories.Repositories
                         ws.Cells["N" + RowIndex].PutValue(item.VehicleWeighingTimeComplete != null ? item.VehicleWeighingTimeComplete.Value.ToString("HH:mm dd/MM/yyyy") : "");
                         ws.Cells["O" + RowIndex].PutValue(item.totalMinutes);
                         ws.Cells["P" + RowIndex].PutValue(TrangThai_name);
-                        ws.Cells["Q" + RowIndex].PutValue(item.VehicleTroughWeight.Value.ToString("N0"));
+                        ws.Cells["Q" + RowIndex].PutValue(item.VehicleTroughWeight!=null? item.VehicleTroughWeight.Value.ToString("N0"):"0");
                         ws.Cells["Q" + RowIndex].SetStyle(numberStyle);
-                        ws.Cells["R" + RowIndex].PutValue(item.VehicleLoadTaken.Value.ToString("N0"));
+                        ws.Cells["R" + RowIndex].PutValue(item.VehicleLoadTaken!= null?item.VehicleLoadTaken.Value.ToString("N0"):"0");
                         ws.Cells["R" + RowIndex].SetStyle(numberStyle);
                         ws.Cells["S" + RowIndex].PutValue(item.FullName);
            
